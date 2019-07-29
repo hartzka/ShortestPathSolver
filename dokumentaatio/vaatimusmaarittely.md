@@ -10,11 +10,19 @@ Sovelluksessa on mahdollisuus valita käytettävä algoritmi kolmesta vaihtoehdo
 
 ## Käytettävät algoritmit ja tietorakenteet sekä tehokkuus
 
-Lyhimmän polun etsimisessä käytetään kolmea algoritmia. Näihin kuuluvat A*, Dijkstran algoritmi ja leveyshaku. Tietorakenteina käytetään pinoa, jonoa, listaa ja hajautustaulua. Valitsin nämä algoritmit mielenkiinnon vuoksi. Tarkoitus on vertailla näiden algoritmien eroja ja oppia tuntemaan algoritmit paremmin. Sovelluksessa käytetään algoritmien ja tiedon visualisoinnin vaatimia tietorakenteita. Tärkein ominaisuus tässä ei ole tehokkuus, vaikkakin sekin on olennainen osa. Tärkein lopputulos on algoritmien toimintalogiikka. Käytettävät verkot ja solmujen määrät ovat sen verran pieniä, että tehokkuus ei nouse olennaisesti esiin, vaan algoritmit toimivat tehokkaasti käytettävillä syötteillä.
+Lyhimmän polun etsimisessä käytetään kolmea algoritmia. Näihin kuuluvat A*, Dijkstran algoritmi ja leveyshaku. Tietorakenteina käytetään pinoa, jonoa, listaa ja hajautustaulua. Valitsin nämä algoritmit mielenkiinnon vuoksi. Tarkoitus on vertailla näiden algoritmien eroja ja oppia tuntemaan algoritmit paremmin. Sovelluksessa käytetään algoritmien ja tiedon visualisoinnin vaatimia tietorakenteita. Tärkein ominaisuus tässä ei ole tehokkuus, vaikkakin sekin on olennainen osa. Tärkein lopputulos on algoritmien toimintalogiikka. Käytettävät verkot ja solmujen määrät ovat sen verran pieniä, että tehokkuus ei nouse olennaisesti esiin, vaan algoritmit toimivat tehokkaasti käytettävillä syötteillä. 
+
+Aikavaativuudet algoritmeille ovat:
+
+- A*: O((n + m)log n)
+- Dijkstra: O(n + m log n)
+- Leveyshaku: O(n + m)
+
+joissa n on solmujen eli labyrintin ruutujen määrä ja m on kaarten määrä eli solmujen välisten yhteyksien määrä.
 
 ## Luokkarakenne
 
-Käyttöliittymälle, logiikalle ja algoritmeille on omat pakkauksensa. Päälogiikka on logiikkapakkauksessa ja kaikki algoritmiluokat ovat erikseen algoritmipakkauksessa. Ohjelman käynnistävä Main-luokka on erikseen main-pakkauksessa.
+Käyttöliittymälle, logiikalle, tietorakenteille ja algoritmeille on omat pakkauksensa. Päälogiikka on logiikkapakkauksessa ja kaikki algoritmiluokat ovat erikseen algoritmipakkauksessa. Tietorakennepakkauksesta löytyvät kaikki itse toteutetut tietorakenteet ja ohjelman käynnistävä Main-luokka on erikseen main-pakkauksessa.
 
 ## Jatkokehitysideat
 

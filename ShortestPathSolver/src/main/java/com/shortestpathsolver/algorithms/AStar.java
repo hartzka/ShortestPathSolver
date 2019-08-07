@@ -3,6 +3,7 @@ package com.shortestpathsolver.algorithms;
 import com.shortestpathsolver.domain.Node;
 import com.shortestpathsolver.domain.ShortestRoute;
 import com.shortestpathsolver.structures.CustomArrayList;
+import com.shortestpathsolver.structures.Pair;
 import java.util.*;
 
 /**
@@ -86,12 +87,12 @@ public class AStar {
      */
     public Node[] calculateJumpPoints(Node node) {
         Node[] jumpPoints = new Node[8];
-        int[][] neighbors = getNeighbors(node);
+        Pair[] neighbors = getNeighbors(node);
         for (int i = 0; i < neighbors.length; i++) {
-            int[] point = jump(neighbors[i][0], neighbors[i][1], node.getColumn(), node.getRow());
-            if (point[0] != -1) {
-                int x = point[0];
-                int y = point[1];
+            Pair point = jump(neighbors[i].getX(), neighbors[i].getY(), node.getColumn(), node.getRow());
+            if (point.getX() != -1) {
+                int x = point.getX();
+                int y = point.getY();
 
                 if (!(x != node.getColumn() && y != node.getRow() && Math.abs(x - node.getColumn()) != Math.abs(y - node.getRow()))) {
                     int newG = (approxG(x, y, node.getColumn(), node.getRow()) + node.getG());
@@ -116,42 +117,42 @@ public class AStar {
      * @param py vanhemman rivi
      * @return löydetyn hyppypisteen koordinaatit.
      */
-    public int[] jump(int x, int y, int px, int py) {
+    public Pair jump(int x, int y, int px, int py) {
 
         int dx = (x - px) / Math.max(Math.abs(x - px), 1);
         int dy = (y - py) / Math.max(Math.abs(y - py), 1);
 
         if (!allowed(x, y)) {
-            return createTable(-1, -1);
+            return new Pair(-1, -1);
         }
         if (x == sr.getFinalNode().getColumn() && y == sr.getFinalNode().getRow()) {
-            return createTable(x, y);
+            return new Pair(x, y);
         }
         if (dx != 0 && dy != 0) {
             if ((allowed(x - dx, y + dy) && !allowed(x - dx, y)) || (allowed(x + dx, y - dy) && !allowed(x, y - dy))) {
-                return createTable(x, y);
+                return new Pair(x, y);
             }
-            int[] jumpx = jump(x + dx, y, x, y);
-            int[] jumpy = jump(x, y + dy, x, y);
-            if (jumpx[0] != -1 || jumpy[0] != -1) {
-                return createTable(x, y);
+            Pair jumpx = jump(x + dx, y, x, y);
+            Pair jumpy = jump(x, y + dy, x, y);
+            if (jumpx.getX() != -1 || jumpy.getX() != -1) {
+                return new Pair(x, y);
             }
         } else {
             if (dx == 0) {
                 if ((allowed(x + 1, y + dy) && !allowed(x + 1, y)) || (allowed(x - 1, y + dy) && !allowed(x - 1, y))) {
-                    return createTable(x, y);
+                    return new Pair(x, y);
                 }
             } else {
                 if ((allowed(x + dx, y + 1) && !allowed(x, y + 1)) || (allowed(x + dx, y - 1) && !allowed(x, y - 1))) {
-                    return createTable(x, y);
+                    return new Pair(x, y);
                 }
             }
         }
 
         if (x == 0 && y == 0 && dx == 0 && dy == 0) {
-            return createTable(-1, -1);
+            return new Pair(-1, -1);
         }
-        int[] table = jump(x + dx, y + dy, x, y);
+        Pair table = jump(x + dx, y + dy, x, y);
         return table;
     }
 
@@ -161,33 +162,21 @@ public class AStar {
      * @param node solmu
      * @return taulukon naapureista
      */
-    public int[][] getNeighbors(Node node) {
-        int[][] neighbors = new int[8][2];
+    public Pair[] getNeighbors(Node node) {
+        Pair[] neighbors = new Pair[8];
         int x = node.getColumn();
         int y = node.getRow();
 
-        neighbors[0] = allowed(x, y - 1) ? createTable(x, y - 1) : createTable(-1, -1);
-        neighbors[1] = allowed(x + 1, y) ? createTable(x + 1, y) : createTable(-1, -1);
-        neighbors[2] = allowed(x, y + 1) ? createTable(x, y + 1) : createTable(-1, -1);
-        neighbors[3] = allowed(x - 1, y) ? createTable(x - 1, y) : createTable(-1, -1);
-        neighbors[4] = allowed(x - 1, y - 1) ? createTable(x - 1, y - 1) : createTable(-1, -1);
-        neighbors[5] = allowed(x + 1, y - 1) ? createTable(x + 1, y - 1) : createTable(-1, -1);
-        neighbors[6] = allowed(x + 1, y + 1) ? createTable(x + 1, y + 1) : createTable(-1, -1);
-        neighbors[7] = allowed(x - 1, y + 1) ? createTable(x - 1, y + 1) : createTable(-1, -1);
+        neighbors[0] = allowed(x, y - 1) ? new Pair(x, y - 1) : new Pair(-1, -1);
+        neighbors[1] = allowed(x + 1, y) ? new Pair(x + 1, y) : new Pair(-1, -1);
+        neighbors[2] = allowed(x, y + 1) ? new Pair(x, y + 1) : new Pair(-1, -1);
+        neighbors[3] = allowed(x - 1, y) ? new Pair(x - 1, y) : new Pair(-1, -1);
+        neighbors[4] = allowed(x - 1, y - 1) ? new Pair(x - 1, y - 1) : new Pair(-1, -1);
+        neighbors[5] = allowed(x + 1, y - 1) ? new Pair(x + 1, y - 1) : new Pair(-1, -1);
+        neighbors[6] = allowed(x + 1, y + 1) ? new Pair(x + 1, y + 1) : new Pair(-1, -1);
+        neighbors[7] = allowed(x - 1, y + 1) ? new Pair(x - 1, y + 1) : new Pair(-1, -1);
         
         return neighbors;
-    }
-
-    /**
-     * Muodostaa x- ja y-koordinaateista taulukon, jota tarvitaan käsittelyssä
-     *
-     * @param x x-koordinaatti
-     * @param y y-koordinaatti
-     * @return taulukko {x, y}
-     */
-    public int[] createTable(int x, int y) {
-        int[] table = {x, y};
-        return table;
     }
 
     private CustomArrayList<Node> getPath(Node currentNode) {

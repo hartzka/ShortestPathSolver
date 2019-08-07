@@ -31,21 +31,6 @@ public class Node {
         this.blockColor = color;
     }
 
-    /**
-     *
-     * Laskee A*-algoritmissa tarvittavan arvion etäisyydestä loppusolmuun
-     *
-     * @param finalNode Loppusolmu
-     */
-    public void calculateHeuristic(Node finalNode) {
-        this.hValue = Math.abs(finalNode.getColumn() - getColumn()) + Math.abs(finalNode.getRow() - getRow());
-    }
-
-    private void calculateFinalCost() {
-        int finalCost = getG() + getH();
-        setF(finalCost);
-    }
-
     public int getH() {
         return hValue;
     }
@@ -58,16 +43,8 @@ public class Node {
         return gValue;
     }
 
-    public void setG(int g) {
-        this.gValue = g;
-    }
-
     public int getF() {
         return fValue;
-    }
-
-    public void setF(int f) {
-        this.fValue = f;
     }
 
     /**
@@ -75,41 +52,22 @@ public class Node {
      * Asettaa solmuun A*-algoritmissa vaadittavia tietoja
      *
      * @param currentNode Tämänhetkinen solmu
-     * @param cost Kustannus
+     * @param gCost Kustannus
      */
-    public void setAStarInformation(Node currentNode, int cost) {
-        int gCost = currentNode.getG() + cost;
-        setParent(currentNode);
-        setG(gCost);
-        calculateFinalCost();
-    }
-
-    /**
-     *
-     * Tarkistaa, onko olemassa parempaa polkua A*-algoritmissa ja tekee
-     * tarvittavat toimenpiteet
-     *
-     * @param currentNode Tämänhetkinen solmu
-     * @param cost Kustannus
-     * @return true, jos parempi polku on olemassa, muuten false
-     */
-    public boolean checkifBetterPathExistsAStar(Node currentNode, int cost) {
-        int gCost = currentNode.getG() + cost;
-        if (gCost < this.gValue) {
-            setAStarInformation(currentNode, cost);
-            return true;
-        }
-        return false;
+    public void setAStarInformation(Node currentNode, int gCost) {
+        this.gValue = gCost;
+        this.parent = currentNode;
+        this.fValue = gValue + hValue;
     }
 
     public Node getParent() {
         return parent;
     }
 
-    public void setParent(Node parent) {
-        this.parent = parent;
-    }
-
+    /**
+     *
+     * @return onko solmu este
+     */
     public boolean isBlock() {
         return isBlock;
     }
@@ -132,6 +90,14 @@ public class Node {
 
     public void setColumn(int col) {
         this.column = col;
+    }
+
+    public void setBlockColor(Color color) {
+        this.blockColor = color;
+    }
+
+    public Color getBlockColor() {
+        return this.blockColor;
     }
 
     @Override

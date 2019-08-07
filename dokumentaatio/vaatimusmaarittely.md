@@ -6,19 +6,19 @@ Sovellus etsii lyhimmän polun käyttäjän luomassa ruudukossa. Ruudukkoon voi 
 
 ## Toiminnallisuus
 
-Sovelluksessa on mahdollisuus valita käytettävä algoritmi kolmesta vaihtoehdosta. Esteiden lisäys ruudukkoon tapahtuu lisäysmoodilla (insert) ja esteiden poisto poistomoodilla (clear). Esteitä lisätään ja poistetaan hiiren avulla. Aloitus- ja lopetuspisteet on korostettu ruudukkoon. Niitä voi siirtää hiiren avulla. Sovellus laskee ja visualisoi calculate path -painikkeesta alkupisteestä lopetuspisteeseen kulkevan lyhimmän yhtenäisen vapaan polun, joka ei kulje yhdenkään esteen kautta. Sovellus ilmoittaa, mikäli polkua ei löydy. Ruudukon saa tyhjennettyä clear all -painikkeesta. Käytettävän värin voi muuttaa erillisestä värinvalitsinpaneelista.
+Sovelluksessa on mahdollisuus valita käytettävä algoritmi neljästä vaihtoehdosta. Esteiden lisäys ruudukkoon tapahtuu lisäysmoodilla (insert) ja esteiden poisto poistomoodilla (clear). Esteitä lisätään ja poistetaan hiiren avulla. Aloitus- ja lopetuspisteet on korostettu ruudukkoon. Niitä voi siirtää hiiren avulla. Sovellus laskee ja visualisoi calculate path -painikkeesta alkupisteestä lopetuspisteeseen kulkevan lyhimmän yhtenäisen vapaan polun, joka ei kulje yhdenkään esteen kautta. Sovellus ilmoittaa, mikäli polkua ei löydy. Ruudukon saa tyhjennettyä clear all -painikkeesta. Käytettävän värin voi muuttaa erillisestä värinvalitsinpaneelista.
 
 ## Käytettävät algoritmit ja tietorakenteet sekä tehokkuus
 
-Lyhimmän polun etsimisessä käytetään kolmea algoritmia. Näihin kuuluvat A*, Dijkstran algoritmi ja leveyshaku. Tietorakenteina käytetään pinoa, jonoa, listaa ja hajautustaulua. Valitsin nämä algoritmit mielenkiinnon vuoksi. Tarkoitus on vertailla näiden algoritmien eroja niin toimintalogiikan kuin tehokkuuden suhteen ja oppia tuntemaan algoritmit paremmin. Sovelluksessa käytetään algoritmien ja tiedon visualisoinnin vaatimia tietorakenteita. Tärkein ominaisuus tässä ei kuitenkaan ole tehokkuus, vaikkakin sekin on olennainen osa. Tärkein lopputulos on algoritmien toimintalogiikka. Käytettävät verkot ja solmujen määrät ovat sen verran pieniä, että tehokkuus ei nouse olennaisesti esiin, vaan algoritmit toimivat tehokkaasti käytettävillä syötteillä. 
+Lyhimmän polun etsimisessä käytetään neljää algoritmia. Näihin kuuluvat A* , A* tehostettuna Jump Point Search (JPS) -haulla, Dijkstran algoritmi ja leveyshaku. Tietorakenteina käytetään pinoa, jonoa, listaa ja hajautustaulua. Valitsin nämä algoritmit mielenkiinnon vuoksi. Tarkoitus on vertailla näiden algoritmien eroja niin toimintalogiikan kuin tehokkuuden suhteen ja oppia tuntemaan algoritmit paremmin. Sovelluksessa käytetään algoritmien ja tiedon visualisoinnin vaatimia tietorakenteita. Tärkein ominaisuus tässä ei kuitenkaan ole tehokkuus, vaikkakin sekin on olennainen osa. Tärkein lopputulos on algoritmien toimintalogiikka. Käytettävät verkot ja solmujen määrät ovat sen verran pieniä, että tehokkuus ei nouse olennaisesti esiin, vaan algoritmit toimivat tehokkaasti käytettävillä syötteillä. 
 
 Aikavaativuudet algoritmeille ovat:
 
-- A*: O((n + m)log n)
-- Dijkstra: O(n + m log n)
-- Leveyshaku: O(n + m)
+- A*: O(n log n)
+- Dijkstra: O(n log n)
+- Leveyshaku: O(n)
 
-joissa n on solmujen eli ruutujen määrä ja m on kaarten määrä eli solmujen välisten yhteyksien määrä.
+joissa n on solmujen eli ruutujen määrä ja m on kaarten määrä eli solmujen välisten yhteyksien määrä. Tässä huomataan, että koska jokaisen solmun naapurien määrä on korkeintaan 8, niin 8n >= m = O(n).
 
 ## Luokkarakenne
 

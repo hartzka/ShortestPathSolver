@@ -1,10 +1,11 @@
 package com.shortestpathsolver.domain;
 
 import com.shortestpathsolver.algorithms.AStar;
+import com.shortestpathsolver.structures.CustomArrayList;
 import com.shortestpathsolver.ui.Ui;
-import java.util.List;
 import javafx.application.Application;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 /**
@@ -20,6 +21,7 @@ public class ShortestRoute extends Application {
     private int startY;
     private int goalX;
     private int goalY;
+    private boolean inserting;
     private Ui ui;
     private Node initialNode;
     private Node finalNode;
@@ -28,31 +30,30 @@ public class ShortestRoute extends Application {
     private int rows;
     private int cols;
     private Node prevNode;
+    private boolean aStarOn;
 
     public ShortestRoute() {
+        inserting = true;
         startX = 0;
         startY = 0;
-        goalX = 39;
-        goalY = 39;
+        goalX = 30;
+        goalY = 30;
         writed = false;
-        rows = 50;
-        cols = 40;
+        rows = 40;
+        cols = 50;
         this.blocks = new boolean[rows][cols];
         this.nodes = new Node[rows][cols];
         this.initialNode = new Node(startX, startY, Color.RED);
         this.finalNode = new Node(goalX, goalY, Color.GREEN);
         this.aStar = new AStar(this);
+        this.aStarOn = true;
         setNodes();
     }
 
     @Override
     public void start(Stage primaryStage) {
-        ui = new Ui(this, 1001, 801, rows, cols, Color.LIGHTSKYBLUE, startX, startY, goalX, goalY);
+        ui = new Ui(this, cols * 20 + 1, rows * 20 + 1, rows, cols, Color.LIGHTSKYBLUE, startX, startY, goalX, goalY);
         ui.start(primaryStage);
-    }
-
-    public void setWrited(boolean b) {
-        this.writed = b;
     }
 
     /**
@@ -61,12 +62,41 @@ public class ShortestRoute extends Application {
      * @return true, jos reitti löytyy, muuten false
      */
     public boolean calculateAStarPath() {
-        List<Node> path = aStar.calculatePath(initialNode);
+        CustomArrayList<Node> path = aStar.calculatePath(initialNode);
         visualizeAStarPath();
         if (path.isEmpty()) {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Logiikka Clear -painikkeelle
+     */
+    public void handleClearButtonActions() {
+        inserting = false;
+        writed = false;
+    }
+
+    /**
+     * Logiikka Clear All -painikkeelle
+     */
+    public void handleClearAllButtonActions() {
+        inserting = true;
+        writed = false;
+        clearBlocks();
+        aStar.reset();
+    }
+
+    /**
+     * Logiikka Insert -painikkeelle
+     */
+    public void handleInsertButtonActions() {
+        inserting = true;
+    }
+
+    public void setWrited(boolean b) {
+        this.writed = b;
     }
 
     public boolean getWrited() {
@@ -82,6 +112,10 @@ public class ShortestRoute extends Application {
      */
     public void resetAStar() {
         aStar.reset();
+    }
+
+    public boolean getInserting() {
+        return this.inserting;
     }
 
     public Node getInitialNode() {
@@ -134,8 +168,9 @@ public class ShortestRoute extends Application {
     }
 
     private void visualizeAStarPath() {
-        List<Node> aStarPath = aStar.getPath();
-        for (Node n : aStarPath) {
+        CustomArrayList<Node> aStarPath = aStar.getPath();
+        for (int i = 0; i < aStarPath.size(); i++) {
+            Node n = aStarPath.get(i);
             if (prevNode == null) {
                 prevNode = n;
                 if (ui != null) {
@@ -157,15 +192,21 @@ public class ShortestRoute extends Application {
     public void setNodes() {
         for (int i = 0; i < nodes.length; i++) {
             for (int j = 0; j < nodes[0].length; j++) {
-
-                Node node = new Node(i, j, Color.WHITE);
+                Color color = Color.WHITE;
+                if (nodes[i][j] != null) {
+                    color = nodes[i][j].getBlockColor();
+                }
+                Node node = new Node(i, j, color);
                 if (blocks[i][j]) {
                     node.setBlock(true);
                 }
-                node.calculateHeuristic(getFinalNode());
+                if (aStarOn) {
+                    aStar.calculateHeuristic(node, this.finalNode);
+                }
                 this.nodes[i][j] = node;
             }
         }
+
     }
 
     public Node[][] getNodes() {
@@ -177,10 +218,12 @@ public class ShortestRoute extends Application {
      *
      * @param row Esteen rivi
      * @param col Esteen sarake
+     * @param color Väri
      */
-    public void setBlock(int row, int col) {
+    public void setBlock(int row, int col, Color color) {
         if (row >= 0 && col >= 0 && row < nodes.length && col < nodes[0].length) {
             this.nodes[row][col].setBlock(true);
+            this.nodes[row][col].setBlockColor(color);
             this.blocks[row][col] = true;
         }
     }
@@ -191,5 +234,35 @@ public class ShortestRoute extends Application {
 
     public boolean[][] getBlocks() {
         return this.blocks;
+    }
+
+    /**
+     * Poistaa esteen tietyistä koordinaateista.
+     *
+     * @param y y-koordinaatti
+     * @param x x-koordinaatti
+     */
+    public void removeBlock(int y, int x) {
+        this.nodes[y][x].setBlock(false);
+        this.blocks[y][x] = false;
+    }
+
+    /**
+     * Tyhjentää esteet
+     */
+    public void clearBlocks() {
+        this.blocks = new boolean[rows][cols];
+    }
+
+    public Paint getBlockColor(int y, int x) {
+        return nodes[y][x].getBlockColor();
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public int getRows() {
+        return rows;
     }
 }

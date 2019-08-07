@@ -76,7 +76,23 @@ public class DrawPad extends Canvas {
         int y = (int) positionY / 20;
         gc.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         gc.fillText("X", x * 20 + 1, y * 20 + 19);
-        sr.setBlock(y, x);
+        sr.setBlock(y, x, color);
+    }
+
+    /**
+     * Poistaa esteen
+     *
+     * @param positionY Hiiren y-koordinaatti
+     * @param positionX Hiiren x-koordinaatti
+     * @param color Ruudun väri
+     */
+    public void removeBlock(double positionY, double positionX, Color color) {
+        int x = (int) positionX / 20;
+        int y = (int) positionY / 20;
+
+        gc.setFill(color);
+        gc.fillRect(x * 20 + 1, y * 20 + 1, 18, 18);
+        sr.removeBlock(y, x);
     }
 
     /**
@@ -87,7 +103,7 @@ public class DrawPad extends Canvas {
      * @return Alkusolmun
      */
     public Node setInitialNode(int row, int column) {
-        Node n = new Node(row, column, Color.WHITE);
+        Node n = new Node(row, column, ui.getColorpicker().getValue());
         gc.setFill(Color.BLUE);
         gc.fillRect(column * 20 + 1, row * 20 + 1, 18, 18);
         sr.setInitialNode(n);
@@ -102,7 +118,7 @@ public class DrawPad extends Canvas {
      * @return Loppusolmun
      */
     public Node setFinalNode(int row, int column) {
-        Node n = new Node(row, column, Color.WHITE);
+        Node n = new Node(row, column, ui.getColorpicker().getValue());
         gc.setFill(Color.GREEN);
         gc.fillRect(column * 20 + 1, row * 20 + 1, 18, 18);
         sr.setFinalNode(n);
@@ -136,11 +152,13 @@ public class DrawPad extends Canvas {
         for (int y = 0; y < blocks.length; y++) {
             for (int x = 0; x < blocks[0].length; x++) {
                 if (blocks[y][x]) {
+                    gc.setFill(sr.getBlockColor(y, x));
                     gc.setFont(Font.font("Arial", FontWeight.BOLD, 24));
                     gc.fillText("X", x * 20 + 1, y * 20 + 19);
                 }
             }
         }
+        gc.setFill(ui.getColorpicker().getValue());
     }
 
     /**

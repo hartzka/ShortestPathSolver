@@ -13,8 +13,12 @@ Tämä on Helsingin Yliopiston tietorakenteiden ja algoritmien loppukesän 2019 
 
 [Viikko3](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti3.md)
 
-[Viikko4](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti3.md)
+[Viikko4](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti4.md)
 
 
 ## Dokumentaatio
 [Vaatimusmäärittely](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/vaatimusmaarittely.md)
+
+[Toteutusdokumentti](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/toteutusdokumentti.md)
+
+[Testausdokumentti](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/testausdokumentti.md)

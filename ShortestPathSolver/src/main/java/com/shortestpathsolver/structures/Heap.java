@@ -2,13 +2,13 @@ package com.shortestpathsolver.structures;
 
 import com.shortestpathsolver.domain.Node;
 
-public class NodeFMinHeap {
+public class Heap {
 
     private Node[] heap;
     private int size;
     private int top = 1;
 
-    public NodeFMinHeap() {
+    public Heap() {
         this.size = 0;
         this.heap = new Node[101010];
     }

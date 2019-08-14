@@ -3,7 +3,7 @@ package com.shortestpathsolver.algorithms;
 import com.shortestpathsolver.domain.Node;
 import com.shortestpathsolver.domain.ShortestRoute;
 import com.shortestpathsolver.structures.CustomArrayList;
-import com.shortestpathsolver.structures.NodeFMinHeap;
+import com.shortestpathsolver.structures.Heap;
 import com.shortestpathsolver.structures.Pair;
 
 /**
@@ -15,7 +15,7 @@ public class AStar {
 
     private int hCost = 10;
     private int diagonalCost = 14;
-    private NodeFMinHeap openList;
+    private Heap openList;
     private CustomArrayList<Node> closedSet;
     private ShortestRoute sr;
     private CustomArrayList<Node> finalPath;
@@ -24,7 +24,7 @@ public class AStar {
     public AStar(ShortestRoute sr) {
         this.sr = sr;
         this.jps = false;
-        this.openList = new NodeFMinHeap();
+        this.openList = new Heap();
         this.closedSet = new CustomArrayList<>();
         this.finalPath = new CustomArrayList<>();
     }
@@ -222,7 +222,7 @@ public class AStar {
         }
     }
 
-    public NodeFMinHeap getOpenList() {
+    public Heap getOpenList() {
         return openList;
     }
 

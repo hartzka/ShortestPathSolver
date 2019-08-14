@@ -2,7 +2,7 @@
 
 Projektin rakenne on seuraava: 
 
-[](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/src/main/resources/images/block.jpeg){ width = 400 }
+<img src="https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/src/main/resources/images/structure.png" width="400"/>
 
 ## Suorituskyky ja toiminnallisuus
 

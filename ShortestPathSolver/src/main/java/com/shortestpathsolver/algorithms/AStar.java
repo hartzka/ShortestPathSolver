@@ -3,8 +3,8 @@ package com.shortestpathsolver.algorithms;
 import com.shortestpathsolver.domain.Node;
 import com.shortestpathsolver.domain.ShortestRoute;
 import com.shortestpathsolver.structures.CustomArrayList;
+import com.shortestpathsolver.structures.NodeFMinHeap;
 import com.shortestpathsolver.structures.Pair;
-import java.util.*;
 
 /**
  * A*-algoritmin ominaisuudet toteuttava luokka
@@ -15,7 +15,7 @@ public class AStar {
 
     private int hCost = 10;
     private int diagonalCost = 14;
-    private PriorityQueue<Node> openList;
+    private NodeFMinHeap openList;
     private CustomArrayList<Node> closedSet;
     private ShortestRoute sr;
     private CustomArrayList<Node> finalPath;
@@ -23,26 +23,20 @@ public class AStar {
 
     public AStar(ShortestRoute sr) {
         this.sr = sr;
-        this.jps = true;
-        this.openList = new PriorityQueue<Node>(new Comparator<Node>() {
-            @Override
-            public int compare(Node node1, Node node2) {
-                return Integer.compare(node1.getF(), node2.getF());
-            }
-        });
+        this.jps = false;
+        this.openList = new NodeFMinHeap();
         this.closedSet = new CustomArrayList<>();
         this.finalPath = new CustomArrayList<>();
     }
 
     private void checkNode(Node currentNode, int col, int row, int cost) {
         Node neighbour = sr.getNodes()[row][col];
-        int gCost = currentNode.getG() + cost;
-        if (!(neighbour.isBlock() || getClosedSet().contains(neighbour))) {
-            if (!getOpenList().contains(neighbour)) {
-                neighbour.setAStarInformation(currentNode, gCost);
-                getOpenList().add(neighbour);
+        if (!(neighbour.isBlock() || closedSet.contains(neighbour))) {
+            if (!openList.contains(neighbour)) {
+                neighbour.setAStarInformation(currentNode, cost);
+                openList.add(neighbour);
             } else {
-                checkifBetterPathExists(currentNode, neighbour, gCost);
+                checkifBetterPathExists(currentNode, neighbour, cost);
             }
         }
     }
@@ -56,7 +50,7 @@ public class AStar {
      */
     public CustomArrayList<Node> calculatePath(Node initialNode) {
         openList.add(initialNode);
-        while (!openList.isEmpty()) {
+        while (openList.size() != 0) {
             Node currentNode = openList.poll();
             closedSet.add(currentNode);
             if (sr.isFinalNode(currentNode)) {
@@ -67,8 +61,18 @@ public class AStar {
                 } else { //A* with JPS
                     Node[] jumpPoints = calculateJumpPoints(currentNode);
                     for (int i = 0; i < jumpPoints.length; i++) {
-                        if (jumpPoints[i] != null) {
-                            openList.add(jumpPoints[i]);
+                        Node jumpPoint = jumpPoints[i];
+                        if (!(jumpPoint == null || jumpPoint.isBlock())) {
+                            if (!closedSet.contains(jumpPoint)) {
+                                if (!openList.contains(jumpPoint)) {
+                                    setAStarInformationRange(currentNode, jumpPoint);
+                                    openList.add(jumpPoint);
+                                } else {
+                                    checkifBetterPathExists(currentNode, jumpPoint, approxG(currentNode.getColumn(), currentNode.getRow(), jumpPoint.getColumn(), jumpPoint.getRow()));
+                                }
+                            } else {
+                                setAStarInformationRange(currentNode, jumpPoint);
+                            }
                         }
                     }
                 }
@@ -78,9 +82,9 @@ public class AStar {
     }
 
     /**
-     * Palauttaa mahdolliset jump pointit tietylle solmulle. Tämä nopeuttaa
-     * hakua huomattavasti tietyissä ruudukoissa, joissa on suoraviivainen
-     * reitti.
+     * Palauttaa JPS-haun mahdolliset jump pointit tietylle solmulle. Tämä
+     * nopeuttaa hakua huomattavasti tietyissä ruudukoissa, joissa on
+     * suoraviivainen reitti.
      *
      * @param node Solmu
      * @return mahdolliset jump pointit
@@ -89,18 +93,15 @@ public class AStar {
         Node[] jumpPoints = new Node[8];
         Pair[] neighbors = getNeighbors(node);
         for (int i = 0; i < neighbors.length; i++) {
+
             Pair point = jump(neighbors[i].getX(), neighbors[i].getY(), node.getColumn(), node.getRow());
             if (point.getX() != -1) {
                 int x = point.getX();
                 int y = point.getY();
 
-                if (!(x != node.getColumn() && y != node.getRow() && Math.abs(x - node.getColumn()) != Math.abs(y - node.getRow()))) {
-                    int newG = (approxG(x, y, node.getColumn(), node.getRow()) + node.getG());
-                    Node[][] nodes = sr.getNodes();
-                    if (nodes[y][x].getF() == 0 || nodes[y][x].getG() > newG) {
-                        nodes[y][x].setAStarInformation(node, approxG(x, y, node.getColumn(), node.getRow()) + node.getG());
-                        jumpPoints[i] = nodes[y][x];
-                    }
+                int newG = (approxG(x, y, node.getColumn(), node.getRow()));
+                if (sr.getNodes()[y][x].getF() == 0 || sr.getNodes()[y][x].getG() > newG) {
+                    jumpPoints[i] = sr.getNodes()[y][x];
                 }
             }
         }
@@ -175,12 +176,12 @@ public class AStar {
         neighbors[5] = allowed(x + 1, y - 1) ? new Pair(x + 1, y - 1) : new Pair(-1, -1);
         neighbors[6] = allowed(x + 1, y + 1) ? new Pair(x + 1, y + 1) : new Pair(-1, -1);
         neighbors[7] = allowed(x - 1, y + 1) ? new Pair(x - 1, y + 1) : new Pair(-1, -1);
-        
+
         return neighbors;
     }
 
     private CustomArrayList<Node> getPath(Node currentNode) {
-        CustomArrayList<Node> path = new CustomArrayList<Node>();
+        CustomArrayList<Node> path = new CustomArrayList<>();
         path.add(currentNode);
         Node parent;
         while ((parent = currentNode.getParent()) != null) {
@@ -221,7 +222,7 @@ public class AStar {
         }
     }
 
-    public PriorityQueue<Node> getOpenList() {
+    public NodeFMinHeap getOpenList() {
         return openList;
     }
 
@@ -245,29 +246,33 @@ public class AStar {
 
     /**
      *
-     * Laskee arvion etäisyydestä loppusolmuun
+     * Laskee arvion etäisyydestä loppusolmuun. Käytettävää laskukaavaa voi olla
+     * tarpeen muuttaa riippuen syötteestä, mutta nykyisellään tämän on katsottu
+     * toimivan.
      *
      * @param current Käsiteltävä solmu
      * @param finalNode Loppusolmu
      */
     public void calculateHeuristic(Node current, Node finalNode) {
-        int h = Math.abs(finalNode.getColumn() - current.getColumn()) + Math.abs(finalNode.getRow() - current.getRow());
+        int h = (int) Math.sqrt(Math.pow(finalNode.getColumn() - current.getColumn(), 3) + Math.pow(finalNode.getRow() - current.getRow(), 3));
         current.setH(h);
     }
 
     /**
      *
-     * Tarkistaa, onko olemassa parempaa polkua ja tekee tarvittavat
-     * toimenpiteet
+     * Tarkistaa, onko olemassa parempaa polkua solmujen välillä, ja mikäli on,
+     * tekee tarvittavat toimenpiteet, mm. päivittää solmun g-arvon ja
+     * vanhemman.
      *
      * @param currentNode Tämänhetkinen solmu
      * @param neighbour Naapurisolmu
-     * @param gCost Kustannus
+     * @param cost Kustannus
      * @return true, jos parempi polku on olemassa, muuten false
      */
-    public boolean checkifBetterPathExists(Node currentNode, Node neighbour, int gCost) {
-        if (gCost < currentNode.getG()) {
-            neighbour.setAStarInformation(currentNode, gCost);
+    public boolean checkifBetterPathExists(Node currentNode, Node neighbour, int cost) {
+        int gCost = currentNode.getG() + cost;
+        if (gCost < neighbour.getG()) {
+            neighbour.setAStarInformation(currentNode, cost);
             return true;
         }
         return false;
@@ -276,11 +281,11 @@ public class AStar {
     private int approxG(int x1, int y1, int x2, int y2) {
         if (x1 == x2) {
             return Math.abs(y1 - y2) * hCost;
-        }
-        if (y1 == y2) {
+        } else if (y1 == y2) {
             return Math.abs(x1 - x2) * hCost;
+        } else {
+            return Math.abs(x1 - x2) * diagonalCost;
         }
-        return Math.abs(x1 - x2) * diagonalCost;
     }
 
     /**
@@ -297,5 +302,53 @@ public class AStar {
 
     public void setJPS(boolean b) {
         this.jps = b;
+    }
+
+    private void setAStarInformationRange(Node currentNode, Node jumpPoint) {
+        int col1 = currentNode.getColumn();
+        int col2 = jumpPoint.getColumn();
+        int row1 = currentNode.getRow();
+        int row2 = jumpPoint.getRow();
+        int i = 0, j = 0;
+        if (col2 < col1) {
+            i = -1;
+        } else if (col1 < col2) {
+            i = 1;
+        }
+        if (row2 < row1) {
+            j = -1;
+        } else if (row1 < row2) {
+            j = 1;
+        }
+
+        int a = col1, b = row1;
+        while (true) {
+            a += i;
+            b += j;
+
+            Node n = sr.getNodes()[b][a];
+            int newG = approxG(currentNode.getColumn(), currentNode.getRow(), n.getColumn(), n.getRow());
+            if (n.getG() == 0 || currentNode.getG() + newG < n.getG()) {
+                if (!sr.isInitialNode(n)) {
+                    sr.getNodes()[b][a].setAStarInformation(currentNode, newG);
+                }
+            }
+
+            if (a == col2 && b == row2) {
+                break;
+            }
+        }
+    }
+
+    public boolean getJps() {
+        return jps;
+    }
+
+    public void setClosedSet(CustomArrayList<Node> cs) {
+        this.closedSet = cs;
+    }
+
+    public void setPath(CustomArrayList<Node> path) {
+        this.finalPath = path;
     }
 }

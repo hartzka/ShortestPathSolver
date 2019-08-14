@@ -16,19 +16,18 @@ public class Node {
     private int column;
     private boolean isBlock;
     private Node parent;
-    private Color blockColor;
+    private Color visualizationColor;
 
     /**
      * Konstuktori
      *
      * @param row Solmun rivi
      * @param col Solmun sarake
-     * @param color Solmun väri
      */
-    public Node(int row, int col, Color color) {
+    public Node(int row, int col) {
         this.row = row;
         this.column = col;
-        this.blockColor = color;
+        this.visualizationColor = Color.WHITE;
     }
 
     public int getH() {
@@ -55,7 +54,7 @@ public class Node {
      * @param gCost Kustannus
      */
     public void setAStarInformation(Node currentNode, int gCost) {
-        this.gValue = gCost;
+        this.gValue = currentNode.getG() + gCost;
         this.parent = currentNode;
         this.fValue = gValue + hValue;
     }
@@ -92,12 +91,12 @@ public class Node {
         this.column = col;
     }
 
-    public void setBlockColor(Color color) {
-        this.blockColor = color;
+    public void setVisualizationColor(Color c) {
+        this.visualizationColor = c;
     }
 
-    public Color getBlockColor() {
-        return this.blockColor;
+    public Color getVisualizationColor() {
+        return this.visualizationColor;
     }
 
     @Override
@@ -108,6 +107,10 @@ public class Node {
 
     @Override
     public String toString() {
-        return "row: " + row + " col: " + column;
+        if (parent != null) {
+            return "row: " + row + " col: " + column + " g: " + gValue + " f: " + fValue + " parent: row: " + parent.getRow() + " col: " + parent.getColumn();
+        } else {
+            return "row: " + row + " col: " + column + " g: " + gValue + " f: " + fValue;
+        }
     }
 }

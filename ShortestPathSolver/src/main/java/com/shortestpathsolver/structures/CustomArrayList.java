@@ -11,8 +11,8 @@ public class CustomArrayList<E> {
      * @author kaihartz
      */
     public CustomArrayList() {
-        list = new Object[100];
-        currentIndex = 0;
+        this.list = new Object[100];
+        this.currentIndex = 0;
     }
 
     /**

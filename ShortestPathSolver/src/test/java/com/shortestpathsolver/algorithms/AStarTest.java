@@ -19,8 +19,8 @@ public class AStarTest {
     @Before
     public void setUp() {
         sr = new ShortestRoute();
-        sr.setInitialNode(new Node(0, 0, Color.CORAL));
-        sr.setFinalNode(new Node(39, 39, Color.CORAL));
+        sr.setInitialNode(new Node(0, 0));
+        sr.setFinalNode(new Node(39, 39));
         aStar = sr.getAStar();
         aStar.setJPS(false);
     }
@@ -33,7 +33,7 @@ public class AStarTest {
     @Test
     public void aStarPathIsReturned() {
         for (int i = 1; i < 39; i++) {
-            sr.setBlock(i, (int) (Math.random() * 39), Color.ALICEBLUE);
+            sr.setBlock(i, (int) (Math.random() * 39));
         }
         assertTrue(sr.calculateAStarPath() == true);
     }
@@ -42,23 +42,23 @@ public class AStarTest {
     public void aStarJPSPathIsReturned() {
         aStar.setJPS(true);
         for (int i = 1; i < 39; i++) {
-            sr.setBlock(i, (int) (Math.random() * 39), Color.ALICEBLUE);
+            sr.setBlock(i, (int) (Math.random() * 39));
         }
         assertTrue(sr.calculateAStarPath() == true);
     }
 
     @Test
     public void aStarPathIsNotReturnedWhenDoesNotExist() {
-        sr.setBlock(1, 0, Color.ALICEBLUE);
-        sr.setBlock(1, 1, Color.ALICEBLUE);
-        sr.setBlock(0, 1, Color.ALICEBLUE);
+        sr.setBlock(1, 0);
+        sr.setBlock(1, 1);
+        sr.setBlock(0, 1);
         assertTrue(sr.calculateAStarPath() == false);
     }
 
     @Test
     public void isReseted() {
         sr.resetAStar();
-        assertTrue(aStar.getOpenList().isEmpty());
+        assertTrue(aStar.getOpenList().size() == 0);
         assertTrue(aStar.getClosedSet().isEmpty());
         assertTrue(aStar.getPath().isEmpty());
     }

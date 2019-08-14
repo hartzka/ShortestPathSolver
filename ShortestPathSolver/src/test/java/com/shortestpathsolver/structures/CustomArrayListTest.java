@@ -1,7 +1,6 @@
 package com.shortestpathsolver.structures;
 
 import com.shortestpathsolver.domain.Node;
-import javafx.scene.paint.Color;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +26,7 @@ public class CustomArrayListTest {
     @Test
     public void ArrayIndexOutOfBoundsExceptionWhenInserting() {
         try {
-            list.add(list.size()+1, new Node(0, 0, Color.CORAL));
+            list.add(list.size()+1, new Node(0, 0));
             fail("Expected an ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException e) {
             assertTrue(e.getMessage().equals("ArrayIndexOutOfBounds"));
@@ -36,7 +35,7 @@ public class CustomArrayListTest {
     
     @Test
     public void ArrayIndexOutOfBoundsExceptionWhenRemoving() {
-        list.add(0, new Node(0, 0, Color.CORAL));
+        list.add(0, new Node(0, 0));
         try {
             list.remove(list.size()+1);
             fail("Expected an ArrayIndexOutOfBoundsException to be thrown");
@@ -47,10 +46,10 @@ public class CustomArrayListTest {
     
     @Test
     public void testInsertingAndRemoving() {
-        Node n = new Node(1, 1, Color.AQUA);
+        Node n = new Node(1, 1);
         list.add(n);
         for (int i = 1; i <= 200; i++) {
-            list.add(new Node(i, i, Color.CORAL));
+            list.add(new Node(i, i));
         }
         assertTrue(list.size() == 201);
         list.remove(n);
@@ -62,18 +61,18 @@ public class CustomArrayListTest {
     @Test
     public void testListIsIncreased() {
         for (int i = 0; i <= 100; i++) {
-            list.add(i, new Node(i, i, Color.CORAL));
+            list.add(i, new Node(i, i));
         }
         assertTrue(list.size() == 101);
     }
     
     @Test
     public void testContains() {
-        Node n = new Node(1, 1, Color.AQUA);
+        Node n = new Node(1, 1);
         for (int i = 0; i <= 100; i++) {
-            list.add(i, new Node(i, i, Color.CORAL));
+            list.add(i, new Node(i, i));
         }
         assertTrue(list.contains(n));
-        assertFalse(list.contains(new Node(5, 99, Color.AZURE)));
+        assertFalse(list.contains(new Node(5, 99)));
     }
 }

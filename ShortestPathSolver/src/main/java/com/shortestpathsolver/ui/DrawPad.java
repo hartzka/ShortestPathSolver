@@ -5,9 +5,9 @@ import com.shortestpathsolver.domain.ShortestRoute;
 import java.io.FileNotFoundException;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 /**
  * Piirtoalusta, joka huolehtii graafisten elementtien piirtämisestä
@@ -28,7 +28,7 @@ public class DrawPad extends Canvas {
         this.ui = ui;
         this.width = width;
         this.height = height;
-        gc = super.getGraphicsContext2D();
+        this.gc = super.getGraphicsContext2D();
     }
 
     /**
@@ -67,16 +67,15 @@ public class DrawPad extends Canvas {
      *
      * @param positionY Hiiren y-koordinaatti
      * @param positionX Hiiren x-koordinaatti
-     * @param color Esteen väri
      *
      * @throws FileNotFoundException
      */
-    public void fillBlock(double positionY, double positionX, Color color) throws FileNotFoundException {
+    public void fillBlock(double positionY, double positionX) throws FileNotFoundException {
         int x = (int) positionX / 20;
         int y = (int) positionY / 20;
-        gc.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-        gc.fillText("X", x * 20 + 1, y * 20 + 19);
-        sr.setBlock(y, x, color);
+        Image img = new Image(getClass().getResourceAsStream("/images/block.jpeg"));
+        gc.drawImage(img, x * 20 + 1, y * 20 + 1, 18, 18);
+        sr.setBlock(y, x);
     }
 
     /**
@@ -103,7 +102,7 @@ public class DrawPad extends Canvas {
      * @return Alkusolmun
      */
     public Node setInitialNode(int row, int column) {
-        Node n = new Node(row, column, ui.getColorpicker().getValue());
+        Node n = new Node(row, column);
         gc.setFill(Color.BLUE);
         gc.fillRect(column * 20 + 1, row * 20 + 1, 18, 18);
         sr.setInitialNode(n);
@@ -118,7 +117,7 @@ public class DrawPad extends Canvas {
      * @return Loppusolmun
      */
     public Node setFinalNode(int row, int column) {
-        Node n = new Node(row, column, ui.getColorpicker().getValue());
+        Node n = new Node(row, column);
         gc.setFill(Color.GREEN);
         gc.fillRect(column * 20 + 1, row * 20 + 1, 18, 18);
         sr.setFinalNode(n);
@@ -152,13 +151,14 @@ public class DrawPad extends Canvas {
         for (int y = 0; y < blocks.length; y++) {
             for (int x = 0; x < blocks[0].length; x++) {
                 if (blocks[y][x]) {
-                    gc.setFill(sr.getBlockColor(y, x));
-                    gc.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-                    gc.fillText("X", x * 20 + 1, y * 20 + 19);
+                    Image img = new Image(getClass().getResourceAsStream("/images/block.jpeg"));
+                    gc.drawImage(img, x * 20 + 1, y * 20 + 1, 18, 18);
                 }
             }
         }
-        gc.setFill(ui.getColorpicker().getValue());
+        if (ui != null) {
+            gc.setFill(ui.getColorpicker().getValue());
+        }
     }
 
     /**
@@ -171,5 +171,14 @@ public class DrawPad extends Canvas {
     public void fillRect(int y, int x, Color c) {
         gc.setFill(c);
         gc.fillRect(x * 20 + 1, y * 20 + 1, 18, 18);
+    }
+
+    /**
+     * Alustaa ruudukkonäkymän
+     *
+     */
+    public void reset() {
+        clearArea();
+        fillGrid(width, height);
     }
 }

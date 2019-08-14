@@ -3,6 +3,8 @@ package com.shortestpathsolver.ui;
 import com.shortestpathsolver.domain.ShortestRoute;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
@@ -100,10 +102,23 @@ public class Ui {
         notFound.setVisible(false);
         aStar.setDisable(true);
 
-        aStar.getStyleClass().add("asbutton");
-        jps.getStyleClass().add("jpsbutton");
-        aStarText.getStyleClass().add("asbutton");
-        jpsText.getStyleClass().add("asbutton");
+        aStar.getStyleClass().add("orbutton");
+        jps.getStyleClass().add("yebutton");
+        insert.getStyleClass().add("blbutton");
+        clear.getStyleClass().add("orbutton");
+        clearAll.getStyleClass().add("redbutton");
+        getPath.getStyleClass().add("grbutton");
+        aStarText.getStyleClass().add("text");
+        jpsText.getStyleClass().add("text");
+        insertText.getStyleClass().add("text");
+        clearText.getStyleClass().add("text");
+        notFound.getStyleClass().add("notfound");
+        aStar.setStyle("-fx-text-fill: white");
+        jps.setStyle("-fx-text-fill: white");
+        insert.setStyle("-fx-text-fill: white");
+        clear.setStyle("-fx-text-fill: white");
+        clearAll.setStyle("-fx-text-fill: white");
+        getPath.setStyle("-fx-text-fill: white");
 
         colorpicker.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -113,10 +128,19 @@ public class Ui {
         });
 
         VBox vb = new VBox(10);
-        vb.getChildren().addAll(colorpicker, insert, clear, clearAll, insertText, clearText, getPath, notFound);
+        VBox vb2 = new VBox(0);
+        vb2.getChildren().addAll(insertText, clearText);
+        vb2.setPadding(new Insets(20, 0, 20, 5));
+        vb.getChildren().addAll(colorpicker, insert, clear, clearAll, vb2, getPath, notFound);
+        vb.setPadding(new Insets(10, 10, 10, 10));
 
         HBox hb = new HBox(10);
-        hb.getChildren().addAll(aStar, jps, aStarText, jpsText);
+        HBox hb2 = new HBox(0);
+        hb2.getChildren().addAll(aStarText, jpsText);
+        hb.getChildren().addAll(aStar, jps, hb2);
+        hb2.setAlignment(Pos.CENTER);
+        hb2.setPadding(new Insets(0, 0, 0, 30));
+        hb.setPadding(new Insets(10, 10, 10, 10));
 
         layout.setRight(vb);
         layout.setBottom(hb);

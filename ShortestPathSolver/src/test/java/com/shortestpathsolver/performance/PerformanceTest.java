@@ -20,7 +20,7 @@ public class PerformanceTest {
         sr = new ShortestRoute();
         aStar = new AStar(sr);
         dijkstra = new Dijkstra(sr);
-        test = true; // set this to false to disable testing!
+        test = false; // set this to false to disable testing!
     }
 
     private String testPerformance(int rows, int method) { //0 = A*, 1 = Jps, 2 = Dijkstra

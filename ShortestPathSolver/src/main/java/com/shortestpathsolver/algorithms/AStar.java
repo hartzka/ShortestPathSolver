@@ -57,7 +57,7 @@ public class AStar {
             Node currentNode = (Node) openList.poll();
             closedSet.add(currentNode);
             if (sr.isFinalNode(currentNode)) {
-                //System.out.println("G: " + currentNode.getG());
+                System.out.println("G: " + currentNode.getG());
                 return getPath(currentNode);
             } else {
                 if (!jps) {

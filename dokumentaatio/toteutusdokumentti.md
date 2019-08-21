@@ -10,6 +10,8 @@ Algoritmien aikavaativuudet ovat pysyneet kutakuinkin aikarajojen sisällä. Pah
 
 ## Mahdolliset parannukset
 
+Toimintaa voisi vielä optimoida ja tehostaa esimerkiksi kehittämällä parempi heuristiikka ja rankkaamalla enemmän pois turhia naapureita. Tehokkuuden kannalta näillä on kuitenkin melko pieni merkitys. 
+
 ### Optimointi
 
 Algoritmeja voisi edelleen optimoida varsinkin naapurien läpikäymisen ja solmujen päivittämisen osalta. Tähän ei kuitenkaan ole katsottu olevan tarpeellista käyttää paljoa resursseja.

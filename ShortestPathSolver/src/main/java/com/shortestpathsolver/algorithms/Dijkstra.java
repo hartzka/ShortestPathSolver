@@ -54,7 +54,7 @@ public class Dijkstra {
                 continue;
             }
             if (sr.isFinalNode(node)) {
-                System.out.println("Distance: " + node.getDist());
+                //System.out.println("Distance: " + node.getDist());
                 return getPath(node);
             }
             visited[node.toInt()] = true;

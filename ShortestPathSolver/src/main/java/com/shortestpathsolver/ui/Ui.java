@@ -27,6 +27,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javax.swing.plaf.basic.BasicHTML;
 
 /**
  * UI class
@@ -67,13 +68,13 @@ public class Ui {
         this.maxRows = 100;
         this.colorpickerColor = Color.BROWN;
         this.canvas = new DrawPad(sr, this, width, height, rows, cols);
-        this.getPath = new Button("Calculate path");
         this.insert = new Button("Insert");
         this.clear = new Button("Clear");
         this.clearAll = new Button("Clear all");
-        this.aStar = new Button("A*");
-        this.jps = new Button("JPS");
-        this.dijkstra = new Button("Dijkstra");
+        this.getPath = sr.getCalculatePath();
+        this.aStar = sr.getAStarButton();
+        this.jps = sr.getJps();
+        this.dijkstra = sr.getDijkstra();
         this.randomize = new Button("Randomize blocks");
     }
 
@@ -286,6 +287,7 @@ public class Ui {
                     if (rows > 2 && rows < maxRows) {
                         canvas.updateRowsAndCols(rows);
                         sr.updateRowsAndCols(rows);
+                        updateRowsAndCols(rows);
                     }
                 }
             }
@@ -365,7 +367,9 @@ public class Ui {
         randomize.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                sr.randomizeBlocks();
+                boolean[][] blocks = sr.randomizeBlocks();
+                canvas.reset();
+                canvas.fillBlocks(blocks);
             }
         });
 
@@ -490,15 +494,10 @@ public class Ui {
         this.rows = rows;
     }
 
-    public void setJpsDisable(boolean b) {
-        jps.setDisable(b);
+    private void updateRowsAndCols(int rows) {
+        this.rows = rows;
+        int rowGap = height / rows;
+        this.cols = width / rowGap;
     }
 
-    public void setDijkstraDisable(boolean b) {
-        dijkstra.setDisable(b);
-    }
-
-    public void setAStarDisable(boolean b) {
-        aStar.setDisable(b);
-    }
 }

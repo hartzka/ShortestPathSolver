@@ -14,6 +14,7 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -53,6 +54,10 @@ public class ShortestRoute extends Application {
     private int width;
     private Color bgColor;
     private Random rand;
+    private Button getPathButton;
+    private Button aStarButton;
+    private Button jpsButton;
+    private Button dijkstraButton;
 
     public ShortestRoute() {
         this.inserting = true;
@@ -95,6 +100,10 @@ public class ShortestRoute extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        this.getPathButton = new Button("Calculate path");
+        this.aStarButton = new Button("A*");
+        this.jpsButton = new Button("JPS");
+        this.dijkstraButton = new Button("Dijkstra");
         ui = new Ui(this, width, height, rows, cols, bgColor);
         ui.start(primaryStage);
     }
@@ -131,7 +140,7 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Logic to Clear-button
+     * Logic for Clear-button
      */
     public void handleClearButtonActions() {
         inserting = false;
@@ -139,17 +148,17 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Logic to Clear all -button
+     * Logic for Clear all -button
      */
     public void handleClearAllButtonActions() {
         inserting = true;
         writed = false;
-        clearBlocks();
+        initializeBlocks();
         aStar.reset();
     }
 
     /**
-     * Logic to A*-button
+     * Logic for A*-button
      */
     public void handleAStarButtonActions() {
         aStar.setJPS(false);
@@ -158,7 +167,7 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Logic to Jps-button
+     * Logic for Jps-button
      */
     public void handleJpsButtonActions() {
         aStar.setJPS(true);
@@ -167,7 +176,7 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Logic to Dijkstra-button
+     * Logic for Dijkstra-button
      */
     public void handleDijkstraButtonActions() {
         aStarOn = false;
@@ -175,14 +184,14 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Logic to Insert-button
+     * Logic for Insert-button
      */
     public void handleInsertButtonActions() {
         inserting = true;
     }
 
     /**
-     * Logic to Calculate path -button
+     * Logic for Calculate path -button
      *
      * @return true, if path is found, false otherwise
      */
@@ -250,13 +259,13 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Tells if a node is start- or goal node.
+     * Tells if a node is initial- or final node.
      *
      * @param x Node's x-coordinate
      * @param y Node's y-coordinate
-     * @return true, if node is not start node and not goal node.
+     * @return true, if node is neither initial node nor final node.
      */
-    public boolean isNotStartOrGoalNode(int x, int y) {
+    public boolean isNotInitialOrFinalNode(int x, int y) {
         if (x == startX && y == startY) {
             return false;
         }
@@ -279,7 +288,7 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Initializes node array.
+     * Initializes the node array.
      */
     public void setNodes() {
         for (int i = 0; i < nodes.length; i++) {
@@ -307,7 +316,7 @@ public class ShortestRoute extends Application {
      * @param col Block's column
      */
     public void setBlock(int row, int col) {
-        if (row >= 0 && col >= 0 && row < nodes.length && col < nodes[0].length && isNotStartOrGoalNode(col, row)) {
+        if (row >= 0 && col >= 0 && row < nodes.length && col < nodes[0].length && isNotInitialOrFinalNode(col, row)) {
             this.nodes[row][col].setBlock(true);
             this.blocks[row][col] = true;
         }
@@ -333,9 +342,9 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Clears blocks.
+     * Initializes blocks.
      */
-    public void clearBlocks() {
+    public void initializeBlocks() {
         this.blocks = new boolean[nodes.length][nodes[0].length];
     }
 
@@ -368,8 +377,8 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Tells if a node in given coordinates is available i.e. not start- or goal
-     * node and not block.
+     * Tells if a node in given coordinates is available i.e. not initial- or
+     * final node and not block.
      *
      * @param y y-coordinate
      * @param x x-coordinate
@@ -377,7 +386,7 @@ public class ShortestRoute extends Application {
      * @return true, if node is available, false otherwise
      */
     public boolean isAvailable(int y, int x) {
-        return isNotStartOrGoalNode(x, y) && !blocks[y][x];
+        return isNotInitialOrFinalNode(x, y) && !blocks[y][x];
     }
 
     public boolean isInitialNode(Node node) {
@@ -385,8 +394,8 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Takes care of mouse actions i.e. initial- and final node movement and
-     * filling blocks.
+     * Takes care of different mouse actions such as initial- and final node
+     * movement and filling blocks.
      *
      * @param y y-coordinate
      * @param x x-coordinate
@@ -415,11 +424,11 @@ public class ShortestRoute extends Application {
         } else if (finalNode.getColumn() == ux && finalNode.getRow() == uy) {
             finalNodeMoving = true;
         } else if (!inserting) { //removing
-            if (isNotStartOrGoalNode(ux, uy)) {
+            if (isNotInitialOrFinalNode(ux, uy)) {
                 canvas.removeBlock(y, x, bgColor);
             }
         } else {
-            if (isNotStartOrGoalNode(ux, uy)) {
+            if (isNotInitialOrFinalNode(ux, uy)) {
                 try {
                     canvas.fillBlock(y, x);
                 } catch (Exception ex) {
@@ -447,47 +456,7 @@ public class ShortestRoute extends Application {
             prevNode = null;
             timelineIterator = 0;
         } else if (pathDrawing) {
-            if ((dijkstraOn && timelineIterator >= dijkstra.getPath().size()) || (aStarOn && timelineIterator >= aStar.getPath().size())) {
-                pathDrawing = false;
-                prevNode = null;
-                if (aStarOn) {
-                    aStar.reset();
-                }
-                timelineIterator = 0;
-                if (ui != null) {
-                    ui.setGetPathDisable(false);
-                    if (aStarOn && aStar.getJps()) {
-                        ui.setAStarDisable(false);
-                        ui.setDijkstraDisable(false);
-                    } else if (aStarOn) {
-                        ui.setJpsDisable(false);
-                        ui.setDijkstraDisable(false);
-                    } else if (dijkstraOn) {
-                        ui.setAStarDisable(false);
-                        ui.setJpsDisable(false);
-                    }
-                }
-
-                timeline.stop();
-            } else {
-                Node n = null;
-                if (dijkstraOn) {
-                    n = dijkstra.getPath().get(timelineIterator);
-                } else if (aStarOn) {
-                    n = aStar.getPath().get(timelineIterator);
-                }
-                if (prevNode == null) {
-                    prevNode = n;
-                    if (ui != null) {
-                        ui.getCanvas().fillPathLine(initialNode.getRow(), initialNode.getColumn(), prevNode.getRow(), prevNode.getColumn());
-                    }
-                } else {
-                    if (ui != null) {
-                        ui.getCanvas().fillPathLine(prevNode.getRow(), prevNode.getColumn(), n.getRow(), n.getColumn());
-                    }
-                    prevNode = n;
-                }
-            }
+            handlePathDrawingActions();
         } else {
             Node n = null;
             if (dijkstraOn) {
@@ -495,13 +464,60 @@ public class ShortestRoute extends Application {
             } else if (aStarOn) {
                 n = aStar.getClosedSet().get(timelineIterator);
             }
-            if (isNotStartOrGoalNode(n.getColumn(), n.getRow()) && !n.isBlock()) {
+            if (isNotInitialOrFinalNode(n.getColumn(), n.getRow()) && !n.isBlock()) {
                 if (ui != null) {
                     ui.getCanvas().fillRect(n.getRow(), n.getColumn(), n.getVisualizationColor());
                 }
             }
         }
         timelineIterator++;
+    }
+
+    private void handlePathDrawingActions() {
+        if ((dijkstraOn && timelineIterator >= dijkstra.getPath().size()) || (aStarOn && timelineIterator >= aStar.getPath().size())) {
+            pathDrawing = false;
+            prevNode = null;
+            if (aStarOn) {
+                aStar.reset();
+            }
+            timelineIterator = 0;
+            if (getPathButton != null) {
+                getPathButton.setDisable(false);
+            }
+            if (aStarOn && aStar.getJps() && getPathButton != null) {
+                aStarButton.setDisable(false);
+                dijkstraButton.setDisable(false);
+            } else if (aStarOn && getPathButton != null) {
+                jpsButton.setDisable(false);
+                dijkstraButton.setDisable(false);
+            } else if (dijkstraOn && getPathButton != null) {
+                aStarButton.setDisable(false);
+                jpsButton.setDisable(false);
+            }
+            timeline.stop();
+        } else {
+            fillPathLine();
+        }
+    }
+
+    private void fillPathLine() {
+        Node n = null;
+        if (dijkstraOn) {
+            n = dijkstra.getPath().get(timelineIterator);
+        } else if (aStarOn) {
+            n = aStar.getPath().get(timelineIterator);
+        }
+        if (prevNode == null) {
+            prevNode = n;
+            if (ui != null) {
+                ui.getCanvas().fillPathLine(initialNode.getRow(), initialNode.getColumn(), prevNode.getRow(), prevNode.getColumn());
+            }
+        } else {
+            if (ui != null) {
+                ui.getCanvas().fillPathLine(prevNode.getRow(), prevNode.getColumn(), n.getRow(), n.getColumn());
+            }
+            prevNode = n;
+        }
     }
 
     public boolean getPathDrawing() {
@@ -521,12 +537,10 @@ public class ShortestRoute extends Application {
         this.rows = rows;
         this.rowGap = height / rows;
         this.cols = width / rowGap;
-        ui.setRows(rows);
-        ui.setCols(cols);
     }
 
     /**
-     * Updates initial node
+     * Updates initial node.
      *
      * @param x x-coordinate
      * @param y y-coordinate
@@ -539,7 +553,7 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Updates final node
+     * Updates final node.
      *
      * @param x x-coordinate
      * @param y y-coordinate
@@ -552,7 +566,7 @@ public class ShortestRoute extends Application {
     }
 
     /**
-     * Gets the map content. This is needed in file saving.
+     * Constructs the map content. This is needed in file saving.
      *
      * @return content
      */
@@ -574,24 +588,48 @@ public class ShortestRoute extends Application {
     /**
      * Randomizes blocks.
      *
+     * @return Array presenting randomized blocks.
      */
-    public void randomizeBlocks() {
+    public boolean[][] randomizeBlocks() {
         inserting = true;
         writed = false;
-        clearBlocks();
+        initializeBlocks();
         aStar.reset();
         int k = rand.nextInt(15) + 3;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 int r = rand.nextInt(k);
-                if (r == 2 && isNotStartOrGoalNode(j, i)) {
+                if (r == 2 && isNotInitialOrFinalNode(j, i)) {
                     blocks[i][j] = true;
                 } else {
                     blocks[i][j] = false;
                 }
             }
         }
-        ui.getCanvas().reset();
-        ui.getCanvas().fillBlocks(blocks);
+        return blocks;
+    }
+
+    public Button getCalculatePath() {
+        return getPathButton;
+    }
+
+    public Button getAStarButton() {
+        return aStarButton;
+    }
+
+    public Button getJps() {
+        return jpsButton;
+    }
+
+    public Button getDijkstra() {
+        return dijkstraButton;
+    }
+
+    public boolean getDijkstraOn() {
+        return dijkstraOn;
+    }
+
+    boolean getAStarOn() {
+        return aStarOn;
     }
 }

@@ -29,17 +29,17 @@ public class ShortestRouteTest {
 
     @Test
     public void isStartNode() {
-        assertTrue(sr.isNotStartOrGoalNode(0, 0) == false);
+        assertTrue(sr.isNotInitialOrFinalNode(0, 0) == false);
     }
 
     @Test
     public void isFinalNode() {
-        assertTrue(sr.isNotStartOrGoalNode(20, 20) == false);
+        assertTrue(sr.isNotInitialOrFinalNode(20, 20) == false);
     }
 
     @Test
     public void isNotStartOrFinalNodeWorks() {
-        assertTrue(sr.isNotStartOrGoalNode(2, 3) == true);
+        assertTrue(sr.isNotInitialOrFinalNode(2, 3) == true);
     }
 
     @Test
@@ -112,9 +112,8 @@ public class ShortestRouteTest {
     public void testMouse() {
         sr.handleMouseAction(0, 0);
         assertTrue(sr.getInitialNodeMoving() == true);
-        sr.handleMouseAction(50, 50);
-        System.out.println(sr.getInitialNode().getColumn());
-        //assertTrue(sr.getInitialNode().getRow() == 2);
+        sr.handleMouseAction(30, 30);
+        //assertTrue(sr.getStartX() == 1);
         //assertTrue(sr.getInitialNode().getColumn() == 2);
         sr.setNodesMovementsOff();
 
@@ -158,5 +157,29 @@ public class ShortestRouteTest {
         assertTrue(sr.getAStar().getJps() == true);
         sr.handleAStarButtonActions();
         assertTrue(sr.getAStar().getJps() == false);
+    }
+    
+    @Test
+    public void testDijkstraButtonActions() {
+        sr.handleDijkstraButtonActions();
+        assertTrue(sr.getAStarOn() == false);
+        assertTrue(sr.getDijkstraOn() == true);
+    }
+    
+    @Test
+    public void updateRowsAndColsTest() {
+        sr.updateRowsAndCols(80);
+        assertTrue(sr.getRows() == 80);
+        assertTrue(sr.getCols() == 100);
+    }
+    
+    @Test
+    public void getContentTest() {
+        sr.initializeBlocks();
+        String s = sr.getContent();
+        assertFalse(s.contains("@"));
+        sr.randomizeBlocks();
+        s = sr.getContent();
+        assertTrue(s.contains("@"));
     }
 }

@@ -10,55 +10,39 @@ import static org.junit.Assert.*;
  *
  * @author kaihartz
  */
-public class AStarTest {
+public class DijkstraTest {
 
     private ShortestRoute sr;
-    private AStar aStar;
+    private Dijkstra dijkstra;
 
     @Before
     public void setUp() {
         sr = new ShortestRoute();
         sr.setInitialNode(new Node(0, 0));
         sr.setFinalNode(new Node(39, 39));
-        aStar = sr.getAStar();
-        aStar.setJPS(false);
+        dijkstra = new Dijkstra(sr);
     }
 
     @Test
     public void exists() {
-        assertTrue(aStar != null);
+        assertTrue(dijkstra != null);
     }
 
     @Test
-    public void aStarPathIsReturned() {
+    public void dijkstraPathIsReturned() {
         for (int i = 1; i < 39; i++) {
             sr.setBlock(i, (int) (Math.random() * 39));
         }
+        sr.handleDijkstraButtonActions();
         assertTrue(sr.handleGetPathButtonActions() == true);
     }
-    
-    @Test
-    public void aStarJPSPathIsReturned() {
-        aStar.setJPS(true);
-        for (int i = 1; i < 39; i++) {
-            sr.setBlock(i, (int) (Math.random() * 39));
-        }
-        assertTrue(sr.calculateAStarPath() == true);
-    }
 
     @Test
-    public void aStarPathIsNotReturnedWhenDoesNotExist() {
+    public void dijkstraPathIsNotReturnedWhenDoesNotExist() {
         sr.setBlock(1, 0);
         sr.setBlock(1, 1);
         sr.setBlock(0, 1);
+        sr.handleDijkstraButtonActions();
         assertTrue(sr.handleGetPathButtonActions() == false);
-    }
-
-    @Test
-    public void isReseted() {
-        sr.resetAStar();
-        assertTrue(aStar.getOpenList().size() == 0);
-        assertTrue(aStar.getClosedSet().isEmpty());
-        assertTrue(aStar.getPath().isEmpty());
     }
 }

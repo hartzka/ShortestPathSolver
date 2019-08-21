@@ -16,7 +16,7 @@ public class CustomArrayList<E> {
     }
 
     /**
-     * Adds an object to the end of list
+     * Adds an object to the end of list.
      *
      * @param e object to add
      */

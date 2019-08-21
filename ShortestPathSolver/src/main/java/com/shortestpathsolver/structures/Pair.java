@@ -5,20 +5,20 @@ package com.shortestpathsolver.structures;
  *
  * @author kaihartz
  */
-public class Pair<E1, E2> {
-    private E1 key;
-    private E2 value;
+public class Pair<A, B> {
+    private A key;
+    private B value;
     
-    public Pair(E1 key, E2 value) {
+    public Pair(A key, B value) {
         this.key = key;
         this.value = value;
     }
     
-    public E1 getKey() {
+    public A getKey() {
         return this.key;
     }
     
-    public E2 getValue() {
+    public B getValue() {
         return this.value;
     }
     

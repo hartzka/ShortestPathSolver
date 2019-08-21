@@ -48,7 +48,8 @@ public class Node {
      *
      * Updates node's information in A*
      *
-     * @param currentNode Current node in A*
+     * @param currentNode Current node in A
+     *
      * @param gCost Movement cost
      */
     public void setAStarInformation(Node currentNode, int gCost) {

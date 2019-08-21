@@ -9,7 +9,11 @@ Testeissä on testattu ohjelman logiikan perustoiminnot. Kaikkia käyttöliittym
 
 ### AStarTest
 
-Testit testaavat kattavasti A*-algoritmiluokan toimintaa eri syötteillä sekä JPS-haulla että ilman. Myös tapauksissa, joissa polkua ei löydy.
+Testit testaavat kattavasti A*-algoritmiluokan toimintaa eri randomoiduilla syötteillä sekä JPS-haulla että ilman. Myös tapauksissa, joissa polkua ei löydy.
+
+### DijkstraTest
+
+Testit testaavat Dijkstran algoritmin toimintaa randomoiduilla syötteillä. Myös tapauksissa, joissa polkua ei löydy.
 
 ### NodeTest
 
@@ -29,12 +33,33 @@ Ohjelmaa on testattu lukuisilla eri syötteillä manuaalisesti ja käyttöliitty
 
 Suorituskykyyn liittyvä testaus löytyy tiedostosta [Performance.java](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/src/test/java/com/shortestpathsolver/performance/PerformanceTest.java)
 
-Taulukko suoritusajoista eri algoritmeilla:
+Testaus on tehty 22.8.2019.
 
-|  Algoritmi | Preprocessing time | Processing time
+Taulukko suoritusajoista eri algoritmeilla ja eri ruudukon kokoluokilla:
+
+|  Algoritmi | Ruudukon rivien määrä | Processing time average
 |---------------------------|:--:|:--:
-| A* | 11358 ns | 266264 ns
-| JPS | 4440 ns | 162345 ns
+| A* | 9 | 20 ms
+| A* | 24 | 137 ms
+| A* | 39 | 377 ms
+| A* | 54 | 777 ms
+| A* | 69 | 1361 ms
+| A* | 84 | 2180 ms
+| A* | 99 | 2770 ms
+| JPS | 9 | 18 ms
+| JPS | 24 | 123 ms
+| JPS | 39 | 281 ms
+| JPS | 54 | 565 ms
+| JPS | 69 | 946 ms
+| JPS | 84 | 1486 ms
+| JPS | 99 | 1862 ms
+| Dijkstra | 9 | 55 ms
+| Dijkstra | 24 | 99 ms
+| Dijkstra | 39 | 239 ms
+| Dijkstra | 54 | 456 ms
+| Dijkstra | 69 | 714 ms
+| Dijkstra | 84 | 1095 ms
+| Dijkstra | 99 | 1519 ms
 
 
-(Päivittyy myöhemmin)
+Preprocessing time on jokaisessa tapauksessa ~2s.

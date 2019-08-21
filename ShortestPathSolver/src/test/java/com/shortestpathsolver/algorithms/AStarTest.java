@@ -2,7 +2,6 @@ package com.shortestpathsolver.algorithms;
 
 import com.shortestpathsolver.domain.Node;
 import com.shortestpathsolver.domain.ShortestRoute;
-import javafx.scene.paint.Color;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;

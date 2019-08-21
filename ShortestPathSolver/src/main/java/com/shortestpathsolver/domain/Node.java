@@ -3,28 +3,22 @@ package com.shortestpathsolver.domain;
 import javafx.scene.paint.Color;
 
 /**
- * Solmuluokka
+ * Node class
  *
  * @author kaihartz
  */
 public class Node {
 
-    private int hValue; //heuristic
-    private int gValue; //movement cost
-    private int fValue;  // h+g
+    private int hValue; //heuristic in A*
+    private int gValue; //movement cost in A*
+    private int dist;  // h+g=f in A* and distance in dijkstra
     private int row;
     private int column;
     private boolean isBlock;
     private Node parent;
     private Color visualizationColor;
 
-    /**
-     * Konstuktori
-     *
-     * @param row Solmun rivi
-     * @param col Solmun sarake
-     */
-    public Node(int row, int col) {
+    public Node(int col, int row) {
         this.row = row;
         this.column = col;
         this.visualizationColor = Color.WHITE;
@@ -42,21 +36,25 @@ public class Node {
         return gValue;
     }
 
-    public int getF() {
-        return fValue;
+    public int getDist() {
+        return dist;
+    }
+
+    public void setDist(int newDist) {
+        this.dist = newDist;
     }
 
     /**
      *
-     * Asettaa solmuun A*-algoritmissa vaadittavia tietoja
+     * Updates node's information in A*
      *
-     * @param currentNode Tämänhetkinen solmu
-     * @param gCost Kustannus
+     * @param currentNode Current node in A*
+     * @param gCost Movement cost
      */
     public void setAStarInformation(Node currentNode, int gCost) {
         this.gValue = currentNode.getG() + gCost;
         this.parent = currentNode;
-        this.fValue = gValue + hValue;
+        this.dist = gValue + hValue;
     }
 
     public Node getParent() {
@@ -65,7 +63,7 @@ public class Node {
 
     /**
      *
-     * @return onko solmu este
+     * @return if node is block
      */
     public boolean isBlock() {
         return isBlock;
@@ -108,9 +106,21 @@ public class Node {
     @Override
     public String toString() {
         if (parent != null) {
-            return "row: " + row + " col: " + column + " g: " + gValue + " f: " + fValue + " parent: row: " + parent.getRow() + " col: " + parent.getColumn();
+            return "row: " + row + " col: " + column + " g: " + gValue + " dist: " + dist + " parent: row: " + parent.getRow() + " col: " + parent.getColumn();
         } else {
-            return "row: " + row + " col: " + column + " g: " + gValue + " f: " + fValue;
+            return "row: " + row + " col: " + column + " g: " + gValue + " dist: " + dist;
         }
+    }
+
+    /**
+     *
+     * @return int representation of node
+     */
+    public int toInt() {
+        return row * 150 + column;
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
     }
 }

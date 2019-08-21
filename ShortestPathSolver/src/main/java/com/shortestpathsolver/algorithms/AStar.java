@@ -7,7 +7,7 @@ import com.shortestpathsolver.structures.Heap;
 import com.shortestpathsolver.structures.Pair;
 
 /**
- * A*-algoritmin ominaisuudet toteuttava luokka
+ * A*-algorithm
  *
  * @author kaihartz
  */
@@ -24,17 +24,21 @@ public class AStar {
     public AStar(ShortestRoute sr) {
         this.sr = sr;
         this.jps = false;
-        this.openList = new Heap();
+        this.openList = new Heap(0);
         this.closedSet = new CustomArrayList<>();
         this.finalPath = new CustomArrayList<>();
     }
 
     private void checkNode(Node currentNode, int col, int row, int cost) {
         Node neighbour = sr.getNodes()[row][col];
-        if (!(neighbour.isBlock() || closedSet.contains(neighbour))) {
-            if (!openList.contains(neighbour)) {
+        if (!neighbour.isBlock()) {
+            if (!closedSet.contains(neighbour) && !openList.contains(neighbour)) {
                 neighbour.setAStarInformation(currentNode, cost);
                 openList.add(neighbour);
+            } else if (closedSet.contains(neighbour)) {
+                if (checkifBetterPathExists(currentNode, neighbour, cost)) {
+                    openList.add(neighbour);
+                }
             } else {
                 checkifBetterPathExists(currentNode, neighbour, cost);
             }
@@ -42,18 +46,18 @@ public class AStar {
     }
 
     /**
-     * Pääalgoritmi, joka hakee lyhimmän reitin joko tavallisella
-     * A*-algoritmilla tai JPS-lisätoiminnolla
+     * The main method, which searches the shortest route with either A* or JPS
      *
-     * @param initialNode Alkusolmu, josta haku lähtee liikkeelle
-     * @return Listan reitistä
+     * @param initialNode Beginning of the search
+     * @return List presenting the route
      */
     public CustomArrayList<Node> calculatePath(Node initialNode) {
         openList.add(initialNode);
         while (openList.size() != 0) {
-            Node currentNode = openList.poll();
+            Node currentNode = (Node) openList.poll();
             closedSet.add(currentNode);
             if (sr.isFinalNode(currentNode)) {
+                System.out.println("G: " + currentNode.getG());
                 return getPath(currentNode);
             } else {
                 if (!jps) {
@@ -63,15 +67,15 @@ public class AStar {
                     for (int i = 0; i < jumpPoints.length; i++) {
                         Node jumpPoint = jumpPoints[i];
                         if (!(jumpPoint == null || jumpPoint.isBlock())) {
-                            if (!closedSet.contains(jumpPoint)) {
-                                if (!openList.contains(jumpPoint)) {
-                                    setAStarInformationRange(currentNode, jumpPoint);
+                            if (!closedSet.contains(jumpPoint) && !openList.contains(jumpPoint)) {
+                                setAStarInformationRange(currentNode, jumpPoint);
+                                openList.add(jumpPoint);
+                            } else if (closedSet.contains(jumpPoint)) {
+                                if (checkifBetterPathExists(currentNode, jumpPoint, approxG(currentNode.getColumn(), currentNode.getRow(), jumpPoint.getColumn(), jumpPoint.getRow()))) {
                                     openList.add(jumpPoint);
-                                } else {
-                                    checkifBetterPathExists(currentNode, jumpPoint, approxG(currentNode.getColumn(), currentNode.getRow(), jumpPoint.getColumn(), jumpPoint.getRow()));
                                 }
                             } else {
-                                setAStarInformationRange(currentNode, jumpPoint);
+                                checkifBetterPathExists(currentNode, jumpPoint, approxG(currentNode.getColumn(), currentNode.getRow(), jumpPoint.getColumn(), jumpPoint.getRow()));
                             }
                         }
                     }
@@ -82,25 +86,23 @@ public class AStar {
     }
 
     /**
-     * Palauttaa JPS-haun mahdolliset jump pointit tietylle solmulle. Tämä
-     * nopeuttaa hakua huomattavasti tietyissä ruudukoissa, joissa on
-     * suoraviivainen reitti.
+     * Returns node's jumppoints for JPS. This speeds up the search remarkably.
      *
-     * @param node Solmu
-     * @return mahdolliset jump pointit
+     * @param node
+     * @return possible jump points
      */
     public Node[] calculateJumpPoints(Node node) {
         Node[] jumpPoints = new Node[8];
-        Pair[] neighbors = getNeighbors(node);
+        Pair[] neighbors = getNeighbours(node);
         for (int i = 0; i < neighbors.length; i++) {
 
-            Pair point = jump(neighbors[i].getX(), neighbors[i].getY(), node.getColumn(), node.getRow());
-            if (point.getX() != -1) {
-                int x = point.getX();
-                int y = point.getY();
+            Pair<Integer, Integer> point = jump((int) neighbors[i].getKey(), (int) neighbors[i].getValue(), node.getColumn(), node.getRow());
+            if (point.getKey() != -1) {
+                int x = point.getKey();
+                int y = point.getValue();
 
                 int newG = (approxG(x, y, node.getColumn(), node.getRow()));
-                if (sr.getNodes()[y][x].getF() == 0 || sr.getNodes()[y][x].getG() > newG) {
+                if (sr.getNodes()[y][x].getDist() == 0 || sr.getNodes()[y][x].getG() > newG) {
                     jumpPoints[i] = sr.getNodes()[y][x];
                 }
             }
@@ -109,14 +111,14 @@ public class AStar {
     }
 
     /**
-     * Rekursiivinen metodi, joka etsii hyppypistettä solmun ja sen vanhemman
-     * tietojen perusteella.
+     * Recursive method, which searches a jump point based on a node and its
+     * parent.
      *
-     * @param x solmun sarake
-     * @param y solmun rivi
-     * @param px vanhemman sarake
-     * @param py vanhemman rivi
-     * @return löydetyn hyppypisteen koordinaatit.
+     * @param x node's column
+     * @param y node's row
+     * @param px parent's column
+     * @param py parent's row
+     * @return coordinates of the possibly found jump point
      */
     public Pair jump(int x, int y, int px, int py) {
 
@@ -135,7 +137,7 @@ public class AStar {
             }
             Pair jumpx = jump(x + dx, y, x, y);
             Pair jumpy = jump(x, y + dy, x, y);
-            if (jumpx.getX() != -1 || jumpy.getX() != -1) {
+            if ((int) jumpx.getKey() != -1 || (int) jumpy.getKey() != -1) {
                 return new Pair(x, y);
             }
         } else {
@@ -158,12 +160,12 @@ public class AStar {
     }
 
     /**
-     * Palauttaa solmun kaikki naapurit, joihin on mahdollista liikkua
+     * Returns all allowed node's neighbours
      *
-     * @param node solmu
-     * @return taulukon naapureista
+     * @param node
+     * @return table presenting neighbours
      */
-    public Pair[] getNeighbors(Node node) {
+    public Pair[] getNeighbours(Node node) {
         Pair[] neighbors = new Pair[8];
         int x = node.getColumn();
         int y = node.getRow();
@@ -195,29 +197,28 @@ public class AStar {
     private void addNeighbourNodes(Node currentNode) {
         int row = currentNode.getRow();
         int col = currentNode.getColumn();
-        Node[][] nodes = sr.getNodes();
         if (row - 1 >= 0) { //ylin rivi
-            checkNode(currentNode, col, row - 1, hCost); //ylä
+            checkNode(currentNode, col, row - 1, hCost); //upper
             if (col - 1 >= 0) {
-                checkNode(currentNode, col - 1, row - 1, diagonalCost); //vasen ylä
+                checkNode(currentNode, col - 1, row - 1, diagonalCost); //upper left
             }
-            if (col + 1 < nodes[0].length) {
-                checkNode(currentNode, col + 1, row - 1, diagonalCost); //oikea ylä
+            if (col + 1 < sr.getCols()) {
+                checkNode(currentNode, col + 1, row - 1, diagonalCost); //upper right
             }
         }
         if (col - 1 >= 0) {
-            checkNode(currentNode, col - 1, row, hCost); //vasen
+            checkNode(currentNode, col - 1, row, hCost); //left
         }
-        if (col + 1 < nodes[0].length) {
-            checkNode(currentNode, col + 1, row, hCost); //oikea
+        if (col + 1 < sr.getCols()) {
+            checkNode(currentNode, col + 1, row, hCost); //right
         }
-        if (row + 1 < nodes.length) { //lower row
-            checkNode(currentNode, col, row + 1, hCost); //ala
+        if (row + 1 < sr.getRows()) { //lower row
+            checkNode(currentNode, col, row + 1, hCost); //bottom
             if (col - 1 >= 0) {
-                checkNode(currentNode, col - 1, row + 1, diagonalCost); //vasen ala
+                checkNode(currentNode, col - 1, row + 1, diagonalCost); //bottom left
             }
-            if (col + 1 < nodes[0].length) {
-                checkNode(currentNode, col + 1, row + 1, diagonalCost); //oikea ala
+            if (col + 1 < sr.getCols()) {
+                checkNode(currentNode, col + 1, row + 1, diagonalCost); //bottom right
             }
         }
     }
@@ -231,7 +232,7 @@ public class AStar {
     }
 
     /**
-     * Alustaa solmut, avoimen ja suljetun listan ja reitin
+     * Resets nodes, open list, closed set and path
      */
     public void reset() {
         sr.setNodes();
@@ -246,28 +247,30 @@ public class AStar {
 
     /**
      *
-     * Laskee arvion etäisyydestä loppusolmuun. Käytettävää laskukaavaa voi olla
-     * tarpeen muuttaa riippuen syötteestä, mutta nykyisellään tämän on katsottu
-     * toimivan.
+     * Calculates a heuristic from current to finalNode. The pattern may need
+     * updating depending on input. The heuristic may yield wrong results if not
+     * defined correctly.
      *
-     * @param current Käsiteltävä solmu
-     * @param finalNode Loppusolmu
+     * @param current
+     * @param finalNode
      */
     public void calculateHeuristic(Node current, Node finalNode) {
         int h = (int) Math.sqrt(Math.pow(finalNode.getColumn() - current.getColumn(), 3) + Math.pow(finalNode.getRow() - current.getRow(), 3));
-        current.setH(h);
+        int euclidian = (int) Math.sqrt(Math.pow(finalNode.getColumn() - current.getColumn(), 2) + Math.pow(finalNode.getRow() - current.getRow(), 2));
+        int manhattan = (int) (Math.abs(finalNode.getColumn() - current.getColumn()) + Math.abs(finalNode.getRow() - current.getRow()));
+
+        current.setH(euclidian);
     }
 
     /**
      *
-     * Tarkistaa, onko olemassa parempaa polkua solmujen välillä, ja mikäli on,
-     * tekee tarvittavat toimenpiteet, mm. päivittää solmun g-arvon ja
-     * vanhemman.
+     * Checks if a better path exists between currentNode and neighbour, and if
+     * exists, updates neighbour's information.
      *
-     * @param currentNode Tämänhetkinen solmu
-     * @param neighbour Naapurisolmu
-     * @param cost Kustannus
-     * @return true, jos parempi polku on olemassa, muuten false
+     * @param currentNode
+     * @param neighbour
+     * @param cost Movement cost
+     * @return true if a better path exists, false otherwise
      */
     public boolean checkifBetterPathExists(Node currentNode, Node neighbour, int cost) {
         int gCost = currentNode.getG() + cost;
@@ -289,12 +292,11 @@ public class AStar {
     }
 
     /**
-     * Testaa, onko solmuun sallittua mennä
+     * Checks if node is allowed: not block and inside gridarea.
      *
-     * @param x solmun x-koordinaatti
-     * @param y solmun y-koordinaatti
-     * @return true, jos solmuun voi mennä, eli se on kartalla eikä ole este.
-     * Muuten false.
+     * @param x node's x-coordinate
+     * @param y node's y-coordinate
+     * @return true, if node is allowed, otherwise false.
      */
     public boolean allowed(int x, int y) {
         return (x < sr.getCols() && y < sr.getRows() && x >= 0 && y >= 0 && sr.getBlocks()[y][x] == false);

@@ -1,5 +1,5 @@
 /**
- * Algoritmit omina luokkinaan
+ * Algorithms
  */
 
 package com.shortestpathsolver.algorithms;

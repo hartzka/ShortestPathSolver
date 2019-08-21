@@ -3,7 +3,7 @@ package com.shortestpathsolver.main;
 import com.shortestpathsolver.domain.ShortestRoute;
 
 /**
- * Pääluokka
+ * Main class
  *
  * @author kaihartz
  */

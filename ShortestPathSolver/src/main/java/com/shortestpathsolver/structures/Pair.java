@@ -1,20 +1,25 @@
-
 package com.shortestpathsolver.structures;
 
-public class Pair {
-    private int x;
-    private int y;
+/**
+ * Implementation of Pair
+ *
+ * @author kaihartz
+ */
+public class Pair<E1, E2> {
+    private E1 key;
+    private E2 value;
     
-    public Pair(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Pair(E1 key, E2 value) {
+        this.key = key;
+        this.value = value;
     }
     
-    public int getX() {
-        return this.x;
+    public E1 getKey() {
+        return this.key;
     }
     
-    public int getY() {
-        return this.y;
+    public E2 getValue() {
+        return this.value;
     }
+    
 }

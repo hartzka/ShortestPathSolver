@@ -1,5 +1,5 @@
 /**
- * Sovelluksen käyttöliittymä
+ * Ui, drawing and graphics
  */
 
 package com.shortestpathsolver.ui;

@@ -1,24 +1,24 @@
 package com.shortestpathsolver.structures;
 
+/**
+ * Custom implementation of ArrayList
+ *
+ * @author kaihartz
+ */
 public class CustomArrayList<E> {
 
     private int currentIndex;
     private Object[] list;
 
-    /**
-     * Oma implementaatio ArrayLististä
-     *
-     * @author kaihartz
-     */
     public CustomArrayList() {
         this.list = new Object[100];
         this.currentIndex = 0;
     }
 
     /**
-     * Lisää listan loppuun objektin
+     * Adds an object to the end of list
      *
-     * @param e lisättävä objekti
+     * @param e object to add
      */
     public void add(E e) {
         if (currentIndex >= list.length) {
@@ -28,10 +28,10 @@ public class CustomArrayList<E> {
     }
 
     /**
-     * Lisää listaan elementin tietyn indeksin kohdalle
+     * Adds an object to a specified index.
      *
-     * @param index uuden objektin indeksi
-     * @param e lisättävä objekti
+     * @param index
+     * @param e object to add
      */
     public void add(int index, E e) {
         if (index < 0 || index > currentIndex) {
@@ -56,9 +56,9 @@ public class CustomArrayList<E> {
     }
 
     /**
-     * Poistaa objektin listasta
+     * Removes an object from the list.
      *
-     * @param e poistettava objekti
+     * @param e object to remove
      */
     public void remove(E e) {
         for (int i = 0; i < currentIndex; i++) {
@@ -69,9 +69,9 @@ public class CustomArrayList<E> {
     }
 
     /**
-     * Poistaa objektin listan tietystä indeksistä
+     * Removes an object from a specified index.
      *
-     * @param index indeksi
+     * @param index
      */
     public void remove(int index) {
         if (index < 0 || index > this.currentIndex) {
@@ -88,7 +88,7 @@ public class CustomArrayList<E> {
 
     /**
      *
-     * @return listan pituus
+     * @return size of the list
      */
     public int size() {
         return currentIndex;
@@ -104,9 +104,10 @@ public class CustomArrayList<E> {
     }
 
     /**
+     * Return an object from a specified index.
      *
-     * @param i indeksi
-     * @return objektin indeksistä i
+     * @param i index
+     * @return object from index
      */
     public E get(int i) {
         return (E) list[i];
@@ -114,16 +115,17 @@ public class CustomArrayList<E> {
 
     /**
      *
-     * @return onko lista tyhjä
+     * @return if list is empty
      */
     public boolean isEmpty() {
         return currentIndex == 0;
     }
 
     /**
+     * Returns if list contains a specified object.
      *
-     * @param e haettava objekti
-     * @return sisältääkö lista objektin
+     * @param e object
+     * @return if list contains object
      */
     public boolean contains(E e) {
         for (int i = 0; i < currentIndex; i++) {
@@ -136,7 +138,7 @@ public class CustomArrayList<E> {
     }
 
     /**
-     * Tyhjentää listan
+     * Clears the list.
      */
     public void clear() {
         for (int i = 0; i < currentIndex; i++) {

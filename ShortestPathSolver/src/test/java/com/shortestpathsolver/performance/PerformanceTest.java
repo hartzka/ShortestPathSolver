@@ -31,7 +31,7 @@ public class PerformanceTest {
                 int x = r.nextInt(40);
                 int y = r.nextInt(40);
                 if (sr.isNotStartOrGoalNode(x, y)) {
-                    sr.setFinalNode(new Node(y, x));
+                    sr.setFinalNode(new Node(x, y));
                     break;
                 }
             }

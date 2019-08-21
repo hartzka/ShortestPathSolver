@@ -1,5 +1,5 @@
 /**
- * Pääluokka
+ * Main package
  */
 
 package com.shortestpathsolver.main;

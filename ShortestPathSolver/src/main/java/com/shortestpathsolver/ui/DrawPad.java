@@ -7,10 +7,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 /**
- * Piirtoalusta, joka huolehtii graafisten elementtien piirtämisestä
+ * Drawpad, takes care of drawing and filling graphical components.
  *
  * @author kaihartz
  */
@@ -19,20 +18,26 @@ public class DrawPad extends Canvas {
     private GraphicsContext gc;
     private int width;
     private int height;
+    private int rows;
+    private int cols;
     private Ui ui;
     private ShortestRoute sr;
+    private int rowGap;
 
-    public DrawPad(ShortestRoute sr, Ui ui, int width, int height) {
+    public DrawPad(ShortestRoute sr, Ui ui, int width, int height, int rows, int cols) {
         super(width, height);
         this.sr = sr;
         this.ui = ui;
         this.width = width;
         this.height = height;
+        this.rows = rows;
+        this.cols = cols;
+        this.rowGap = width / cols;
         this.gc = super.getGraphicsContext2D();
     }
 
     /**
-     * Tyhjentää ruudukon
+     * Clears the grid area.
      *
      */
     public void clearArea() {
@@ -40,119 +45,131 @@ public class DrawPad extends Canvas {
     }
 
     /**
-     * Päivittää käytettävän värin
+     * Updates the fill.
      *
-     * @param color Väri
+     * @param color Fill
      */
     public void updateFill(Color color) {
         gc.setFill(color);
     }
 
     /**
-     * Piirtää polun solmusta toiseen
+     * Fills a path from node1 to node2.
      *
-     * @param y1 Solmun 1 y-koordinaatti
-     * @param x1 Solmun 1 x-koordinaatti
-     * @param y2 Solmun 2 y-koordinaatti
-     * @param x2 Solmun 2 x-koordinaatti
+     * @param y1 node1's y-coordinate
+     * @param x1 node1's x-coordinate
+     * @param y2 node2's y-coordinate
+     * @param x2 node2's x-coordinate
      */
     public void fillPathLine(int y1, int x1, int y2, int x2) {
         gc.setStroke(Color.ORANGE);
         gc.setLineWidth(3.0);
-        gc.strokeLine(x1 * 20 + 10, y1 * 20 + 10, x2 * 20 + 10, y2 * 20 + 10);
+        gc.strokeLine(x1 * rowGap + rowGap / 2, y1 * rowGap + rowGap / 2, x2 * rowGap + rowGap / 2, y2 * rowGap + rowGap / 2);
     }
 
     /**
-     * Piirtää esteen
+     * Fills a block.
      *
-     * @param positionY Hiiren y-koordinaatti
-     * @param positionX Hiiren x-koordinaatti
+     * @param positionY y-coordinate of mouse
+     * @param positionX x-coordinate of mouse
      *
      * @throws FileNotFoundException
      */
     public void fillBlock(double positionY, double positionX) throws FileNotFoundException {
-        int x = (int) positionX / 20;
-        int y = (int) positionY / 20;
-        Image img = new Image(getClass().getResourceAsStream("/images/block.jpeg"));
-        gc.drawImage(img, x * 20 + 1, y * 20 + 1, 18, 18);
-        sr.setBlock(y, x);
+        int x = (int) positionX / rowGap;
+        int y = (int) positionY / rowGap;
+        if (x < cols && y < rows) {
+            Image img = new Image(getClass().getResourceAsStream("/images/block.png"));
+            gc.drawImage(img, x * rowGap + 1, y * rowGap + 1, rowGap - 2, rowGap - 2);
+            sr.setBlock(y, x);
+        }
     }
 
     /**
-     * Poistaa esteen
+     * Removes a block.
      *
-     * @param positionY Hiiren y-koordinaatti
-     * @param positionX Hiiren x-koordinaatti
-     * @param color Ruudun väri
+     * @param positionY y-coordinate of mouse
+     * @param positionX x-coordinate of mouse
+     * @param color Block's color
      */
     public void removeBlock(double positionY, double positionX, Color color) {
-        int x = (int) positionX / 20;
-        int y = (int) positionY / 20;
+        int x = (int) positionX / rowGap;
+        int y = (int) positionY / rowGap;
 
         gc.setFill(color);
-        gc.fillRect(x * 20 + 1, y * 20 + 1, 18, 18);
+        gc.fillRect(x * rowGap + 1, y * rowGap + 1, rowGap - 2, rowGap - 2);
         sr.removeBlock(y, x);
     }
 
     /**
-     * Asettaa alkusolmun
+     * Sets up the initial node.
      *
-     * @param row Alkusolmun rivi
-     * @param column Alkusolmun sarake
-     * @return Alkusolmun
+     * @param row
+     * @param column
+     * @return Initial node
      */
     public Node setInitialNode(int row, int column) {
-        Node n = new Node(row, column);
+        if (row >= height / rowGap || column >= width / rowGap) {
+            row = 0;
+            column = 0;
+            sr.setInitialNode(row, column);
+        }
+        Node n = new Node(column, row);
         gc.setFill(Color.BLUE);
-        gc.fillRect(column * 20 + 1, row * 20 + 1, 18, 18);
+        gc.fillRect(column * rowGap + 1, row * rowGap + 1, rowGap - 2, rowGap - 2);
         sr.setInitialNode(n);
         return n;
     }
 
     /**
-     * Asettaa loppusolmun
+     * Sets up the final node.
      *
-     * @param row Loppuusolmun rivi
-     * @param column Loppusolmun sarake
-     * @return Loppusolmun
+     * @param row
+     * @param column
+     * @return Final node
      */
     public Node setFinalNode(int row, int column) {
-        Node n = new Node(row, column);
+        if (row >= height / rowGap || column >= width / rowGap) {
+            row = rows - 1;
+            column = cols - 1;
+            sr.setFinalNode(column, row);
+        }
+        Node n = new Node(column, row);
         gc.setFill(Color.GREEN);
-        gc.fillRect(column * 20 + 1, row * 20 + 1, 18, 18);
+        gc.fillRect(column * rowGap + 1, row * rowGap + 1, rowGap - 2, rowGap - 2);
         sr.setFinalNode(n);
         return n;
     }
 
     /**
-     * Piirtää ruudukon
+     * Fills the grid.
      *
-     * @param width Ruudukon leveys
-     * @param height Ruudukon korkeus
+     * @param width Width of the grid
+     * @param height Height of the grid
      */
     public void fillGrid(int width, int height) {
         gc.setLineWidth(1.0);
         gc.setStroke(Color.BLACK);
-        for (int x = 0; x <= width; x += 20) {
-            gc.strokeLine(x, 0, x, height);
+        for (int x = 0; x <= width; x += rowGap) {
+            gc.strokeLine(x, 0, x, rows * rowGap);
         }
 
-        for (int y = 0; y <= height; y += 20) {
-            gc.strokeLine(0, y, width, y);
+        for (int y = 0; y <= rows * rowGap; y += rowGap) {
+            gc.strokeLine(0, y, cols * rowGap, y);
         }
     }
 
     /**
-     * Piirtää kaikki esteet
+     * Fills all blocks.
      *
-     * @param blocks Taulukko esteistä
+     * @param blocks Array of blocks
      */
     public void fillBlocks(boolean[][] blocks) {
         for (int y = 0; y < blocks.length; y++) {
             for (int x = 0; x < blocks[0].length; x++) {
-                if (blocks[y][x]) {
-                    Image img = new Image(getClass().getResourceAsStream("/images/block.jpeg"));
-                    gc.drawImage(img, x * 20 + 1, y * 20 + 1, 18, 18);
+                if (blocks[y][x] && x < cols && y < rows) {
+                    Image img = new Image(getClass().getResourceAsStream("/images/block.png"));
+                    gc.drawImage(img, x * rowGap + 1, y * rowGap + 1, rowGap - 2, rowGap - 2);
                 }
             }
         }
@@ -162,23 +179,42 @@ public class DrawPad extends Canvas {
     }
 
     /**
-     * Piirtää neliön
+     * Fills a rectangle
      *
-     * @param y Neliön y-koordinaatti
-     * @param x Neliön x-koordinaatti
-     * @param c Väri
+     * @param y Rectangle's y-coordinate
+     * @param x Rectangle's x-coordinate
+     * @param c Color
      */
     public void fillRect(int y, int x, Color c) {
-        gc.setFill(c);
-        gc.fillRect(x * 20 + 1, y * 20 + 1, 18, 18);
+        if (x < cols && y < rows) {
+            gc.setFill(c);
+            gc.fillRect(x * rowGap + 1, y * rowGap + 1, rowGap - 2, rowGap - 2);
+        }
     }
 
     /**
-     * Alustaa ruudukkonäkymän
+     * Resets the grid
      *
      */
     public void reset() {
         clearArea();
         fillGrid(width, height);
+        setInitialNode(sr.getStartY(), sr.getStartX());
+        setFinalNode(sr.getGoalY(), sr.getGoalX());
+        fillBlocks(sr.getBlocks());
+    }
+
+    /**
+     * Updates rows and columns
+     *
+     * @param rows
+     *
+     */
+    public void updateRowsAndCols(int rows) {
+        this.rowGap = height / rows;
+        this.rows = rows;
+        this.cols = width / rowGap;
+        reset();
+
     }
 }

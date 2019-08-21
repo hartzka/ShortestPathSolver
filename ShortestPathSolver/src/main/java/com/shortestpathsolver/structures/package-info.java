@@ -1,5 +1,5 @@
 /**
- * Omat kustomoidut tietorakenteet
+ * Custom structures
  */
 
 package com.shortestpathsolver.structures;

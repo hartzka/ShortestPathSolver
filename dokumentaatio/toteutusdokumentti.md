@@ -19,3 +19,5 @@ Algoritmeja voisi edelleen optimoida varsinkin naapurien läpikäymisen ja solmu
 ### Parannukset
 
 Logiikassa on esiintynyt joitakin bugeja ja niitä on korjattu. Ei ole taetta, onko logiikka täysin virheetöntä, mutta testattaessa ei ole havaittu enää uusia virheellisyyksiä. Heuristiikka on säädetty kokemuksen perusteella toimivaksi, mutta sekin saattaa harvinaisemmilla syötteillä osoittautua päivittämistä vaativaksi.
+
+Sovellus ei aina välttämättä käänny kovin helposti konffien takia. Tätä ongelmaa mietitään. Avuksi on olemassa valmis jar-tiedosto.

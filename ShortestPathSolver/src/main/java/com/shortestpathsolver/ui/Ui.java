@@ -127,6 +127,8 @@ public class Ui {
             @Override
             public void handle(ActionEvent event) {
                 pane.setStyle("-fx-background-color: #" + colorpicker.getValue().toString().substring(2, 8));
+                sr.setBackGround(colorpicker.getValue());
+                canvas.reset();
             }
         });
 

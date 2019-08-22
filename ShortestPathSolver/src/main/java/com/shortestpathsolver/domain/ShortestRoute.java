@@ -632,4 +632,8 @@ public class ShortestRoute extends Application {
     boolean getAStarOn() {
         return aStarOn;
     }
+
+    public void setBackGround(Color value) {
+        this.bgColor = value;
+    }
 }

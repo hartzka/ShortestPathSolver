@@ -49,17 +49,17 @@ public class Dijkstra {
         heap.clear();
         heap.add(initialNode);
         while (heap.size() > 0) {
-            Node node = heap.poll();
+            Node node = heap.poll(); //Node with smallest distance
             if (visited[node.toInt()]) {
                 continue;
             }
             if (sr.isFinalNode(node)) {
-                System.out.println("Distance: " + node.getDist());
+                System.out.println("Distance: " + node.getDist()); //The search is over and we've found the final Node! Be happy
                 return getPath(node);
             }
             visited[node.toInt()] = true;
             closedSet.add(node);
-            Pair<Node, Integer>[] neighbours = getNeighbours(node);
+            Pair<Node, Integer>[] neighbours = getNeighbours(node); // Get all neighbours except blocks
             for (int i = 0; i < neighbours.length; i++) {
                 if (neighbours[i] != null) {
                     Pair<Node, Integer> neighbourPair = neighbours[i];
@@ -67,10 +67,10 @@ public class Dijkstra {
                     int currentDist = dist[neighbour.toInt()];
                     int newDist = dist[node.toInt()] + neighbourPair.getValue();
                     if (newDist < currentDist) {
-                        dist[neighbour.toInt()] = newDist;
+                        dist[neighbour.toInt()] = newDist; // Update dists
                         neighbour.setParent(node);
                         neighbour.setDist(newDist);
-                        heap.add(neighbour);
+                        heap.add(neighbour); // Add to heap
                     }
                 }
 

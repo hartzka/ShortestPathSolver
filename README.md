@@ -28,3 +28,58 @@ Tämä on Helsingin Yliopiston tietorakenteiden ja algoritmien loppukesän 2019 
 
 ## Jar
 [ShortestPathSolver-1.0.jar](https://github.com/hartzka/ShortestPathSolver/releases/download/1.0/ShortestPathSolver-1.0.jar)
+
+
+## Komentorivitoiminnot
+
+### Testaus
+
+Testit suoritetaan komennolla
+
+```
+mvn test
+```
+
+Testikattavuusraportti luodaan komennolla
+
+```
+mvn jacoco:report
+```
+
+Kattavuusraporttia voi tarkastella avaamalla selaimella tiedosto _target/site/jacoco/index.html_
+
+### Suoritettavan jarin generointi
+
+Komento
+
+```
+mvn package
+```
+
+generoi hakemistoon _target_ suoritettavan jar-tiedoston _ShortestRouteSolver-1.0-SNAPSHOT.jar_
+
+jar-tiedoston voi ajaa komennolla
+```
+java -jar ShortestRouteSolver-1.0-SNAPSHOT.jar
+``` 
+
+### Checkstyle
+
+Tiedostoon [checkstyle.xml](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/checkstyle.xml) määrittelemät tarkistukset suoritetaan komennolla
+
+```
+ mvn jxr:jxr checkstyle:checkstyle
+```
+
+Mahdolliset virheilmoitukset selviävät avaamalla selaimella tiedosto _target/site/checkstyle.html_
+
+### JavaDoc
+
+JavaDoc generoidaan komennolla
+
+```
+mvn javadoc:javadoc
+```
+
+JavaDocia voi tarkastella avaamalla selaimella tiedosto _target/site/apidocs/index.html_
+

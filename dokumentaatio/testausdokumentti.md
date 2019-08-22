@@ -1,11 +1,11 @@
 ## Yksikkötestaus
 
 Yksikkötestaus on tehty luokkakohtaisesti Javan Junitilla. Kattavuusraportti löytyy [täältä](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/images/test_report.png).
-Testikattavuus on keskimäärin >= 90%, joten testejä on tehty melko kattavasti, mutta kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan muuten kuin manuaalisesti.
+Testikattavuus on keskimäärin >= 90%, joten testejä on tehty melko kattavasti, mutta kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan muuten kuin manuaalisesti. Esimerkiksi graafiset elementit ja ui:n metodit ovat tällaisia. 
 
 ### ShortestRouteTest
 
-Testeissä on testattu ohjelman logiikan perustoiminnot. Kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan.
+Testeissä on testattu ohjelman logiikan perustoiminnot kattavasti. Kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan. Näitä ovat mm. graafiset elementit ja ui:n toiminnot.
 
 ### AStarTest
 
@@ -26,7 +26,7 @@ Tässä testataan oman ArrayListin toimivuutta eri syötteillä ja myös tapauks
 
 ## Manuaalinen testaus
 
-Ohjelmaa on testattu lukuisilla eri syötteillä manuaalisesti ja käyttöliittymän kautta.
+Ohjelmaa on testattu lukuisilla eri syötteillä manuaalisesti ja käyttöliittymän kautta eri ruudukon kokoluokilla ja eri alku- ja loppupisteiden sijainneilla.
 
  
 ## Suorituskykytestaus

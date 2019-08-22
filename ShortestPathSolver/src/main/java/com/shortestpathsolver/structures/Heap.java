@@ -39,6 +39,9 @@ public class Heap {
         heap[b] = tmp;
     }
 
+    /**
+     * Constructs the heap so that the conditions are valid.
+     */
     private void makeMinHeap(int a) {
 
         if (!(a >= (size / 2) && a <= size)) {

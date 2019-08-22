@@ -275,6 +275,9 @@ public class ShortestRoute extends Application {
         return true;
     }
 
+    /**
+     * Updates visualization colors.
+     */
     private void visualizeAStarPath(CustomArrayList<Node> closedSet, CustomArrayList<Node> path) {
         for (int i = 0; i < closedSet.size(); i++) {
             Node n = closedSet.get(i);
@@ -406,31 +409,31 @@ public class ShortestRoute extends Application {
         DrawPad canvas;
         canvas = ui != null ? ui.getCanvas() : new DrawPad(this, null, 1, 1, 1, 1);
         if (initialNodeMoving) {
-            if (isAvailable(uy, ux) && uy < rows && ux < cols) {
+            if (isAvailable(uy, ux) && uy < rows && ux < cols) { // Now initial Node is moving
                 canvas.fillRect(startY, startX, bgColor);
                 startX = ux;
                 startY = uy;
                 canvas.setInitialNode(uy, ux);
             }
         } else if (finalNodeMoving) {
-            if (isAvailable(uy, ux) && uy < rows && ux < cols) {
+            if (isAvailable(uy, ux) && uy < rows && ux < cols) { // Now final Node is moving
                 canvas.fillRect(goalY, goalX, bgColor);
                 goalX = ux;
                 goalY = uy;
                 canvas.setFinalNode(uy, ux);
             }
         } else if (initialNode.getColumn() == ux && initialNode.getRow() == uy) {
-            initialNodeMoving = true;
+            initialNodeMoving = true; // Initial Node starts to move
         } else if (finalNode.getColumn() == ux && finalNode.getRow() == uy) {
-            finalNodeMoving = true;
-        } else if (!inserting) { //removing
+            finalNodeMoving = true; // Final Node starts to move
+        } else if (!inserting) { //Removing
             if (isNotInitialOrFinalNode(ux, uy)) {
                 canvas.removeBlock(y, x, bgColor);
             }
         } else {
             if (isNotInitialOrFinalNode(ux, uy)) {
                 try {
-                    canvas.fillBlock(y, x);
+                    canvas.fillBlock(y, x); //Inserting blocks
                 } catch (Exception ex) {
                     Logger.getLogger(Ui.class.getName()).log(Level.SEVERE, null, ex);
                 }

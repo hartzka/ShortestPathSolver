@@ -32,13 +32,13 @@ public class Dijkstra {
     }
 
     /**
-     * The main method, which searches the shortest route with Dijkstra
+     * The main logic, which searches the shortest route with Dijkstra
      *
      * @param initialNode Beginning of the search
      * @return List presenting the route
      */
     public CustomArrayList<Node> calculatePath(Node initialNode) {
-        closedSet.clear();
+        closedSet.clear(); //initializations
         dist = new int[m];
         for (int i = 0; i < m; i++) {
             dist[i] = inf;

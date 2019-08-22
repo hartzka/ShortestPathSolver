@@ -27,7 +27,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.swing.plaf.basic.BasicHTML;
 
 /**
  * UI class
@@ -123,6 +122,7 @@ public class Ui {
         notFound.setVisible(false);
         aStar.setDisable(true);
 
+        //Event handlers
         colorpicker.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -206,6 +206,7 @@ public class Ui {
         }
         );
 
+        //Styles
         aStar.getStyleClass().add("orbutton");
         jps.getStyleClass().add("yebutton");
         dijkstra.getStyleClass().add("blbutton");
@@ -279,6 +280,7 @@ public class Ui {
 
         layout.setBottom(hb);
 
+        //Event handlers
         update.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event
@@ -445,6 +447,11 @@ public class Ui {
         return new Pane(layout);
     }
 
+    /**
+     *
+     * The actions when user has not yet filled blocks
+     *
+     */
     private void notWritedActions() {
         notFound.setVisible(false);
         sr.setWrited(true);
@@ -475,6 +482,12 @@ public class Ui {
         getPath.setDisable(b);
     }
 
+    /**
+     *
+     * File saving
+     *
+     * @param file The file to save
+     */
     private void saveFile(File file) {
         try {
             PrintWriter writer;

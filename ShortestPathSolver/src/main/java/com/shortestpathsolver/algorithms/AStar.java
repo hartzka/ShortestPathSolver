@@ -29,6 +29,16 @@ public class AStar {
         this.finalPath = new CustomArrayList<>();
     }
 
+    /**
+     * The main logic in A* algorithm. Checks if currentNode's neighbour is
+     * found in closed set and open list. Updates node's information and checks
+     * if a better path exists from currentNode to its neighbour.
+     *
+     * @param currentNode Current node
+     * @param col Neighbour's column
+     * @param row Neighbour's row
+     * @param cost Movement cost
+     */
     private void checkNode(Node currentNode, int col, int row, int cost) {
         Node neighbour = sr.getNodes()[row][col];
         if (!neighbour.isBlock()) {
@@ -54,20 +64,20 @@ public class AStar {
     public CustomArrayList<Node> calculatePath(Node initialNode) {
         openList.add(initialNode);
         while (openList.size() != 0) {
-            Node currentNode = (Node) openList.poll();
+            Node currentNode = (Node) openList.poll(); // The node with smallest distance (f-value)
             closedSet.add(currentNode);
             if (sr.isFinalNode(currentNode)) {
                 System.out.println("G: " + currentNode.getG());
                 return getPath(currentNode);
             } else {
                 if (!jps) {
-                    addNeighbourNodes(currentNode); //A*-algoritmi
+                    addNeighbourNodes(currentNode); //A*-algorithm
                 } else { //A* with JPS
-                    Node[] jumpPoints = calculateJumpPoints(currentNode);
+                    Node[] jumpPoints = calculateJumpPoints(currentNode); //Possible jump points in JPS
                     for (int i = 0; i < jumpPoints.length; i++) {
                         Node jumpPoint = jumpPoints[i];
                         if (!(jumpPoint == null || jumpPoint.isBlock())) {
-                            if (!closedSet.contains(jumpPoint) && !openList.contains(jumpPoint)) {
+                            if (!closedSet.contains(jumpPoint) && !openList.contains(jumpPoint)) { // Logic in JPS
                                 setAStarInformationRange(currentNode, jumpPoint);
                                 openList.add(jumpPoint);
                             } else if (closedSet.contains(jumpPoint)) {
@@ -82,7 +92,7 @@ public class AStar {
                 }
             }
         }
-        return new CustomArrayList<Node>();
+        return new CustomArrayList<>();
     }
 
     /**
@@ -93,17 +103,17 @@ public class AStar {
      */
     public Node[] calculateJumpPoints(Node node) {
         Node[] jumpPoints = new Node[8];
-        Pair[] neighbors = getNeighbours(node);
+        Pair[] neighbors = getNeighbours(node); // All neighbours
         for (int i = 0; i < neighbors.length; i++) {
 
-            Pair<Integer, Integer> point = jump((int) neighbors[i].getKey(), (int) neighbors[i].getValue(), node.getColumn(), node.getRow());
+            Pair<Integer, Integer> point = jump((int) neighbors[i].getKey(), (int) neighbors[i].getValue(), node.getColumn(), node.getRow()); //Pair presenting jump point
             if (point.getKey() != -1) {
                 int x = point.getKey();
                 int y = point.getValue();
 
                 int newG = (approxG(x, y, node.getColumn(), node.getRow()));
                 if (sr.getNodes()[y][x].getDist() == 0 || sr.getNodes()[y][x].getG() > newG) {
-                    jumpPoints[i] = sr.getNodes()[y][x];
+                    jumpPoints[i] = sr.getNodes()[y][x]; // Jump point is added
                 }
             }
         }
@@ -281,6 +291,16 @@ public class AStar {
         return false;
     }
 
+    /**
+     * Gives an approximation of g value between two nodes.
+     *
+     * @param x1 x-coordinate of the first node
+     * @param y1 y-coordinate of the first node
+     * @param x2 x-coordinate of the second node
+     * @param y2 y-coordinate of the second node
+     *
+     * @return Approximation of g cost
+     */
     private int approxG(int x1, int y1, int x2, int y2) {
         if (x1 == x2) {
             return Math.abs(y1 - y2) * hCost;
@@ -306,6 +326,14 @@ public class AStar {
         this.jps = b;
     }
 
+    /**
+     * Updates all Node informations in a range between currentNode and
+     * jumpPoint. Used in JPS.
+     *
+     * @param currentNode
+     * @param jumpPoint
+     *
+     */
     private void setAStarInformationRange(Node currentNode, Node jumpPoint) {
         int col1 = currentNode.getColumn();
         int col2 = jumpPoint.getColumn();

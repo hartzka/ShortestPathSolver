@@ -34,7 +34,7 @@ public class DijkstraTest {
             sr.setBlock(i, (int) (Math.random() * 39));
         }
         sr.handleDijkstraButtonActions();
-        assertTrue(sr.handleGetPathButtonActions() == true);
+        assertTrue(sr.handleCalculatePathButtonActions() == true);
     }
 
     @Test
@@ -43,6 +43,6 @@ public class DijkstraTest {
         sr.setBlock(1, 1);
         sr.setBlock(0, 1);
         sr.handleDijkstraButtonActions();
-        assertTrue(sr.handleGetPathButtonActions() == false);
+        assertTrue(sr.handleCalculatePathButtonActions() == false);
     }
 }

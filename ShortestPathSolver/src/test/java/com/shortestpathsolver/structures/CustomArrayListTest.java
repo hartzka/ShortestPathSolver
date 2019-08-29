@@ -26,24 +26,24 @@ public class CustomArrayListTest {
     @Test
     public void ArrayIndexOutOfBoundsExceptionWhenInserting() {
         try {
-            list.add(list.size()+1, new Node(0, 0));
+            list.add(list.size() + 1, new Node(0, 0));
             fail("Expected an ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException e) {
             assertTrue(e.getMessage().equals("ArrayIndexOutOfBounds"));
         }
     }
-    
+
     @Test
     public void ArrayIndexOutOfBoundsExceptionWhenRemoving() {
         list.add(0, new Node(0, 0));
         try {
-            list.remove(list.size()+1);
+            list.remove(list.size() + 1);
             fail("Expected an ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException e) {
             assertTrue(e.getMessage().equals("ArrayIndexOutOfBounds"));
         }
     }
-    
+
     @Test
     public void testInsertingAndRemoving() {
         Node n = new Node(1, 1);
@@ -57,7 +57,7 @@ public class CustomArrayListTest {
         list.clear();
         assertTrue(list.size() == 0);
     }
-    
+
     @Test
     public void testListIsIncreased() {
         for (int i = 0; i <= 100; i++) {
@@ -65,7 +65,7 @@ public class CustomArrayListTest {
         }
         assertTrue(list.size() == 101);
     }
-    
+
     @Test
     public void testContains() {
         Node n = new Node(1, 1);

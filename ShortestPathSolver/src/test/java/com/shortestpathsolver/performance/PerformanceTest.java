@@ -1,6 +1,7 @@
 package com.shortestpathsolver.performance;
 
 import com.shortestpathsolver.algorithms.AStar;
+import com.shortestpathsolver.algorithms.BFS;
 import com.shortestpathsolver.algorithms.Dijkstra;
 import com.shortestpathsolver.domain.Node;
 import com.shortestpathsolver.domain.ShortestRoute;
@@ -12,6 +13,7 @@ public class PerformanceTest {
 
     private AStar aStar;
     private Dijkstra dijkstra;
+    private BFS bfs;
     private ShortestRoute sr;
     private boolean test;
 
@@ -20,10 +22,11 @@ public class PerformanceTest {
         sr = new ShortestRoute();
         aStar = new AStar(sr);
         dijkstra = new Dijkstra(sr);
-        test = false; // set this to false to disable testing!
+        bfs = new BFS(sr);
+        test = true; // set this to false to disable testing! True = enabled
     }
 
-    private String testPerformance(int rows, int method) { //0 = A*, 1 = Jps, 2 = Dijkstra
+    private String testPerformance(int rows, int method) { //0 = A*, 1 = Jps, 2 = Dijkstra, 3 = BFS
         sr.updateRowsAndCols(rows);
         long processingTimeTotal = 0;
         long preProcessingTimeTotal = 0;
@@ -48,6 +51,8 @@ public class PerformanceTest {
                 aStar.calculatePath(sr.getInitialNode());
             } else if (method == 2) {
                 dijkstra.calculatePath(sr.getInitialNode());
+            } else if (method == 3) {
+                bfs.calculatePath(sr.getInitialNode());
             }
 
             long t3 = System.nanoTime();
@@ -63,6 +68,8 @@ public class PerformanceTest {
             s += "JPS ";
         } else if (method == 2) {
             s += "Dijkstra ";
+        } else if (method == 3) {
+            s += "BFS  ";
         }
         s += "running time average: " + processingTime / 1000 + " ms";
         return s;
@@ -100,6 +107,18 @@ public class PerformanceTest {
             System.out.println("Testing.......... this takes a moment");
             for (int i = 9; i < 100; i += 15) {
                 System.out.println(testPerformance(i, 2)); //comment to disable output
+            }
+        }
+    }
+    
+    @Test
+    public void testPerformanceBfs() {
+        if (test) {
+            System.out.println("***********************************************************************************");
+            System.out.println("\nBFS:\n");
+            System.out.println("Testing.......... this takes a moment");
+            for (int i = 9; i < 100; i += 15) {
+                System.out.println(testPerformance(i, 3)); //comment to disable output
             }
         }
     }

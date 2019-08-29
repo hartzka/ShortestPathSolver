@@ -12,11 +12,9 @@ public class Heap {
     private Node[] heap;
     private int size;
     private int top = 1;
-    private int option;
 
-    public Heap(int option) {
+    public Heap() {
         this.size = 0;
-        this.option = option; // 0 = A*, 1 = Dijkstra
         this.heap = new Node[101010];
     }
 
@@ -102,7 +100,7 @@ public class Heap {
      */
     public void clear() {
         this.size = 0;
-        heap = new Node[10101];
+        heap = new Node[101010];
     }
 
     /**

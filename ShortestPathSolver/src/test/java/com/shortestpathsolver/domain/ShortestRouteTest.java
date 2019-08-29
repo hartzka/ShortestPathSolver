@@ -113,21 +113,17 @@ public class ShortestRouteTest {
         sr.handleMouseAction(0, 0);
         assertTrue(sr.getInitialNodeMoving() == true);
         sr.handleMouseAction(30, 30);
-        //assertTrue(sr.getStartX() == 1);
-        //assertTrue(sr.getInitialNode().getColumn() == 2);
+        assertTrue(sr.getInitialNode().getColumn() == 0);
         sr.setNodesMovementsOff();
 
         sr.handleMouseAction(20 * 20, 20 * 20);
         assertTrue(sr.getFinalNodeMoving() == true);
         sr.handleMouseAction(80, 80);
-        //assertTrue(sr.getFinalNode().getRow() == 4);
-        //assertTrue(sr.getFinalNode().getColumn() == 4);
         sr.setNodesMovementsOff();
 
         sr.handleMouseAction(30 * 20, 30 * 20);
         sr.setInserting(false);
         sr.handleMouseAction(5 * 20, 5 * 20);
-
     }
 
     @Test
@@ -136,11 +132,10 @@ public class ShortestRouteTest {
         cs.add(new Node(3, 3));
         cs.add(new Node(4, 44));
         sr.getAStar().setClosedSet(cs);
-        
+
         CustomArrayList<Node> path = new CustomArrayList<>();
         path.add(new Node(0, 44));
         path.add(new Node(4, 44));
-        sr.getAStar().setPath(path);
 
         sr.handleAnimation();
         sr.handleAnimation();
@@ -148,7 +143,21 @@ public class ShortestRouteTest {
         sr.handleAnimation();
         assertTrue(sr.getPathDrawing() == true);
         sr.handleAnimation();
-        sr.handleAnimation();
+    }
+
+    @Test
+    public void testPathLineFilling() {
+        sr.handleAStarButtonActions();
+        sr.fillPathLine();
+        assertTrue(sr.getPrevNode() == null);
+
+        sr.handleDijkstraButtonActions();
+        sr.fillPathLine();
+        assertTrue(sr.getPrevNode() == null);
+
+        sr.handleBfsButtonActions();
+        sr.fillPathLine();
+        assertTrue(sr.getPrevNode() == null);
     }
 
     @Test
@@ -158,21 +167,26 @@ public class ShortestRouteTest {
         sr.handleAStarButtonActions();
         assertTrue(sr.getAStar().getJps() == false);
     }
-    
+
     @Test
     public void testDijkstraButtonActions() {
         sr.handleDijkstraButtonActions();
-        assertTrue(sr.getAStarOn() == false);
-        assertTrue(sr.getDijkstraOn() == true);
+        assertTrue(sr.getAlgorithmInUse() == 2);
     }
-    
+
+    @Test
+    public void testBfsButtonActions() {
+        sr.handleBfsButtonActions();
+        assertTrue(sr.getAlgorithmInUse() == 3);
+    }
+
     @Test
     public void updateRowsAndColsTest() {
         sr.updateRowsAndCols(80);
         assertTrue(sr.getRows() == 80);
         assertTrue(sr.getCols() == 100);
     }
-    
+
     @Test
     public void getContentTest() {
         sr.initializeBlocks();

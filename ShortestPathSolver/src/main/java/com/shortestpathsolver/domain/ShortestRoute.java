@@ -1,6 +1,7 @@
 package com.shortestpathsolver.domain;
 
 import com.shortestpathsolver.algorithms.AStar;
+import com.shortestpathsolver.algorithms.BFS;
 import com.shortestpathsolver.algorithms.Dijkstra;
 import com.shortestpathsolver.structures.CustomArrayList;
 import com.shortestpathsolver.ui.DrawPad;
@@ -14,7 +15,6 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -27,6 +27,7 @@ public class ShortestRoute extends Application {
 
     private AStar aStar;
     private Dijkstra dijkstra;
+    private BFS bfs;
     private boolean writed;
     private int startX;
     private int startY;
@@ -34,6 +35,7 @@ public class ShortestRoute extends Application {
     private int goalY;
     private boolean inserting;
     private Ui ui;
+    private DrawPad canvas;
     private Node initialNode;
     private Node finalNode;
     private boolean[][] blocks;
@@ -45,8 +47,7 @@ public class ShortestRoute extends Application {
     private Node prevNode;
     private KeyFrame frame;
     private boolean pathDrawing;
-    private boolean aStarOn;
-    private boolean dijkstraOn;
+    private int algorithmInUse; // 0 = A*, 1 = JPS, 2 = Dijkstra, 3 = BFS
     private boolean initialNodeMoving;
     private boolean finalNodeMoving;
     private int rowGap;
@@ -54,10 +55,7 @@ public class ShortestRoute extends Application {
     private int width;
     private Color bgColor;
     private Random rand;
-    private Button getPathButton;
-    private Button aStarButton;
-    private Button jpsButton;
-    private Button dijkstraButton;
+    private boolean pathVisualize;
 
     public ShortestRoute() {
         this.inserting = true;
@@ -78,14 +76,16 @@ public class ShortestRoute extends Application {
         this.finalNode = new Node(goalX, goalY);
         this.aStar = new AStar(this);
         this.dijkstra = new Dijkstra(this);
-        this.aStarOn = true;
-        this.dijkstraOn = false;
+        this.bfs = new BFS(this);
+        this.algorithmInUse = 0;
         this.pathDrawing = false;
         this.timeline = new Timeline();
         this.timelineIterator = 0;
         this.bgColor = Color.BURLYWOOD;
         this.rowGap = height / rows;
         this.rand = new Random();
+        this.pathVisualize = false;
+        this.canvas = new DrawPad(this, null, 1, 1, 1, 1);
         setNodes();
         this.frame = new KeyFrame(Duration.seconds(0.001), new EventHandler<ActionEvent>() {
             @Override
@@ -100,12 +100,9 @@ public class ShortestRoute extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        this.getPathButton = new Button("Calculate path");
-        this.aStarButton = new Button("A*");
-        this.jpsButton = new Button("JPS");
-        this.dijkstraButton = new Button("Dijkstra");
-        ui = new Ui(this, width, height, rows, cols, bgColor);
+        this.ui = new Ui(this, width, height, rows, cols, bgColor);
         ui.start(primaryStage);
+        this.canvas = ui.getCanvas();
     }
 
     /**
@@ -116,7 +113,7 @@ public class ShortestRoute extends Application {
     public boolean calculateAStarPath() {
         CustomArrayList<Node> path = aStar.calculatePath(initialNode);
         CustomArrayList<Node> closedSet = aStar.getClosedSet();
-        visualizeAStarPath(closedSet, path);
+        visualizePath(closedSet, path);
         if (path.isEmpty()) {
             return false;
         }
@@ -132,7 +129,23 @@ public class ShortestRoute extends Application {
     public boolean calculateDijkstraPath() {
         CustomArrayList<Node> path = dijkstra.calculatePath(initialNode);
         CustomArrayList<Node> closedSet = dijkstra.getClosedSet();
-        visualizeAStarPath(closedSet, path);
+        visualizePath(closedSet, path);
+        if (path.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Searches the shortest route with BFS and sends it to visualization
+     * method.
+     *
+     * @return true, if a route exists, otherwise false
+     */
+    public boolean calculateBFSPath() {
+        CustomArrayList<Node> path = bfs.calculatePath(initialNode);
+        CustomArrayList<Node> closedSet = bfs.getClosedSet();
+        visualizePath(closedSet, path);
         if (path.isEmpty()) {
             return false;
         }
@@ -162,8 +175,7 @@ public class ShortestRoute extends Application {
      */
     public void handleAStarButtonActions() {
         aStar.setJPS(false);
-        aStarOn = true;
-        dijkstraOn = false;
+        algorithmInUse = 0;
     }
 
     /**
@@ -171,16 +183,21 @@ public class ShortestRoute extends Application {
      */
     public void handleJpsButtonActions() {
         aStar.setJPS(true);
-        aStarOn = true;
-        dijkstraOn = false;
+        algorithmInUse = 1;
+    }
+
+    /**
+     * Logic for BFS-button
+     */
+    public void handleBfsButtonActions() {
+        algorithmInUse = 3;
     }
 
     /**
      * Logic for Dijkstra-button
      */
     public void handleDijkstraButtonActions() {
-        aStarOn = false;
-        dijkstraOn = true;
+        algorithmInUse = 2;
     }
 
     /**
@@ -195,12 +212,15 @@ public class ShortestRoute extends Application {
      *
      * @return true, if path is found, false otherwise
      */
-    public boolean handleGetPathButtonActions() {
+    public boolean handleCalculatePathButtonActions() {
         boolean found = false;
-        if (aStarOn) {
+        pathVisualize = true;
+        if (algorithmInUse <= 1) {
             found = calculateAStarPath();
-        } else if (dijkstraOn) {
+        } else if (algorithmInUse == 2) {
             found = calculateDijkstraPath();
+        } else if (algorithmInUse == 3) {
+            found = calculateBFSPath();
         }
         return found;
     }
@@ -278,7 +298,7 @@ public class ShortestRoute extends Application {
     /**
      * Updates visualization colors.
      */
-    private void visualizeAStarPath(CustomArrayList<Node> closedSet, CustomArrayList<Node> path) {
+    private void visualizePath(CustomArrayList<Node> closedSet, CustomArrayList<Node> path) {
         for (int i = 0; i < closedSet.size(); i++) {
             Node n = closedSet.get(i);
             n.setVisualizationColor(Color.WHITE);
@@ -300,7 +320,7 @@ public class ShortestRoute extends Application {
                 if (blocks[i][j]) {
                     node.setBlock(true);
                 }
-                if (aStarOn) {
+                if (algorithmInUse <= 1) {
                     aStar.calculateHeuristic(node, this.finalNode);
                 }
                 this.nodes[i][j] = node;
@@ -360,7 +380,8 @@ public class ShortestRoute extends Application {
     }
 
     public void setNodesMovementsOff() {
-        initialNodeMoving = finalNodeMoving = false;
+        initialNodeMoving = false;
+        finalNodeMoving = false;
     }
 
     public int getStartX() {
@@ -404,38 +425,38 @@ public class ShortestRoute extends Application {
      * @param x x-coordinate
      */
     public void handleMouseAction(double x, double y) {
-        int ux = (int) (x / rowGap);
-        int uy = (int) (y / rowGap);
-        DrawPad canvas;
-        canvas = ui != null ? ui.getCanvas() : new DrawPad(this, null, 1, 1, 1, 1);
-        if (initialNodeMoving) {
-            if (isAvailable(uy, ux) && uy < rows && ux < cols) { // Now initial Node is moving
-                canvas.fillRect(startY, startX, bgColor);
-                startX = ux;
-                startY = uy;
-                canvas.setInitialNode(uy, ux);
-            }
-        } else if (finalNodeMoving) {
-            if (isAvailable(uy, ux) && uy < rows && ux < cols) { // Now final Node is moving
-                canvas.fillRect(goalY, goalX, bgColor);
-                goalX = ux;
-                goalY = uy;
-                canvas.setFinalNode(uy, ux);
-            }
-        } else if (initialNode.getColumn() == ux && initialNode.getRow() == uy) {
-            initialNodeMoving = true; // Initial Node starts to move
-        } else if (finalNode.getColumn() == ux && finalNode.getRow() == uy) {
-            finalNodeMoving = true; // Final Node starts to move
-        } else if (!inserting) { //Removing
-            if (isNotInitialOrFinalNode(ux, uy)) {
-                canvas.removeBlock(y, x, bgColor);
-            }
-        } else {
-            if (isNotInitialOrFinalNode(ux, uy)) {
-                try {
-                    canvas.fillBlock(y, x); //Inserting blocks
-                } catch (Exception ex) {
-                    Logger.getLogger(Ui.class.getName()).log(Level.SEVERE, null, ex);
+        if (!pathVisualize) {
+            int ux = (int) (x / rowGap);
+            int uy = (int) (y / rowGap);
+            if (initialNodeMoving) {
+                if (isAvailable(uy, ux) && uy < rows && ux < cols) { // Now initial Node is moving
+                    canvas.fillRect(startY, startX, bgColor);
+                    startX = ux;
+                    startY = uy;
+                    canvas.setInitialNode(uy, ux);
+                }
+            } else if (finalNodeMoving) {
+                if (isAvailable(uy, ux) && uy < rows && ux < cols) { // Now final Node is moving
+                    canvas.fillRect(goalY, goalX, bgColor);
+                    goalX = ux;
+                    goalY = uy;
+                    canvas.setFinalNode(uy, ux);
+                }
+            } else if (initialNode.getColumn() == ux && initialNode.getRow() == uy) {
+                initialNodeMoving = true; // Initial Node starts to move
+            } else if (finalNode.getColumn() == ux && finalNode.getRow() == uy) {
+                finalNodeMoving = true; // Final Node starts to move
+            } else if (!inserting) { //Removing
+                if (isNotInitialOrFinalNode(ux, uy)) {
+                    canvas.removeBlock(y, x, bgColor);
+                }
+            } else {
+                if (isNotInitialOrFinalNode(ux, uy)) {
+                    try {
+                        canvas.fillBlock(y, x); //Inserting blocks
+                    } catch (Exception ex) {
+                        Logger.getLogger(Ui.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }
@@ -454,7 +475,8 @@ public class ShortestRoute extends Application {
      *
      */
     public void handleAnimation() {
-        if (!pathDrawing && ((aStarOn && timelineIterator >= aStar.getClosedSet().size()) || (dijkstraOn && timelineIterator >= dijkstra.getClosedSet().size()))) {
+        if (!pathDrawing && ((algorithmInUse <= 1 && timelineIterator >= aStar.getClosedSet().size()) || (algorithmInUse == 2 && timelineIterator >= dijkstra.getClosedSet().size())
+                || (algorithmInUse == 3 && timelineIterator >= bfs.getClosedSet().size()))) {
             pathDrawing = true;
             prevNode = null;
             timelineIterator = 0;
@@ -462,63 +484,55 @@ public class ShortestRoute extends Application {
             handlePathDrawingActions();
         } else {
             Node n = null;
-            if (dijkstraOn) {
+            if (algorithmInUse == 2) {
                 n = dijkstra.getClosedSet().get(timelineIterator);
-            } else if (aStarOn) {
+            } else if (algorithmInUse <= 1) {
                 n = aStar.getClosedSet().get(timelineIterator);
+            } else if (algorithmInUse == 3) {
+                n = bfs.getClosedSet().get(timelineIterator);
             }
             if (isNotInitialOrFinalNode(n.getColumn(), n.getRow()) && !n.isBlock()) {
-                if (ui != null) {
-                    ui.getCanvas().fillRect(n.getRow(), n.getColumn(), n.getVisualizationColor());
-                }
+                canvas.fillRect(n.getRow(), n.getColumn(), n.getVisualizationColor());
             }
         }
         timelineIterator++;
     }
 
     private void handlePathDrawingActions() {
-        if ((dijkstraOn && timelineIterator >= dijkstra.getPath().size()) || (aStarOn && timelineIterator >= aStar.getPath().size())) {
+        if ((algorithmInUse == 2 && timelineIterator >= dijkstra.getPath().size()) || (algorithmInUse <= 1 && timelineIterator >= aStar.getPath().size())
+                || (algorithmInUse == 3 && timelineIterator >= bfs.getPath().size())) {
             pathDrawing = false;
             prevNode = null;
-            if (aStarOn) {
+            if (algorithmInUse <= 1) {
                 aStar.reset();
             }
             timelineIterator = 0;
-            if (getPathButton != null) {
-                getPathButton.setDisable(false);
-            }
-            if (aStarOn && aStar.getJps() && getPathButton != null) {
-                aStarButton.setDisable(false);
-                dijkstraButton.setDisable(false);
-            } else if (aStarOn && getPathButton != null) {
-                jpsButton.setDisable(false);
-                dijkstraButton.setDisable(false);
-            } else if (dijkstraOn && getPathButton != null) {
-                aStarButton.setDisable(false);
-                jpsButton.setDisable(false);
-            }
             timeline.stop();
+            pathVisualize = false;
+            if (ui != null) {
+                ui.setButtonsOn();
+            }
         } else {
             fillPathLine();
         }
     }
 
-    private void fillPathLine() {
+    public void fillPathLine() {
         Node n = null;
-        if (dijkstraOn) {
+        if (algorithmInUse == 2) {
             n = dijkstra.getPath().get(timelineIterator);
-        } else if (aStarOn) {
+        } else if (algorithmInUse <= 1) {
             n = aStar.getPath().get(timelineIterator);
+        } else if (algorithmInUse == 3) {
+            n = bfs.getPath().get(timelineIterator);
         }
         if (prevNode == null) {
-            prevNode = n;
-            if (ui != null) {
-                ui.getCanvas().fillPathLine(initialNode.getRow(), initialNode.getColumn(), prevNode.getRow(), prevNode.getColumn());
+            if (n != null) {
+                prevNode = n;
+                canvas.fillPathLine(initialNode.getRow(), initialNode.getColumn(), prevNode.getRow(), prevNode.getColumn());
             }
         } else {
-            if (ui != null) {
-                ui.getCanvas().fillPathLine(prevNode.getRow(), prevNode.getColumn(), n.getRow(), n.getColumn());
-            }
+            canvas.fillPathLine(prevNode.getRow(), prevNode.getColumn(), n.getRow(), n.getColumn());
             prevNode = n;
         }
     }
@@ -612,31 +626,19 @@ public class ShortestRoute extends Application {
         return blocks;
     }
 
-    public Button getCalculatePath() {
-        return getPathButton;
-    }
-
-    public Button getAStarButton() {
-        return aStarButton;
-    }
-
-    public Button getJps() {
-        return jpsButton;
-    }
-
-    public Button getDijkstra() {
-        return dijkstraButton;
-    }
-
-    public boolean getDijkstraOn() {
-        return dijkstraOn;
-    }
-
-    boolean getAStarOn() {
-        return aStarOn;
-    }
-
     public void setBackGround(Color value) {
         this.bgColor = value;
+    }
+
+    public boolean getPathVisualize() {
+        return pathVisualize;
+    }
+
+    public int getAlgorithmInUse() {
+        return algorithmInUse;
+    }
+
+    public Node getPrevNode() {
+        return prevNode;
     }
 }

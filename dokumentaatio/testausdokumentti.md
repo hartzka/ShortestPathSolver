@@ -33,33 +33,48 @@ Ohjelmaa on testattu lukuisilla eri syötteillä manuaalisesti ja käyttöliitty
 
 Suorituskykyyn liittyvä testaus löytyy tiedostosta [Performance.java](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/src/test/java/com/shortestpathsolver/performance/PerformanceTest.java)
 
-Testaus on tehty 22.8.2019.
+Testaus on tehty 29.8.2019.
 
 Taulukko suoritusajoista eri algoritmeilla ja eri ruudukon kokoluokilla:
 
-|  Algoritmi | Ruudukon rivien määrä | Processing time average
+|  Algoritmi | Ruudukon rivien määrä | Keskimääräinen suoritusaika
 |---------------------------|:--:|:--:
-| A* | 9 | 20 ms
-| A* | 24 | 137 ms
-| A* | 39 | 377 ms
-| A* | 54 | 777 ms
-| A* | 69 | 1361 ms
-| A* | 84 | 2180 ms
-| A* | 99 | 2770 ms
+| A* | 9 | 17 ms
+| A* | 24 | 97 ms
+| A* | 39 | 240 ms
+| A* | 54 | 478 ms
+| A* | 69 | 783 ms
+| A* | 84 | 1207 ms
+| A* | 99 | 1495 ms
 | JPS | 9 | 18 ms
-| JPS | 24 | 123 ms
-| JPS | 39 | 281 ms
-| JPS | 54 | 565 ms
-| JPS | 69 | 946 ms
-| JPS | 84 | 1486 ms
-| JPS | 99 | 1862 ms
-| Dijkstra | 9 | 55 ms
-| Dijkstra | 24 | 99 ms
-| Dijkstra | 39 | 239 ms
-| Dijkstra | 54 | 456 ms
-| Dijkstra | 69 | 714 ms
-| Dijkstra | 84 | 1095 ms
-| Dijkstra | 99 | 1519 ms
+| JPS | 24 | 103 ms
+| JPS | 39 | 201 ms
+| JPS | 54 | 384 ms
+| JPS | 69 | 610 ms
+| JPS | 84 | 747 ms
+| JPS | 99 | 1088 ms
+| Dijkstra | 9 | 150 ms
+| Dijkstra | 24 | 170 ms
+| Dijkstra | 39 | 292 ms
+| Dijkstra | 54 | 507 ms
+| Dijkstra | 69 | 769 ms
+| Dijkstra | 84 | 1114 ms
+| Dijkstra | 99 | 1444 ms
+| BFS | 9 | 88 ms
+| BFS | 24 | 109 ms
+| BFS | 39 | 180 ms
+| BFS | 54 | 286 ms
+| BFS | 69 | 408 ms
+| BFS | 84 | 575 ms
+| BFS | 99 | 794 ms
 
 
-Preprocessing time on jokaisessa tapauksessa ~2s.
+Keskimääräinen esisuoritusaika on jokaisessa tapauksessa ~2s.
+
+
+### Kaavio suoritusajoista:
+
+<img src="https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/images/performance.png" width="800"/>
+
+
+Taulukosta ja kaaviosta voidaan päätellä, että nopeimmat ja tehokkaimmat algoritmit testatuilla syötteillä keskimäärin ovat JPS ja leveyshaku. Dijkstra ja leveyshaku ovat molemmat A Star- ja JPS-algoritmia hitaampia pienillä syötteillä. Toisaalta erot tasoittuvat syötteen koon kasvaessa. Yllättävää kyllä, leveyshaku onkin arvioitua nopeampi – itse asiassa nopein – suurilla syötteillä, vaikka animaatio kestää leveyshaun käydessä suuren määrän solmuja läpi. Tehokkuutta selittääkin leveyshaun aikavaativuus, joka on tämän sovelluksen tapauksissa O(n) kun taas muiden algoritmien aikavaativuudet ovat O(n log n). A Star ja Dijkstra näyttävät olevan hitaimpia suurilla syötteillä. Kaaviossa kuvaajat ovat murtoviivoja, mutta oikeasti kuvaajat voisi sovittaa aineistoon. On myös huomattava, että suoritusajat riippuvat osittain esteiden määrästä. Varsinkin JPS ja A Star näyttävät olevan nopeampia, kun esteitä on vähän. Nyt testiaineistossa on pyritty käyttämään mahdollisimman vaihtelevia estemääriä ja otettu keskiarvo suoritusajoista. Loppujen lopuksi algoritmien välillä voi huomata tehokkuuseroja, joskaan ne eivät ole merkittäviä. Merkittävämpää on algoritmien väliset erot niiden toimintalogiikassa, mikä huomataan animaatioissa.

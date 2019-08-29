@@ -52,7 +52,11 @@ public class Ui {
     private final Button aStar;
     private final Button jps;
     private final Button dijkstra;
+    private final Button bfs;
     private final Button randomize;
+    private final Button read;
+    private final Button save;
+    private final Button update;
     private Pane pane;
     private int maxRows;
     private Stage primaryStage;
@@ -70,11 +74,15 @@ public class Ui {
         this.insert = new Button("Insert");
         this.clear = new Button("Clear");
         this.clearAll = new Button("Clear all");
-        this.getPath = sr.getCalculatePath();
-        this.aStar = sr.getAStarButton();
-        this.jps = sr.getJps();
-        this.dijkstra = sr.getDijkstra();
         this.randomize = new Button("Randomize blocks");
+        this.read = new Button("Read");
+        this.save = new Button("Save");
+        this.update = new Button("Update");
+        this.getPath = new Button("Calculate path");
+        this.aStar = new Button("A*");
+        this.jps = new Button("JPS");
+        this.bfs = new Button("BFS");
+        this.dijkstra = new Button("Dijkstra");
     }
 
     /**
@@ -113,12 +121,14 @@ public class Ui {
         final Text aStarText = new Text("A*");
         final Text jpsText = new Text("JPS");
         final Text dijkstraText = new Text("Dijkstra");
+        final Text bfsText = new Text("BFS");
         notFound = new Text("No path found");
 
         insertText.setVisible(true);
         clearText.setVisible(false);
         jpsText.setVisible(false);
         dijkstraText.setVisible(false);
+        bfsText.setVisible(false);
         notFound.setVisible(false);
         aStar.setDisable(true);
 
@@ -131,8 +141,6 @@ public class Ui {
                 canvas.reset();
             }
         });
-
-        Button save = new Button("Save");
 
         save.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -156,8 +164,6 @@ public class Ui {
                 }
             }
         });
-
-        Button read = new Button("Read");
 
         read.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -210,6 +216,7 @@ public class Ui {
         aStar.getStyleClass().add("orbutton");
         jps.getStyleClass().add("yebutton");
         dijkstra.getStyleClass().add("blbutton");
+        bfs.getStyleClass().add("grbutton");
         insert.getStyleClass().add("blbutton");
         clear.getStyleClass().add("orbutton");
         clearAll.getStyleClass().add("redbutton");
@@ -220,12 +227,14 @@ public class Ui {
         aStarText.getStyleClass().add("text");
         jpsText.getStyleClass().add("text");
         dijkstraText.getStyleClass().add("text");
+        bfsText.getStyleClass().add("text");
         insertText.getStyleClass().add("text");
         clearText.getStyleClass().add("text");
         notFound.getStyleClass().add("notfound");
         aStar.setStyle("-fx-text-fill: white");
         jps.setStyle("-fx-text-fill: white");
         dijkstra.setStyle("-fx-text-fill: white");
+        bfs.setStyle("-fx-text-fill: white");
         insert.setStyle("-fx-text-fill: white");
         clear.setStyle("-fx-text-fill: white");
         clearAll.setStyle("-fx-text-fill: white");
@@ -248,7 +257,6 @@ public class Ui {
         rowsColumns.add(rowLabel, 0, 1);
         final TextField rowsField = new TextField();
         rowsColumns.add(rowsField, 1, 1);
-        Button update = new Button("Update");
         update.getStyleClass().add("yebutton");
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_LEFT);
@@ -269,8 +277,8 @@ public class Ui {
         HBox hb = new HBox(10);
         HBox hb2 = new HBox(0);
 
-        hb2.getChildren().addAll(aStarText, jpsText, dijkstraText);
-        hb.getChildren().addAll(aStar, jps, dijkstra, hb2, getPath);
+        hb2.getChildren().addAll(aStarText, jpsText, dijkstraText, bfsText);
+        hb.getChildren().addAll(aStar, jps, dijkstra, bfs, hb2, getPath);
         hb2.setAlignment(Pos.CENTER);
 
         hb2.setPadding(new Insets(0, 0, 0, 30));
@@ -309,6 +317,10 @@ public class Ui {
         getPath.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                randomize.setDisable(true);
+                read.setDisable(true);
+                save.setDisable(true);
+                update.setDisable(true);
                 getPath.setDisable(true);
                 if (!sr.getWrited()) {
                     notWritedActions();
@@ -318,7 +330,8 @@ public class Ui {
                 aStar.setDisable(true);
                 jps.setDisable(true);
                 dijkstra.setDisable(true);
-                boolean found = sr.handleGetPathButtonActions();
+                bfs.setDisable(true);
+                boolean found = sr.handleCalculatePathButtonActions();
                 if (!found) {
                     notFound.setVisible(true);
                 }
@@ -383,10 +396,12 @@ public class Ui {
                 sr.handleAStarButtonActions();
                 jps.setDisable(false);
                 dijkstra.setDisable(false);
+                bfs.setDisable(false);
                 aStar.setDisable(true);
                 aStarText.setVisible(true);
                 jpsText.setVisible(false);
                 dijkstraText.setVisible(false);
+                bfsText.setVisible(false);
             }
         });
 
@@ -396,10 +411,12 @@ public class Ui {
                 sr.handleJpsButtonActions();
                 aStar.setDisable(false);
                 dijkstra.setDisable(false);
+                bfs.setDisable(false);
                 jps.setDisable(true);
                 jpsText.setVisible(true);
                 aStarText.setVisible(false);
                 dijkstraText.setVisible(false);
+                bfsText.setVisible(false);
             }
         });
 
@@ -409,10 +426,27 @@ public class Ui {
                 sr.handleDijkstraButtonActions();
                 jps.setDisable(false);
                 aStar.setDisable(false);
+                bfs.setDisable(false);
                 dijkstra.setDisable(true);
                 jpsText.setVisible(false);
                 aStarText.setVisible(false);
                 dijkstraText.setVisible(true);
+                bfsText.setVisible(false);
+            }
+        });
+
+        bfs.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                sr.handleBfsButtonActions();
+                jps.setDisable(false);
+                aStar.setDisable(false);
+                bfs.setDisable(true);
+                dijkstra.setDisable(false);
+                jpsText.setVisible(false);
+                aStarText.setVisible(false);
+                dijkstraText.setVisible(false);
+                bfsText.setVisible(true);
             }
         });
 
@@ -426,16 +460,18 @@ public class Ui {
         EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                double x = event.getX();
-                double y = event.getY();
-                colorpickerColor = colorpicker.getValue();
-                canvas.updateFill(colorpickerColor);
+                if (!sr.getPathVisualize()) {
+                    double x = event.getX();
+                    double y = event.getY();
+                    colorpickerColor = colorpicker.getValue();
+                    canvas.updateFill(colorpickerColor);
 
-                if (x > 0 && x < width && y > 0 && y < height) {
-                    if (!sr.getWrited()) {
-                        notWritedActions();
+                    if (x > 0 && x < width && y > 0 && y < height) {
+                        if (!sr.getWrited()) {
+                            notWritedActions();
+                        }
+                        sr.handleMouseAction(x, y);
                     }
-                    sr.handleMouseAction(x, y);
                 }
             }
         };
@@ -513,6 +549,32 @@ public class Ui {
         this.rows = rows;
         int rowGap = height / rows;
         this.cols = width / rowGap;
+    }
+
+    public void setButtonsOn() {
+        randomize.setDisable(false);
+        save.setDisable(false);
+        read.setDisable(false);
+        update.setDisable(false);
+        getPath.setDisable(false);
+        int algorithm = sr.getAlgorithmInUse();
+        if (algorithm == 1) {
+            aStar.setDisable(false);
+            dijkstra.setDisable(false);
+            bfs.setDisable(false);
+        } else if (algorithm == 0) {
+            jps.setDisable(false);
+            dijkstra.setDisable(false);
+            bfs.setDisable(false);
+        } else if (algorithm == 2) {
+            aStar.setDisable(false);
+            jps.setDisable(false);
+            bfs.setDisable(false);
+        } else if (algorithm == 3) {
+            aStar.setDisable(false);
+            jps.setDisable(false);
+            dijkstra.setDisable(false);
+        }
     }
 
 }

@@ -11,22 +11,21 @@ import com.shortestpathsolver.structures.Pair;
  *
  * @author kaihartz
  */
-public class AStar {
+public class AStar extends Algorithm {
 
     private int hCost = 10;
     private int diagonalCost = 14;
     private Heap openList;
     private CustomArrayList<Node> closedSet;
     private ShortestRoute sr;
-    private CustomArrayList<Node> finalPath;
     private boolean jps; //JPS-algorithm
 
     public AStar(ShortestRoute sr) {
+        super(sr);
         this.sr = sr;
         this.jps = false;
-        this.openList = new Heap(0);
+        this.openList = new Heap();
         this.closedSet = new CustomArrayList<>();
-        this.finalPath = new CustomArrayList<>();
     }
 
     /**
@@ -45,11 +44,11 @@ public class AStar {
             if (!closedSet.contains(neighbour) && !openList.contains(neighbour)) {
                 neighbour.setAStarInformation(currentNode, cost);
                 openList.add(neighbour);
-            } else if (closedSet.contains(neighbour)) {
+            } /*else if (closedSet.contains(neighbour)) {
                 if (checkifBetterPathExists(currentNode, neighbour, cost)) {
                     openList.add(neighbour);
                 }
-            } else {
+            }*/ else {
                 checkifBetterPathExists(currentNode, neighbour, cost);
             }
         }
@@ -61,13 +60,14 @@ public class AStar {
      * @param initialNode Beginning of the search
      * @return List presenting the route
      */
+    @Override
     public CustomArrayList<Node> calculatePath(Node initialNode) {
         openList.add(initialNode);
         while (openList.size() != 0) {
             Node currentNode = (Node) openList.poll(); // The node with smallest distance (f-value)
             closedSet.add(currentNode);
             if (sr.isFinalNode(currentNode)) {
-                System.out.println("G: " + currentNode.getG());
+                //System.out.println("G: " + currentNode.getG());
                 return getPath(currentNode);
             } else {
                 if (!jps) {
@@ -80,11 +80,11 @@ public class AStar {
                             if (!closedSet.contains(jumpPoint) && !openList.contains(jumpPoint)) { // Logic in JPS
                                 setAStarInformationRange(currentNode, jumpPoint);
                                 openList.add(jumpPoint);
-                            } else if (closedSet.contains(jumpPoint)) {
+                            } /*else if (closedSet.contains(jumpPoint)) {
                                 if (checkifBetterPathExists(currentNode, jumpPoint, approxG(currentNode.getColumn(), currentNode.getRow(), jumpPoint.getColumn(), jumpPoint.getRow()))) {
                                     openList.add(jumpPoint);
                                 }
-                            } else {
+                            }*/ else {
                                 checkifBetterPathExists(currentNode, jumpPoint, approxG(currentNode.getColumn(), currentNode.getRow(), jumpPoint.getColumn(), jumpPoint.getRow()));
                             }
                         }
@@ -175,6 +175,7 @@ public class AStar {
      * @param node
      * @return table presenting neighbours
      */
+    @Override
     public Pair[] getNeighbours(Node node) {
         Pair[] neighbors = new Pair[8];
         int x = node.getColumn();
@@ -190,18 +191,6 @@ public class AStar {
         neighbors[7] = allowed(x - 1, y + 1) ? new Pair(x - 1, y + 1) : new Pair(-1, -1);
 
         return neighbors;
-    }
-
-    private CustomArrayList<Node> getPath(Node currentNode) {
-        CustomArrayList<Node> path = new CustomArrayList<>();
-        path.add(currentNode);
-        Node parent;
-        while ((parent = currentNode.getParent()) != null) {
-            path.add(0, parent);
-            currentNode = parent;
-        }
-        this.finalPath = path;
-        return path;
     }
 
     private void addNeighbourNodes(Node currentNode) {
@@ -237,6 +226,7 @@ public class AStar {
         return openList;
     }
 
+    @Override
     public CustomArrayList<Node> getClosedSet() {
         return closedSet;
     }
@@ -248,11 +238,7 @@ public class AStar {
         sr.setNodes();
         openList.clear();
         closedSet.clear();
-        finalPath.clear();
-    }
-
-    public CustomArrayList<Node> getPath() {
-        return this.finalPath;
+        super.getPath().clear();
     }
 
     /**
@@ -311,17 +297,6 @@ public class AStar {
         }
     }
 
-    /**
-     * Checks if node is allowed: not block and inside gridarea.
-     *
-     * @param x node's x-coordinate
-     * @param y node's y-coordinate
-     * @return true, if node is allowed, otherwise false.
-     */
-    public boolean allowed(int x, int y) {
-        return (x < sr.getCols() && y < sr.getRows() && x >= 0 && y >= 0 && sr.getBlocks()[y][x] == false);
-    }
-
     public void setJPS(boolean b) {
         this.jps = b;
     }
@@ -376,9 +351,5 @@ public class AStar {
 
     public void setClosedSet(CustomArrayList<Node> cs) {
         this.closedSet = cs;
-    }
-
-    public void setPath(CustomArrayList<Node> path) {
-        this.finalPath = path;
     }
 }

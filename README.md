@@ -29,7 +29,7 @@ Tämä on Helsingin Yliopiston tietorakenteiden ja algoritmien loppukesän 2019 
 
 
 ## Jar
-[ShortestPathSolver-1.0.jar](https://github.com/hartzka/ShortestPathSolver/releases/download/1.1/ShortestPathSolver-1.1.jar)
+[ShortestPathSolver-1.1.jar](https://github.com/hartzka/ShortestPathSolver/releases/download/1.1/ShortestPathSolver-1.1.jar)
 
 
 ## Komentorivitoiminnot

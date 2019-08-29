@@ -76,5 +76,12 @@ Keskimääräinen esisuoritusaika on jokaisessa tapauksessa ~2s.
 
 <img src="https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/images/performance.png" width="800"/>
 
+Kaaviossa pystyakselilla algoritmien suoritusajat millisekunteina (ms).
 
-Taulukosta ja kaaviosta voidaan päätellä, että nopeimmat ja tehokkaimmat algoritmit testatuilla syötteillä keskimäärin ovat JPS ja leveyshaku. Dijkstra ja leveyshaku ovat molemmat A Star- ja JPS-algoritmia hitaampia pienillä syötteillä. Toisaalta erot tasoittuvat syötteen koon kasvaessa. Yllättävää kyllä, leveyshaku onkin arvioitua nopeampi – itse asiassa nopein – suurilla syötteillä, vaikka animaatio kestää leveyshaun käydessä suuren määrän solmuja läpi. Tehokkuutta selittääkin leveyshaun aikavaativuus, joka on tämän sovelluksen tapauksissa O(n) kun taas muiden algoritmien aikavaativuudet ovat O(n log n). A Star ja Dijkstra näyttävät olevan hitaimpia suurilla syötteillä. Kaaviossa kuvaajat ovat murtoviivoja, mutta oikeasti kuvaajat voisi sovittaa aineistoon. On myös huomattava, että suoritusajat riippuvat osittain esteiden määrästä. Varsinkin JPS ja A Star näyttävät olevan nopeampia, kun esteitä on vähän. Nyt testiaineistossa on pyritty käyttämään mahdollisimman vaihtelevia estemääriä ja otettu keskiarvo suoritusajoista. Loppujen lopuksi algoritmien välillä voi huomata tehokkuuseroja, joskaan ne eivät ole merkittäviä. Merkittävämpää on algoritmien väliset erot niiden toimintalogiikassa, mikä huomataan animaatioissa.
+Taulukosta ja kaaviosta voidaan päätellä, että nopeimmat ja tehokkaimmat algoritmit testatuilla syötteillä keskimäärin ovat JPS ja leveyshaku. Dijkstra ja leveyshaku ovat molemmat A Star- ja JPS-algoritmia hitaampia pienillä syötteillä. Toisaalta erot tasoittuvat syötteen koon kasvaessa. 
+
+Yllättävää kyllä, leveyshaku onkin arvioitua nopeampi – itse asiassa nopein – suurilla syötteillä, vaikka animaatio kestää leveyshaun käydessä suuren määrän solmuja läpi. Tehokkuutta selittääkin leveyshaun aikavaativuus, joka on tämän sovelluksen tapauksissa O(n) kun taas muiden algoritmien aikavaativuudet ovat O(n log n). 
+
+A Star ja Dijkstra näyttävät olevan hitaimpia suurilla syötteillä. Kaaviossa kuvaajat ovat murtoviivoja, mutta oikeasti kuvaajat voisi sovittaa aineistoon. On myös huomattava, että suoritusajat riippuvat osittain esteiden määrästä. Varsinkin JPS ja A Star näyttävät olevan nopeampia, kun esteitä on vähän. Nyt testiaineistossa on pyritty käyttämään mahdollisimman vaihtelevia estemääriä ja otettu keskiarvo suoritusajoista. 
+
+Loppujen lopuksi algoritmien välillä voi huomata tehokkuuseroja, joskaan ne eivät ole merkittäviä. Merkittävämpää on algoritmien väliset erot niiden toimintalogiikassa, mikä huomataan animaatioissa ja eri syötteillä.

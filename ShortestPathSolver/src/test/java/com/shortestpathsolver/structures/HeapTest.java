@@ -3,7 +3,6 @@ package com.shortestpathsolver.structures;
 import com.shortestpathsolver.domain.Node;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +39,7 @@ public class HeapTest {
     }
 
     @Test
-    public void testListIsIncreased() {
+    public void testSizeIsIncreased() {
         for (int i = 0; i <= 100; i++) {
             heap.add(new Node(i, i));
         }

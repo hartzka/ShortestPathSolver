@@ -1,9 +1,7 @@
 package com.shortestpathsolver.structures;
 
 import com.shortestpathsolver.domain.Node;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +38,7 @@ public class QueueTest {
     }
 
     @Test
-    public void testListIsIncreased() {
+    public void testIsIncreased() {
         for (int i = 0; i <= 100; i++) {
             queue.enqueue(new Node(i, i));
         }

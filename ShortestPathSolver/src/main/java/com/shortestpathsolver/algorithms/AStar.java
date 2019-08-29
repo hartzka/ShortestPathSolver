@@ -44,11 +44,11 @@ public class AStar extends Algorithm {
             if (!closedSet.contains(neighbour) && !openList.contains(neighbour)) {
                 neighbour.setAStarInformation(currentNode, cost);
                 openList.add(neighbour);
-            } /*else if (closedSet.contains(neighbour)) {
+            } else if (closedSet.contains(neighbour)) { // in case the algorithm doesn't work. Otherwise nodes in closed set shouldn't be processed.
                 if (checkifBetterPathExists(currentNode, neighbour, cost)) {
                     openList.add(neighbour);
                 }
-            }*/ else {
+            } else {
                 checkifBetterPathExists(currentNode, neighbour, cost);
             }
         }
@@ -67,7 +67,7 @@ public class AStar extends Algorithm {
             Node currentNode = (Node) openList.poll(); // The node with smallest distance (f-value)
             closedSet.add(currentNode);
             if (sr.isFinalNode(currentNode)) {
-                //System.out.println("G: " + currentNode.getG());
+                System.out.println("G: " + currentNode.getG());
                 return getPath(currentNode);
             } else {
                 if (!jps) {
@@ -80,11 +80,11 @@ public class AStar extends Algorithm {
                             if (!closedSet.contains(jumpPoint) && !openList.contains(jumpPoint)) { // Logic in JPS
                                 setAStarInformationRange(currentNode, jumpPoint);
                                 openList.add(jumpPoint);
-                            } /*else if (closedSet.contains(jumpPoint)) {
+                            } else if (closedSet.contains(jumpPoint)) {
                                 if (checkifBetterPathExists(currentNode, jumpPoint, approxG(currentNode.getColumn(), currentNode.getRow(), jumpPoint.getColumn(), jumpPoint.getRow()))) {
                                     openList.add(jumpPoint);
                                 }
-                            }*/ else {
+                            } else {
                                 checkifBetterPathExists(currentNode, jumpPoint, approxG(currentNode.getColumn(), currentNode.getRow(), jumpPoint.getColumn(), jumpPoint.getRow()));
                             }
                         }

@@ -54,7 +54,7 @@ public class Dijkstra extends Algorithm {
                 continue;
             }
             if (sr.isFinalNode(node)) {
-                //System.out.println("Distance: " + node.getDist()); //The search is over and we've found the final Node! Be happy
+                System.out.println("Distance: " + node.getDist()); //The search is over and we've found the final Node! Be happy
                 return getPath(node);
             }
             visited[node.toInt()] = true;

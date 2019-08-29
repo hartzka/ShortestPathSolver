@@ -23,7 +23,7 @@ public class PerformanceTest {
         aStar = new AStar(sr);
         dijkstra = new Dijkstra(sr);
         bfs = new BFS(sr);
-        test = true; // set this to false to disable testing! True = enabled
+        test = false; // set this to false to disable testing! True = enabled
     }
 
     private String testPerformance(int rows, int method) { //0 = A*, 1 = Jps, 2 = Dijkstra, 3 = BFS

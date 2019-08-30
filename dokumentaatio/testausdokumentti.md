@@ -1,11 +1,21 @@
-## Yksikkötestaus
+# Yksikkötestaus
 
 Yksikkötestaus on tehty luokkakohtaisesti Javan Junitilla. Kattavuusraportti löytyy [täältä](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/images/test_report.png).
-Testikattavuus on keskimäärin >= 90%, joten testejä on tehty melko kattavasti, mutta kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan muuten kuin manuaalisesti. Esimerkiksi graafiset elementit ja ui:n metodit ovat tällaisia. 
+Testikattavuus on keskimäärin >= 90%, joten testejä on tehty melko kattavasti, mutta kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan muuten kuin manuaalisesti. Esimerkiksi graafiset elementit ja ui:n metodit ovat tällaisia.
+
+
+## Domain-luokkien testit
 
 ### ShortestRouteTest
 
 Testeissä on testattu ohjelman logiikan perustoiminnot kattavasti. Kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan. Näitä ovat mm. graafiset elementit ja ui:n toiminnot.
+
+### NodeTest
+
+Solmuissa ei ole paljon testattavaa, kuitenkin paria solmun arvoa testataan.
+
+
+## Algoritmiluokkien testit
 
 ### AStarTest
 
@@ -13,15 +23,26 @@ Testit testaavat kattavasti A*-algoritmiluokan toimintaa eri randomoiduilla syö
 
 ### DijkstraTest
 
-Testit testaavat Dijkstran algoritmin toimintaa randomoiduilla syötteillä. Myös tapauksissa, joissa polkua ei löydy.
+Testit testaavat Dijkstran algoritmin toimintaa randomoiduilla syötteillä, myös tapauksissa, joissa polkua ei löydy.
 
-### NodeTest
+### BfsTest
 
-Solmuissa ei ole paljon testattavaa, kuitenkin paria solmun arvoa testataan.
+Tämä on hyvin samanlainen muiden algoritmien testiluokkien kanssa. Leveyshaun toimintaa testataan erilaisilla syötteillä, myös silloin, kun polkua ei löydy.
+
+
+## Tietorakenteiden testit
 
 ### CustomArrayListTest
 
 Tässä testataan oman ArrayListin toimivuutta eri syötteillä ja myös tapauksissa, joissa pitäisi tulla virhe, kuten esim. ArrayIndexOutOfBoundsException.
+
+### QueueTest
+
+Jonon toimintaa testataan esimerkiksi lisäämällä jonoon alkioita ja poistamalla siitä alkioita, ja tarkistamalla, että metodit toimivat oikein.
+
+### HeapTest
+
+Keon toimintaa testataan samaan tapaan. Kekoon lisätään alkioita ja poistetaan siitä alkioita, ja tarkistetaan, että metodit toimivat oikein.
 
 
 ## Manuaalinen testaus

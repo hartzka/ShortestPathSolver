@@ -2,6 +2,7 @@
 
 Sovellus, joka etsii lyhimmän polun ruudukossa alkupisteestä lopetuspisteeseen eri algoritmien avulla.
 Tarkoitus on vertailla ja visualisoida eri hakualgoritmien toimintaa.
+
 Tämä on Helsingin Yliopiston tietorakenteiden ja algoritmien loppukesän 2019 4op harjoitustyö.
 
 
@@ -33,6 +34,8 @@ Tämä on Helsingin Yliopiston tietorakenteiden ja algoritmien loppukesän 2019 
 
 
 ## Komentorivitoiminnot
+
+Seuraavat komennot ajetaan sovelluksen juurikansiosta, eli samasta kansiosta, jossa pom.xml sijaitsee.
 
 ### Testaus
 

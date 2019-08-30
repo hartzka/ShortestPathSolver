@@ -6,15 +6,15 @@ Sovellus etsii lyhimmän polun käyttäjän luomassa ruudukossa. Ruudukkoon voi 
 
 ## Toiminnallisuus
 
-Sovelluksessa on mahdollisuus valita käytettävä algoritmi neljästä vaihtoehdosta. Vaihtoehto valitaan painikkeilla. Esteiden lisäys ruudukkoon tapahtuu lisäysmoodilla (insert) ja esteiden poisto poistomoodilla (clear). Esteitä lisätään ja poistetaan hiiren avulla. Aloitus- ja lopetuspisteet on korostettu ruudukkoon. Niitä voi siirtää hiiren avulla. Sovellus laskee ja visualisoi calculate path -painikkeesta alkupisteestä lopetuspisteeseen kulkevan lyhimmän yhtenäisen vapaan polun, joka ei kulje yhdenkään esteen kautta. Sovellus ilmoittaa, mikäli polkua ei löydy. Ruudukon saa tyhjennettyä clear all -painikkeesta. Käytettävän värin voi muuttaa erillisestä värinvalitsinpaneelista. Randomize blocks -painikkeesta voi määrittää satunnaiset esteet. Tiedoston tallennus onnistuu save-painikkeesta ja tiedoston lukeminen read-painikkeesta. Näissä on otettu virhemahdollisuudet huomioon.
+Sovelluksessa on mahdollisuus valita käytettävä algoritmi neljästä vaihtoehdosta. Vaihtoehto valitaan painikkeilla. Esteiden lisäys ruudukkoon tapahtuu lisäysmoodilla (insert) ja esteiden poisto poistomoodilla (clear). Esteitä lisätään ja poistetaan hiiren avulla. Aloitus- ja lopetuspisteet on korostettu ruudukkoon. Niitä voi siirtää hiiren avulla. Sovellus laskee ja visualisoi calculate path -painikkeesta alkupisteestä lopetuspisteeseen kulkevan lyhimmän yhtenäisen vapaan polun, joka ei kulje yhdenkään esteen kautta. Sovellus ilmoittaa, mikäli polkua ei löydy. Ruudukon saa tyhjennettyä clear all -painikkeesta. Käytettävän värin voi muuttaa erillisestä värinvalitsinpaneelista. Randomize blocks -painikkeesta voi määrittää satunnaiset esteet. Tiedoston tallennus onnistuu save-painikkeesta ja tiedoston lukeminen read-painikkeesta. Tiedoston muokkauksissa on otettu virhemahdollisuudet huomioon.
 
 ## Käytettävät algoritmit ja tietorakenteet sekä tehokkuus
 
-Lyhimmän polun etsimisessä käytetään neljää algoritmia. Näihin kuuluvat A* , A* tehostettuna Jump Point Search (JPS) -haulla, Dijkstran algoritmi ja leveyshaku. Tietorakenteina käytetään pinoa, jonoa, listaa ja hajautustaulua. Valitsin nämä algoritmit mielenkiinnon vuoksi. Tarkoitus on vertailla näiden algoritmien eroja niin toimintalogiikan kuin tehokkuuden suhteen ja oppia tuntemaan algoritmit paremmin. Ideana on varsinkin tutkia algoritmien eroja eri syötteillä ja eri kokoisissa ruudukoissa sekä eri estemäärillä ja eri esteiden sijoittelulla. Sovelluksessa käytetään algoritmien ja tiedon visualisoinnin vaatimia tietorakenteita. Tärkein ominaisuus tässä ei kuitenkaan ole tehokkuus, vaikkakin sekin on olennainen osa. Tärkein lopputulos on algoritmien toimintalogiikka. Käytettävät verkot ja solmujen määrät ovat sen verran pieniä, että tehokkuus ei nouse olennaisesti esiin, vaan algoritmit toimivat tehokkaasti käytettävillä syötteillä. 
+Lyhimmän polun etsimisessä käytetään neljää algoritmia. Näihin kuuluvat A* , A* tehostettuna Jump Point Search (JPS) -haulla, Dijkstran algoritmi ja leveyshaku. JPS on optimoitu versio A*-algoritmista, ja sen avulla käsiteltävien solmujen määrä voi pienentyä tuntuvasti. Tietorakenteina käytetään kekoa, jonoa, listaa ja paria. Valitsin nämä algoritmit mielenkiinnon vuoksi. Tarkoitus on vertailla näiden algoritmien eroja niin toimintalogiikan kuin tehokkuuden suhteen ja oppia tuntemaan algoritmit paremmin. Ideana on varsinkin tutkia algoritmien eroja eri syötteillä ja eri kokoisissa ruudukoissa sekä eri estemäärillä ja eri esteiden sijoittelulla. Sovelluksessa käytetään algoritmien ja tiedon visualisoinnin vaatimia tietorakenteita. Tärkein ominaisuus tässä ei kuitenkaan ole tehokkuus, vaikkakin sekin on olennainen osa. Tärkein lopputulos on algoritmien toimintalogiikka. Käytettävät verkot ja solmujen määrät ovat sen verran pieniä, että tehokkuus ei nouse olennaisesti esiin, vaan algoritmit toimivat tehokkaasti käytettävillä syötteillä. 
 
 Aikavaativuudet algoritmeille ovat:
 
-- A*: O(n log n)
+- A* ja JPS: O(n log n)
 - Dijkstra: O(n log n)
 - Leveyshaku: O(n)
 
@@ -26,6 +26,6 @@ Käyttöliittymälle, logiikalle, tietorakenteille ja algoritmeille on omat pakk
 
 ## Jatkokehitysideat
 
-Päivittyy loppuvaiheessa kun huomataan, mitä ei ehdi tekemään
+Sovellukseen voisi lisätä mahdollisuuden muuttaa ikkunan kokoa, ruutujen määrän maksimia voisi kasvattaa, sekä reitille lisätä yhden tai useampia välipisteitä. Lisäksi voisi lisätä mahdollisuuden tutkia algoritmien toimintaa osissa hitaammin.
 
 

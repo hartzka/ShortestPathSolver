@@ -34,9 +34,13 @@ Tämä on Helsingin Yliopiston tietorakenteiden ja algoritmien loppukesän 2019 
 [Käyttöohje](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/kayttoohje.md)
 
 
+## Loppupalautus
+[Loppupalautus](https://github.com/hartzka/ShortestPathSolver/releases/tag/1.3)
+
+
 ## Jar
 
-[ShortestPathSolver-1.1.jar](https://github.com/hartzka/ShortestPathSolver/releases/download/1.1/ShortestPathSolver-1.1.jar)
+[ShortestPathSolver.jar](https://github.com/hartzka/ShortestPathSolver/releases/download/1.3/ShortestPathSolver.jar)
 
 
 ## Komentorivitoiminnot

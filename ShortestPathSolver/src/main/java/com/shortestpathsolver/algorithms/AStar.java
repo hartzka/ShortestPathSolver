@@ -132,8 +132,8 @@ public class AStar extends Algorithm {
      */
     public Pair jump(int x, int y, int px, int py) {
 
-        int dx = (x - px) / Math.max(Math.abs(x - px), 1);
-        int dy = (y - py) / Math.max(Math.abs(y - py), 1);
+        int dx = (x - px) / max(abs(x - px), 1);
+        int dy = (y - py) / max(abs(y - py), 1);
 
         if (!allowed(x, y)) {
             return new Pair(-1, -1);
@@ -251,11 +251,8 @@ public class AStar extends Algorithm {
      * @param finalNode Final node
      */
     public void calculateHeuristic(Node current, Node finalNode) {
-        int h = (int) Math.sqrt(Math.pow(finalNode.getColumn() - current.getColumn(), 3) + Math.pow(finalNode.getRow() - current.getRow(), 3));
-        int euclidian = (int) Math.sqrt(Math.pow(finalNode.getColumn() - current.getColumn(), 2) + Math.pow(finalNode.getRow() - current.getRow(), 2));
-        int manhattan = (int) (Math.abs(finalNode.getColumn() - current.getColumn()) + Math.abs(finalNode.getRow() - current.getRow()));
-
-        current.setH(euclidian);
+        int manhattan = (int) (abs(finalNode.getColumn() - current.getColumn()) + abs(finalNode.getRow() - current.getRow()));
+        current.setH(manhattan);
     }
 
     /**
@@ -289,11 +286,11 @@ public class AStar extends Algorithm {
      */
     private int approxG(int x1, int y1, int x2, int y2) {
         if (x1 == x2) {
-            return Math.abs(y1 - y2) * hCost;
+            return abs(y1 - y2) * hCost;
         } else if (y1 == y2) {
-            return Math.abs(x1 - x2) * hCost;
+            return abs(x1 - x2) * hCost;
         } else {
-            return Math.abs(x1 - x2) * diagonalCost;
+            return abs(x1 - x2) * diagonalCost;
         }
     }
 
@@ -351,5 +348,20 @@ public class AStar extends Algorithm {
 
     public void setClosedSet(CustomArrayList<Node> cs) {
         this.closedSet = cs;
+    }
+
+    private int abs(int a) {
+        if (a < 0) {
+            return -a;
+        }
+        return a;
+    }
+
+    private int max(int a, int b) {
+        if (a >= b) {
+            return a;
+        } else {
+            return b;
+        }
     }
 }

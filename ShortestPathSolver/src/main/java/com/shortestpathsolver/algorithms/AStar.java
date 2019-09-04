@@ -67,7 +67,7 @@ public class AStar extends Algorithm {
             Node currentNode = (Node) openList.poll(); // The node with smallest distance (f-value)
             closedSet.add(currentNode);
             if (sr.isFinalNode(currentNode)) {
-                //System.out.println("G: " + currentNode.getG());
+                System.out.println("G: " + currentNode.getG());
                 return getPath(currentNode);
             } else {
                 if (!jps) {

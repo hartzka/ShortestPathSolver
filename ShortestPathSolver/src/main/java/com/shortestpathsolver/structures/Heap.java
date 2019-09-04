@@ -63,15 +63,14 @@ public class Heap {
      * @param n Node
      */
     public void add(Node n) {
-        if (size >= heap.length) {
-            return;
-        }
-        heap[++size] = n;
-        int current = size;
+        if (size < heap.length) {
+            heap[++size] = n;
+            int current = size;
 
-        while (heap[current] != null && heap[parent(current)] != null && ((Node) heap[current]).getDist() < ((Node) heap[parent(current)]).getDist()) {
-            swap(current, parent(current));
-            current = parent(current);
+            while (heap[current] != null && heap[parent(current)] != null && ((Node) heap[current]).getDist() < ((Node) heap[parent(current)]).getDist()) {
+                swap(current, parent(current));
+                current = parent(current);
+            }
         }
     }
 

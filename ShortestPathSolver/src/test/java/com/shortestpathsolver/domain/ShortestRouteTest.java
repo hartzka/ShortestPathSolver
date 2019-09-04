@@ -1,6 +1,7 @@
 package com.shortestpathsolver.domain;
 
 import com.shortestpathsolver.structures.CustomArrayList;
+import javafx.scene.paint.Color;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -127,7 +128,7 @@ public class ShortestRouteTest {
     }
 
     @Test
-    public void testAnimation() {
+    public void testAnimation1() {
         CustomArrayList<Node> cs = new CustomArrayList<>();
         cs.add(new Node(3, 3));
         cs.add(new Node(4, 44));
@@ -143,6 +144,19 @@ public class ShortestRouteTest {
         sr.handleAnimation();
         assertTrue(sr.getPathDrawing() == true);
         sr.handleAnimation();
+        assertTrue(sr.getPathVisualize() == false);
+    }
+    
+    @Test
+    public void testAnimation2() {
+        sr.handleBfsButtonActions();
+        testAnimation1();
+    }
+    
+    @Test
+    public void testAnimation3() {
+        sr.handleDijkstraButtonActions();
+        testAnimation1();
     }
 
     @Test
@@ -167,17 +181,44 @@ public class ShortestRouteTest {
         sr.handleAStarButtonActions();
         assertTrue(sr.getAStar().getJps() == false);
     }
+    
+    @Test
+    public void testBackgroundChange() {
+        sr.setBackGround(Color.BLUE);
+        assertTrue(sr.getBgColor() == Color.BLUE);
+        sr.handleAStarButtonActions();
+        assertTrue(sr.getAStar().getJps() == false);
+    }
 
     @Test
     public void testDijkstraButtonActions() {
         sr.handleDijkstraButtonActions();
-        assertTrue(sr.getAlgorithmInUse() == 2);
+        assertTrue(sr.getDijkstraInUse().get() == true);
     }
 
     @Test
     public void testBfsButtonActions() {
         sr.handleBfsButtonActions();
-        assertTrue(sr.getAlgorithmInUse() == 3);
+        assertTrue(sr.getBfsInUse().get() == true);
+    }
+    
+    @Test
+    public void testAStarButtonActions() {
+        sr.handleAStarButtonActions();
+        assertTrue(sr.getAStarInUse().get() == true);
+    }
+
+    @Test
+    public void testJpsButtonActions() {
+        sr.handleJpsButtonActions();
+        assertTrue(sr.getJpsInUse().get() == true);
+    }
+    
+    @Test
+    public void testSetButtonsDisable() {
+        assertTrue(sr.getButtonsDisable().get() == false);
+        sr.setButtonsDisable(true);
+        assertTrue(sr.getButtonsDisable().get() == true);
     }
 
     @Test

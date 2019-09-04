@@ -141,9 +141,7 @@ public class CustomArrayList<E> {
      * Clears the list.
      */
     public void clear() {
-        for (int i = 0; i < currentIndex; i++) {
-            list[i] = null;
-        }
+        this.list = new Object[100];
         currentIndex = 0;
     }
 

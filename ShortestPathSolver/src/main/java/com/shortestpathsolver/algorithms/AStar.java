@@ -67,7 +67,7 @@ public class AStar extends Algorithm {
             Node currentNode = (Node) openList.poll(); // The node with smallest distance (f-value)
             closedSet.add(currentNode);
             if (sr.isFinalNode(currentNode)) {
-                System.out.println("G: " + currentNode.getG());
+                //System.out.println("G: " + currentNode.getG());
                 return getPath(currentNode);
             } else {
                 if (!jps) {
@@ -247,8 +247,8 @@ public class AStar extends Algorithm {
      * updating depending on input. The heuristic may yield wrong results if not
      * defined correctly.
      *
-     * @param current
-     * @param finalNode
+     * @param current Current node
+     * @param finalNode Final node
      */
     public void calculateHeuristic(Node current, Node finalNode) {
         int h = (int) Math.sqrt(Math.pow(finalNode.getColumn() - current.getColumn(), 3) + Math.pow(finalNode.getRow() - current.getRow(), 3));
@@ -263,8 +263,8 @@ public class AStar extends Algorithm {
      * Checks if a better path exists between currentNode and neighbour, and if
      * exists, updates neighbour's information.
      *
-     * @param currentNode
-     * @param neighbour
+     * @param currentNode Current node
+     * @param neighbour Neighbour node
      * @param cost Movement cost
      * @return true if a better path exists, false otherwise
      */
@@ -305,8 +305,8 @@ public class AStar extends Algorithm {
      * Updates all Node informations in a range between currentNode and
      * jumpPoint. Used in JPS.
      *
-     * @param currentNode
-     * @param jumpPoint
+     * @param currentNode Current Node
+     * @param jumpPoint Jump point
      *
      */
     private void setAStarInformationRange(Node currentNode, Node jumpPoint) {

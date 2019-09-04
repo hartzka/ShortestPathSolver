@@ -56,10 +56,10 @@ public class DrawPad extends Canvas {
     /**
      * Fills a path from node1 to node2.
      *
-     * @param y1 node1's y-coordinate
-     * @param x1 node1's x-coordinate
-     * @param y2 node2's y-coordinate
-     * @param x2 node2's x-coordinate
+     * @param y1 Node1's y-coordinate
+     * @param x1 Node1's x-coordinate
+     * @param y2 Node2's y-coordinate
+     * @param x2 Node2's x-coordinate
      */
     public void fillPathLine(int y1, int x1, int y2, int x2) {
         gc.setStroke(Color.ORANGE);
@@ -104,8 +104,8 @@ public class DrawPad extends Canvas {
     /**
      * Sets up the initial node.
      *
-     * @param row
-     * @param column
+     * @param row Node's row
+     * @param column Node's column
      * @return Initial node
      */
     public Node setInitialNode(int row, int column) {
@@ -124,8 +124,8 @@ public class DrawPad extends Canvas {
     /**
      * Sets up the final node.
      *
-     * @param row
-     * @param column
+     * @param row Node's row
+     * @param column Node's column
      * @return Final node
      */
     public Node setFinalNode(int row, int column) {
@@ -207,7 +207,7 @@ public class DrawPad extends Canvas {
     /**
      * Updates rows and columns
      *
-     * @param rows
+     * @param rows Number of rows
      *
      */
     public void updateRowsAndCols(int rows) {

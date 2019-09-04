@@ -16,6 +16,7 @@ public class PerformanceTest {
     private BFS bfs;
     private ShortestRoute sr;
     private boolean test;
+    private boolean testTimeOrNodes;
 
     @Before
     public void setUp() {
@@ -24,19 +25,25 @@ public class PerformanceTest {
         dijkstra = new Dijkstra(sr);
         bfs = new BFS(sr);
         test = false; // set this to false to disable testing! True = enabled
+        testTimeOrNodes = true; // true = test time, false = test processed nodes
     }
 
     private String testPerformance(int rows, int method) { //0 = A*, 1 = Jps, 2 = Dijkstra, 3 = BFS
         sr.updateRowsAndCols(rows);
+        int cols = sr.getCols();
         long processingTimeTotal = 0;
         long preProcessingTimeTotal = 0;
+        long processedNodes = 0;
         int n = 1000;
+        if (!testTimeOrNodes) {
+            n /= 10;
+        }
         Random r = new Random();
         for (int i = 0; i < n; i++) {
             long t1 = System.nanoTime();
-            sr.setInitialNode(new Node(r.nextInt(rows), r.nextInt(rows)));
+            sr.setInitialNode(new Node(r.nextInt(cols), r.nextInt(rows)));
             while (true) {
-                int x = r.nextInt(rows);
+                int x = r.nextInt(cols);
                 int y = r.nextInt(rows);
                 if (sr.isNotInitialOrFinalNode(x, y)) {
                     sr.setFinalNode(new Node(x, y));
@@ -49,15 +56,21 @@ public class PerformanceTest {
 
             if (method == 0 || method == 1) {
                 aStar.calculatePath(sr.getInitialNode());
+                processedNodes += aStar.getClosedSet().size();
             } else if (method == 2) {
                 dijkstra.calculatePath(sr.getInitialNode());
+                processedNodes += dijkstra.getClosedSet().size();
             } else if (method == 3) {
                 bfs.calculatePath(sr.getInitialNode());
+                processedNodes += bfs.getClosedSet().size();
             }
 
             long t3 = System.nanoTime();
             preProcessingTimeTotal += t2 - t1;
             processingTimeTotal += t3 - t2;
+            if (!testTimeOrNodes && (method == 0 || method == 1)) {
+                aStar.getClosedSet().clear();
+            }
         }
         long preProcessingTime = preProcessingTimeTotal / n;
         long processingTime = processingTimeTotal / n;
@@ -71,7 +84,11 @@ public class PerformanceTest {
         } else if (method == 3) {
             s += "BFS  ";
         }
-        s += "running time average: " + processingTime / 1000 + " ms";
+        if (testTimeOrNodes) {
+            s += "running time average: " + processingTime / 1000 + " ms\n";
+        } else {
+            s += "processed nodes average: " + processedNodes / n + "\n";
+        }
         return s;
     }
 
@@ -79,6 +96,7 @@ public class PerformanceTest {
     public void testPerformanceAStar() {
         if (test) {
             System.out.println("***********************************************************************************");
+            System.out.println("\nA*:\n");
             System.out.println("Testing.......... this takes a moment");
             for (int i = 9; i < 100; i += 15) {
                 System.out.println(testPerformance(i, 0)); //comment to disable output
@@ -110,7 +128,7 @@ public class PerformanceTest {
             }
         }
     }
-    
+
     @Test
     public void testPerformanceBfs() {
         if (test) {

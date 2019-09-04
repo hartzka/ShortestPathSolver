@@ -25,11 +25,10 @@ public class Queue<E> {
      * @param e element
      */
     public void enqueue(E e) {
-        if (size >= queue.length) {
-            return;
+        if (size < queue.length) {
+            queue[last++] = e;
+            size++;
         }
-        queue[last++] = e;
-        size++;
     }
 
     /**

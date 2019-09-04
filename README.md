@@ -20,16 +20,22 @@ Tämä on Helsingin Yliopiston tietorakenteiden ja algoritmien loppukesän 2019 
 
 [Viikko6](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti6.md)
 
+[Viikko7](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti7.md)
+
 
 ## Dokumentaatio
+
 [Vaatimusmäärittely](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/vaatimusmaarittely.md)
 
 [Toteutusdokumentti](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/toteutusdokumentti.md)
 
 [Testausdokumentti](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/testausdokumentti.md)
 
+[Käyttöohje](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/kayttoohje.md)
+
 
 ## Jar
+
 [ShortestPathSolver-1.1.jar](https://github.com/hartzka/ShortestPathSolver/releases/download/1.1/ShortestPathSolver-1.1.jar)
 
 
@@ -79,6 +85,8 @@ Tiedostoon [checkstyle.xml](https://github.com/hartzka/ShortestPathSolver/blob/m
 Mahdolliset virheilmoitukset selviävät avaamalla selaimella tiedosto _target/site/checkstyle.html_
 
 ### JavaDoc
+
+[JavaDoc löytyy täältä](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/apidocs/index.html)
 
 JavaDoc generoidaan komennolla
 

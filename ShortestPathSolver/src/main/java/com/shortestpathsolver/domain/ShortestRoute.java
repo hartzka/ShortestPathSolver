@@ -13,6 +13,7 @@ import javafx.util.Duration;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
@@ -47,7 +48,6 @@ public class ShortestRoute extends Application {
     private Node prevNode;
     private KeyFrame frame;
     private boolean pathDrawing;
-    private int algorithmInUse; // 0 = A*, 1 = JPS, 2 = Dijkstra, 3 = BFS
     private boolean initialNodeMoving;
     private boolean finalNodeMoving;
     private int rowGap;
@@ -56,8 +56,18 @@ public class ShortestRoute extends Application {
     private Color bgColor;
     private Random rand;
     private boolean pathVisualize;
+    private SimpleBooleanProperty buttonsDisabled;
+    private SimpleBooleanProperty aStarInUse;
+    private SimpleBooleanProperty jpsInUse;
+    private SimpleBooleanProperty dijkstraInUse;
+    private SimpleBooleanProperty bfsInUse;
 
     public ShortestRoute() {
+        this.buttonsDisabled = new SimpleBooleanProperty(false);
+        this.aStarInUse = new SimpleBooleanProperty(true);
+        this.bfsInUse = new SimpleBooleanProperty(false);
+        this.dijkstraInUse = new SimpleBooleanProperty(false);
+        this.jpsInUse = new SimpleBooleanProperty(false);
         this.inserting = true;
         this.startX = 0;
         this.startY = 0;
@@ -77,7 +87,6 @@ public class ShortestRoute extends Application {
         this.aStar = new AStar(this);
         this.dijkstra = new Dijkstra(this);
         this.bfs = new BFS(this);
-        this.algorithmInUse = 0;
         this.pathDrawing = false;
         this.timeline = new Timeline();
         this.timelineIterator = 0;
@@ -175,7 +184,10 @@ public class ShortestRoute extends Application {
      */
     public void handleAStarButtonActions() {
         aStar.setJPS(false);
-        algorithmInUse = 0;
+        aStarInUse.set(true);
+        bfsInUse.set(false);
+        dijkstraInUse.set(false);
+        jpsInUse.set(false);
     }
 
     /**
@@ -183,21 +195,30 @@ public class ShortestRoute extends Application {
      */
     public void handleJpsButtonActions() {
         aStar.setJPS(true);
-        algorithmInUse = 1;
+        aStarInUse.set(false);
+        bfsInUse.set(false);
+        dijkstraInUse.set(false);
+        jpsInUse.set(true);
     }
 
     /**
      * Logic for BFS-button
      */
     public void handleBfsButtonActions() {
-        algorithmInUse = 3;
+        aStarInUse.set(false);
+        bfsInUse.set(true);
+        dijkstraInUse.set(false);
+        jpsInUse.set(false);
     }
 
     /**
      * Logic for Dijkstra-button
      */
     public void handleDijkstraButtonActions() {
-        algorithmInUse = 2;
+        aStarInUse.set(false);
+        bfsInUse.set(false);
+        dijkstraInUse.set(true);
+        jpsInUse.set(false);
     }
 
     /**
@@ -215,11 +236,11 @@ public class ShortestRoute extends Application {
     public boolean handleCalculatePathButtonActions() {
         boolean found = false;
         pathVisualize = true;
-        if (algorithmInUse <= 1) {
+        if (aStarInUse.get() == true || jpsInUse.get() == true) {
             found = calculateAStarPath();
-        } else if (algorithmInUse == 2) {
+        } else if (dijkstraInUse.get() == true) {
             found = calculateDijkstraPath();
-        } else if (algorithmInUse == 3) {
+        } else if (bfsInUse.get() == true) {
             found = calculateBFSPath();
         }
         return found;
@@ -320,7 +341,7 @@ public class ShortestRoute extends Application {
                 if (blocks[i][j]) {
                     node.setBlock(true);
                 }
-                if (algorithmInUse <= 1) {
+                if (aStarInUse.get() == true || jpsInUse.get() == true) {
                     aStar.calculateHeuristic(node, this.finalNode);
                 }
                 this.nodes[i][j] = node;
@@ -475,8 +496,8 @@ public class ShortestRoute extends Application {
      *
      */
     public void handleAnimation() {
-        if (!pathDrawing && ((algorithmInUse <= 1 && timelineIterator >= aStar.getClosedSet().size()) || (algorithmInUse == 2 && timelineIterator >= dijkstra.getClosedSet().size())
-                || (algorithmInUse == 3 && timelineIterator >= bfs.getClosedSet().size()))) {
+        if (!pathDrawing && (((aStarInUse.get() == true || jpsInUse.get() == true) && timelineIterator >= aStar.getClosedSet().size()) || (dijkstraInUse.get() == true && timelineIterator >= dijkstra.getClosedSet().size())
+                || (bfsInUse.get() == true && timelineIterator >= bfs.getClosedSet().size()))) {
             pathDrawing = true;
             prevNode = null;
             timelineIterator = 0;
@@ -484,11 +505,11 @@ public class ShortestRoute extends Application {
             handlePathDrawingActions();
         } else {
             Node n = null;
-            if (algorithmInUse == 2) {
+            if (dijkstraInUse.get() == true) {
                 n = dijkstra.getClosedSet().get(timelineIterator);
-            } else if (algorithmInUse <= 1) {
+            } else if (aStarInUse.get() == true || jpsInUse.get() == true) {
                 n = aStar.getClosedSet().get(timelineIterator);
-            } else if (algorithmInUse == 3) {
+            } else if (bfsInUse.get() == true) {
                 n = bfs.getClosedSet().get(timelineIterator);
             }
             if (isNotInitialOrFinalNode(n.getColumn(), n.getRow()) && !n.isBlock()) {
@@ -499,19 +520,17 @@ public class ShortestRoute extends Application {
     }
 
     private void handlePathDrawingActions() {
-        if ((algorithmInUse == 2 && timelineIterator >= dijkstra.getPath().size()) || (algorithmInUse <= 1 && timelineIterator >= aStar.getPath().size())
-                || (algorithmInUse == 3 && timelineIterator >= bfs.getPath().size())) {
+        if ((dijkstraInUse.get() == true && timelineIterator >= dijkstra.getPath().size()) || ((aStarInUse.get() == true || jpsInUse.get() == true) && timelineIterator >= aStar.getPath().size())
+                || (bfsInUse.get() == true && timelineIterator >= bfs.getPath().size())) {
             pathDrawing = false;
             prevNode = null;
-            if (algorithmInUse <= 1) {
+            if (aStarInUse.get() == true || jpsInUse.get() == true) {
                 aStar.reset();
             }
             timelineIterator = 0;
             timeline.stop();
             pathVisualize = false;
-            if (ui != null) {
-                ui.setButtonsOn();
-            }
+            buttonsDisabled.set(false);
         } else {
             fillPathLine();
         }
@@ -519,11 +538,11 @@ public class ShortestRoute extends Application {
 
     public void fillPathLine() {
         Node n = null;
-        if (algorithmInUse == 2) {
+        if (dijkstraInUse.get() == true) {
             n = dijkstra.getPath().get(timelineIterator);
-        } else if (algorithmInUse <= 1) {
+        } else if (aStarInUse.get() == true || jpsInUse.get() == true) {
             n = aStar.getPath().get(timelineIterator);
-        } else if (algorithmInUse == 3) {
+        } else if (bfsInUse.get() == true) {
             n = bfs.getPath().get(timelineIterator);
         }
         if (prevNode == null) {
@@ -548,7 +567,7 @@ public class ShortestRoute extends Application {
     /**
      * Updates rows and columns.
      *
-     * @param rows
+     * @param rows Number of rows
      */
     public void updateRowsAndCols(int rows) {
         this.rows = rows;
@@ -634,11 +653,35 @@ public class ShortestRoute extends Application {
         return pathVisualize;
     }
 
-    public int getAlgorithmInUse() {
-        return algorithmInUse;
-    }
-
     public Node getPrevNode() {
         return prevNode;
+    }
+
+    public SimpleBooleanProperty getButtonsDisable() {
+        return buttonsDisabled;
+    }
+
+    public SimpleBooleanProperty getAStarInUse() {
+        return aStarInUse;
+    }
+
+    public SimpleBooleanProperty getBfsInUse() {
+        return bfsInUse;
+    }
+
+    public SimpleBooleanProperty getDijkstraInUse() {
+        return dijkstraInUse;
+    }
+
+    public SimpleBooleanProperty getJpsInUse() {
+        return jpsInUse;
+    }
+
+    public void setButtonsDisable(boolean b) {
+        buttonsDisabled.set(b);
+    }
+
+    public Color getBgColor() {
+        return this.bgColor;
     }
 }

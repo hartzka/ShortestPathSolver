@@ -242,7 +242,17 @@ public class Ui {
         randomize.setStyle("-fx-text-fill: white");
         save.setStyle("-fx-text-fill: white");
         read.setStyle("-fx-text-fill: white");
-
+        randomize.disableProperty().bind(sr.getButtonsDisable());
+        colorpicker.disableProperty().bind(sr.getButtonsDisable());
+        getPath.disableProperty().bind(sr.getButtonsDisable());
+        save.disableProperty().bind(sr.getButtonsDisable());
+        read.disableProperty().bind(sr.getButtonsDisable());
+        update.disableProperty().bind(sr.getButtonsDisable());
+        clearAll.disableProperty().bind(sr.getButtonsDisable());
+        aStar.disableProperty().bind(sr.getAStarInUse());
+        dijkstra.disableProperty().bind(sr.getDijkstraInUse());
+        jps.disableProperty().bind(sr.getJpsInUse());
+        bfs.disableProperty().bind(sr.getBfsInUse());
         GridPane rowsColumns = new GridPane();
         String cssLayout = "-fx-border-color: grey;\n"
                 + "-fx-border-insets: 5;\n"
@@ -253,7 +263,7 @@ public class Ui {
         rowsColumns.setHgap(10);
         rowsColumns.setVgap(10);
         rowsColumns.setPadding(new Insets(20, 5, 20, 5));
-        final Label rowLabel = new Label("Rows:");
+        final Label rowLabel = new Label("Rows: (3-99)");
         rowsColumns.add(rowLabel, 0, 1);
         final TextField rowsField = new TextField();
         rowsColumns.add(rowsField, 1, 1);
@@ -317,20 +327,11 @@ public class Ui {
         getPath.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                randomize.setDisable(true);
-                read.setDisable(true);
-                save.setDisable(true);
-                update.setDisable(true);
-                getPath.setDisable(true);
+                sr.setButtonsDisable(true);
                 if (!sr.getWrited()) {
                     notWritedActions();
                 }
                 sr.setWrited(false);
-                clearAll.setDisable(false);
-                aStar.setDisable(true);
-                jps.setDisable(true);
-                dijkstra.setDisable(true);
-                bfs.setDisable(true);
                 boolean found = sr.handleCalculatePathButtonActions();
                 if (!found) {
                     notFound.setVisible(true);
@@ -353,7 +354,6 @@ public class Ui {
         clearAll.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                getPath.setDisable(false);
                 canvas.clearArea();
                 canvas.fillGrid(width, height);
                 canvas.setInitialNode(sr.getStartY(), sr.getStartX());
@@ -362,7 +362,6 @@ public class Ui {
                 notFound.setVisible(false);
                 insert.setDisable(true);
                 clear.setDisable(true);
-                clearAll.setDisable(true);
                 insertText.setVisible(true);
                 clearText.setVisible(false);
                 sr.handleClearAllButtonActions();
@@ -393,60 +392,52 @@ public class Ui {
         aStar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                sr.handleAStarButtonActions();
-                jps.setDisable(false);
-                dijkstra.setDisable(false);
-                bfs.setDisable(false);
-                aStar.setDisable(true);
-                aStarText.setVisible(true);
-                jpsText.setVisible(false);
-                dijkstraText.setVisible(false);
-                bfsText.setVisible(false);
+                if (sr.getButtonsDisable().get() == false) {
+                    sr.handleAStarButtonActions();
+                    aStarText.setVisible(true);
+                    jpsText.setVisible(false);
+                    dijkstraText.setVisible(false);
+                    bfsText.setVisible(false);
+                }
             }
         });
 
         jps.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                sr.handleJpsButtonActions();
-                aStar.setDisable(false);
-                dijkstra.setDisable(false);
-                bfs.setDisable(false);
-                jps.setDisable(true);
-                jpsText.setVisible(true);
-                aStarText.setVisible(false);
-                dijkstraText.setVisible(false);
-                bfsText.setVisible(false);
+                if (sr.getButtonsDisable().get() == false) {
+                    sr.handleJpsButtonActions();
+                    jpsText.setVisible(true);
+                    aStarText.setVisible(false);
+                    dijkstraText.setVisible(false);
+                    bfsText.setVisible(false);
+                }
             }
         });
 
         dijkstra.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                sr.handleDijkstraButtonActions();
-                jps.setDisable(false);
-                aStar.setDisable(false);
-                bfs.setDisable(false);
-                dijkstra.setDisable(true);
-                jpsText.setVisible(false);
-                aStarText.setVisible(false);
-                dijkstraText.setVisible(true);
-                bfsText.setVisible(false);
+                if (sr.getButtonsDisable().get() == false) {
+                    sr.handleDijkstraButtonActions();
+                    jpsText.setVisible(false);
+                    aStarText.setVisible(false);
+                    dijkstraText.setVisible(true);
+                    bfsText.setVisible(false);
+                }
             }
         });
 
         bfs.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                sr.handleBfsButtonActions();
-                jps.setDisable(false);
-                aStar.setDisable(false);
-                bfs.setDisable(true);
-                dijkstra.setDisable(false);
-                jpsText.setVisible(false);
-                aStarText.setVisible(false);
-                dijkstraText.setVisible(false);
-                bfsText.setVisible(true);
+                if (sr.getButtonsDisable().get() == false) {
+                    sr.handleBfsButtonActions();
+                    jpsText.setVisible(false);
+                    aStarText.setVisible(false);
+                    dijkstraText.setVisible(false);
+                    bfsText.setVisible(true);
+                }
             }
         });
 
@@ -498,7 +489,6 @@ public class Ui {
         canvas.updateFill(colorpickerColor);
         canvas.fillBlocks(sr.getBlocks());
         sr.resetAStar();
-        clearAll.setDisable(false);
         if (sr.getInserting()) {
             clear.setDisable(false);
         } else {
@@ -550,31 +540,4 @@ public class Ui {
         int rowGap = height / rows;
         this.cols = width / rowGap;
     }
-
-    public void setButtonsOn() {
-        randomize.setDisable(false);
-        save.setDisable(false);
-        read.setDisable(false);
-        update.setDisable(false);
-        getPath.setDisable(false);
-        int algorithm = sr.getAlgorithmInUse();
-        if (algorithm == 1) {
-            aStar.setDisable(false);
-            dijkstra.setDisable(false);
-            bfs.setDisable(false);
-        } else if (algorithm == 0) {
-            jps.setDisable(false);
-            dijkstra.setDisable(false);
-            bfs.setDisable(false);
-        } else if (algorithm == 2) {
-            aStar.setDisable(false);
-            jps.setDisable(false);
-            bfs.setDisable(false);
-        } else if (algorithm == 3) {
-            aStar.setDisable(false);
-            jps.setDisable(false);
-            dijkstra.setDisable(false);
-        }
-    }
-
 }

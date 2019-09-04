@@ -1,8 +1,8 @@
 # Yksikkötestaus
 
 Yksikkötestaus on tehty luokkakohtaisesti Javan Junitilla. Kattavuusraportti löytyy [täältä](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/images/test_report.png).
-Testikattavuus on keskimäärin >= 90%, joten testejä on tehty melko kattavasti, mutta kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan muuten kuin manuaalisesti. Esimerkiksi graafiset elementit ja ui:n metodit ovat tällaisia.
 
+Testikattavuus on keskimäärin >= 90%, joten testejä on tehty melko kattavasti, mutta kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan muuten kuin manuaalisesti. Esimerkiksi graafiset elementit ja ui:n metodit ovat tällaisia. Kaikki testit ovat automaattisia ja ne voi suorittaa koska tahansa uudelleen.
 
 ## Domain-luokkien testit
 
@@ -52,9 +52,13 @@ Ohjelmaa on testattu lukuisilla eri syötteillä manuaalisesti ja käyttöliitty
  
 ## Suorituskykytestaus
 
-Suorituskykyyn liittyvä testaus löytyy tiedostosta [Performance.java](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/src/test/java/com/shortestpathsolver/performance/PerformanceTest.java)
+Suorituskykyyn liittyvä testaus löytyy tiedostosta [PerformanceTest.java](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/src/test/java/com/shortestpathsolver/performance/PerformanceTest.java)
 
-Testaus on tehty 29.8.2019.
+Testeissä on testattu kaikkien algoritmien toimintaa eri ruudukon kokoluokilla ja randomoiduilla estemäärillä.
+
+Suorituskykytestit saa tehtyä muuttamalla PerformanceTest-luokan muuttujan _test_ trueksi. Suoritusaikaa voi testata asettamalla muuttujan _testTimeOrNodes_ arvon trueksi ja käsiteltyjä solmuja asettamalla arvon falseksi. Testatessa kannattaa kommentoida pois kaikki polunetsinnässä tehtävät tulostukset algoritmiluokista.
+
+Testaus on tehty 4.9.2019.
 
 Taulukko suoritusajoista eri algoritmeilla ja eri ruudukon kokoluokilla:
 
@@ -90,6 +94,40 @@ Taulukko suoritusajoista eri algoritmeilla ja eri ruudukon kokoluokilla:
 | BFS | 99 | 794 ms
 
 
+Taulukko käsiteltyjen solmujen määrästä eri algoritmeilla ja eri ruudukon kokoluokilla:
+
+|  Algoritmi | Ruudukon rivien määrä | Keskimääräinen käsiteltyjen solmujen määrä
+|---------------------------|:--:|:--:
+| A* | 9 | 33
+| A* | 24 | 306
+| A* | 39 | 869
+| A* | 54 | 1613
+| A* | 69 | 2722
+| A* | 84 | 3976
+| A* | 99 | 4799
+| JPS | 9 | 18
+| JPS | 24 | 208
+| JPS | 39 | 664
+| JPS | 54 | 1297
+| JPS | 69 | 2086
+| JPS | 84 | 3695
+| JPS | 99 | 4464
+| Dijkstra | 9 | 44
+| Dijkstra | 24 | 331
+| Dijkstra | 39 | 780
+| Dijkstra | 54 | 1672
+| Dijkstra | 69 | 2641
+| Dijkstra | 84 | 4295
+| Dijkstra | 99 | 5138
+| BFS | 9 | 39
+| BFS | 24 | 331
+| BFS | 39 | 838
+| BFS | 54 | 1653
+| BFS | 69 | 2567
+| BFS | 84 | 4116
+| BFS | 99 | 5104
+
+
 Keskimääräinen esisuoritusaika on jokaisessa tapauksessa ~2s.
 
 
@@ -99,10 +137,16 @@ Keskimääräinen esisuoritusaika on jokaisessa tapauksessa ~2s.
 
 Kaaviossa pystyakselilla algoritmien suoritusajat millisekunteina (ms).
 
-Taulukosta ja kaaviosta voidaan päätellä, että nopeimmat ja tehokkaimmat algoritmit testatuilla syötteillä keskimäärin ovat JPS ja leveyshaku. Dijkstra ja leveyshaku ovat molemmat A Star- ja JPS-algoritmia hitaampia pienillä syötteillä. Toisaalta erot tasoittuvat syötteen koon kasvaessa. 
+Suoritusaikojen taulukosta ja kaaviosta voidaan päätellä, että nopeimmat ja tehokkaimmat algoritmit testatuilla syötteillä keskimäärin ovat JPS ja leveyshaku. Dijkstra ja leveyshaku ovat molemmat A Star- ja JPS-algoritmia hitaampia pienillä syötteillä. Toisaalta erot tasoittuvat syötteen koon kasvaessa. 
 
-Yllättävää kyllä, leveyshaku onkin arvioitua nopeampi – itse asiassa nopein – suurilla syötteillä, vaikka animaatio kestää leveyshaun käydessä suuren määrän solmuja läpi. Tehokkuutta selittääkin leveyshaun aikavaativuus, joka on tämän sovelluksen tapauksissa O(n) kun taas muiden algoritmien aikavaativuudet ovat O(n log n). 
+Yllättävää kyllä, leveyshaku onkin arvioitua nopeampi suurilla syötteillä, vaikka animaatio kestää leveyshaun käydessä suuren määrän solmuja läpi. Tehokkuutta selittääkin leveyshaun aikavaativuus, joka on tämän sovelluksen tapauksissa O(n). Leveyshaku on myös yksinkertaisuudessaan hyvä.
 
-A Star ja Dijkstra näyttävät olevan hitaimpia suurilla syötteillä. Kaaviossa kuvaajat ovat murtoviivoja, mutta oikeasti kuvaajat voisi sovittaa aineistoon. On myös huomattava, että suoritusajat riippuvat osittain esteiden määrästä. Varsinkin JPS ja A Star näyttävät olevan nopeampia, kun esteitä on vähän. Nyt testiaineistossa on pyritty käyttämään mahdollisimman vaihtelevia estemääriä ja otettu keskiarvo suoritusajoista. 
+A Star ja Dijkstra näyttävät olevan hitaimpia suurilla syötteillä. Kaaviossa kuvaajat ovat murtoviivoja, mutta oikeasti kuvaajat voisi sovittaa aineistoon. On myös huomattava, että suoritusajat riippuvat osittain esteiden määrästä. Varsinkin JPS ja A Star näyttävät olevan nopeampia, kun esteitä on vähän. Nyt testiaineistossa on pyritty käyttämään mahdollisimman vaihtelevia estemääriä ja otettu keskiarvo suoritusajoista.
 
-Loppujen lopuksi algoritmien välillä voi huomata tehokkuuseroja, joskaan ne eivät ole merkittäviä. Merkittävämpää on algoritmien väliset erot niiden toimintalogiikassa, mikä huomataan animaatioissa ja eri syötteillä.
+JPS-haun tehokkuus yllätti positiivisesti. JPS käy selvästi vähiten solmuja läpi laskentaprosessinsa aikana useimmilla syötteillä. Tämä huomataan myös JPS:n animaatiossa. Tämän kaltainen ruudukko JPS-combolla näytti optimaalisuutensa, kannatti perehtyä.
+
+Huomioimisen arvoista on se, että sovelluksessa käytettävien solmujen maksimimäärä on noin 12250. Näin ollen algoritmeja ei ole päästy testaamaan todella suurilla syötteillä, mutta suoritusaikojen kuvaajan perusteella voidaan päätellä, että erot voivat kasvaa suuremmilla syötteillä.
+
+Kun tutkitaan käsiteltyjen solmujen taulukkoa, saadaan hieman ristiriitaisia tuloksia. Nyt Dijkstra ja leveyshaku ovat tehottomampia kuin A* ja JPS. Huomataan, että JPS on tehokkain, sillä se käy vähiten solmuja läpi, mikä olikin odotettua. A* sijoittuu tehokkuudessa sijalle 2. Leveyshaun hohdokkuus kärsii. Voi olla, että käsiteltyjen solmujen määrät on parempi mittari kuvaamaan algoritmeja sovelluksen syötteillä syötteiden kokorajoittuneisuuden takia.
+
+Loppujen lopuksi algoritmien välillä voi huomata jonkinlaisia tehokkuuseroja, joskaan ne eivät ole kovin merkittäviä. Merkittävämpää on algoritmien väliset erot niiden toimintalogiikassa, mikä huomataan animaatioissa solmujen läpikäymisjärjestyksellä ja eri syötteillä.

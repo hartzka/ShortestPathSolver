@@ -1,6 +1,6 @@
 # Yksikkötestaus
 
-Yksikkötestaus on tehty luokkakohtaisesti Javan Junitilla. Kattavuusraportti löytyy [täältä](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/images/test_report.png).
+Yksikkötestaus on tehty luokkakohtaisesti Javan Junitilla. Kuva kattavuusraportista löytyy [täältä](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/images/test_report.png).
 
 Testikattavuus on keskimäärin >= 90%, joten testejä on tehty melko kattavasti, mutta kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan muuten kuin manuaalisesti. Esimerkiksi graafiset elementit ja ui:n metodit ovat tällaisia. Kaikki testit ovat automaattisia ja ne voi suorittaa koska tahansa uudelleen.
 
@@ -8,7 +8,7 @@ Testikattavuus on keskimäärin >= 90%, joten testejä on tehty melko kattavasti
 
 ### ShortestRouteTest
 
-Testeissä on testattu ohjelman logiikan perustoiminnot kattavasti. Kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan. Näitä ovat mm. graafiset elementit ja ui:n toiminnot.
+Testeissä on testattu ohjelman logiikan perustoiminnot kattavasti. Kaikkia käyttöliittymään liittyviä ominaisuuksia ei ole pystytty testaamaan. Näitä ovat mm. canvaksen päivitystoiminnot.
 
 ### NodeTest
 

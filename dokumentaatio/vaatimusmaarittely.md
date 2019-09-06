@@ -30,6 +30,6 @@ Käyttöliittymälle, logiikalle, tietorakenteille ja algoritmeille on omat pakk
 
 ## Jatkokehitysideat
 
-Sovellukseen voisi lisätä mahdollisuuden muuttaa ikkunan kokoa, ruutujen määrän maksimia voisi kasvattaa, sekä reitille lisätä yhden tai useampia välipisteitä. Lisäksi voisi lisätä mahdollisuuden tutkia algoritmien toimintaa osissa hitaammin.
+Sovellukseen voisi lisätä mahdollisuuden muuttaa ikkunan kokoa, ruutujen määrän maksimia voisi kasvattaa, sekä reitille lisätä yhden tai useampia välipisteitä. Lisäksi voisi antaa solmuille erilaisia painoarvoja ja lisätä mahdollisuuden tutkia algoritmien toimintaa osissa hitaammin.
 
 

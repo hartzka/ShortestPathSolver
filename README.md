@@ -38,11 +38,6 @@ Tämä on Helsingin Yliopiston tietorakenteiden ja algoritmien loppukesän 2019 
 [Loppupalautus](https://github.com/hartzka/ShortestPathSolver/releases/tag/1.3)
 
 
-## Jar
-
-[ShortestPathSolver.jar](https://github.com/hartzka/ShortestPathSolver/releases/download/1.3/ShortestPathSolver.jar)
-
-
 ## Komentorivitoiminnot
 
 Seuraavat komennot ajetaan sovelluksen juurikansiosta, eli samasta kansiosta, jossa pom.xml sijaitsee.

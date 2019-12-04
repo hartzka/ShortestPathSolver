@@ -98,4 +98,4 @@ JavaDocia voi tarkastella avaamalla selaimella tiedosto _target/site/apidocs/ind
 
 ### Jacoco
 
-[Jacoco test report](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/target/site/jacoco/index.html)
+[Jacoco test report](http://htmlpreview.github.com/?https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/target/site/jacoco/index.html)

@@ -6,4 +6,3 @@
 /ShortestPathSolver/nb-configuration.xml
 /ShortestPathSolver/nbproject/
 /ShortestPathSolver/target/*
-!/ShortestPathSolver/target/site/jacoco/

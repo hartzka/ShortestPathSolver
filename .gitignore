@@ -1,4 +1,4 @@
-/ShortestPathSolver/target/*
+
 !/ShortestPathSolver/target/site/jacoco/
 /ShortestPathSolver/nbactions.xml
 /ShortestPathSolver/.classpath

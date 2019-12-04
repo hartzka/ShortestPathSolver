@@ -5,5 +5,9 @@
 /ShortestPathSolver/nbactions-release-profile.xml
 /ShortestPathSolver/nb-configuration.xml
 /ShortestPathSolver/nbproject/
+<<<<<<< HEAD
 /ShortestPathSolver/target/
 !/ShortestPathSolver/target/site/jacoco/
+=======
+/ShortestPathSolver/target/*
+>>>>>>> parent of e51c3c6... Update .gitignore

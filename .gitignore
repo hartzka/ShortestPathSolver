@@ -5,5 +5,5 @@
 /ShortestPathSolver/nbactions-release-profile.xml
 /ShortestPathSolver/nb-configuration.xml
 /ShortestPathSolver/nbproject/
-/ShortestPathSolver/target/**
+/ShortestPathSolver/target/*
 !/ShortestPathSolver/target/site/jacoco/

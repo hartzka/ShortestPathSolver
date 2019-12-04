@@ -1,0 +1,9 @@
+/home/kaihartz/ShortestPathSolver/ShortestPathSolver/src/test/java/com/shortestpathsolver/domain/NodeTest.java
+/home/kaihartz/ShortestPathSolver/ShortestPathSolver/src/test/java/com/shortestpathsolver/domain/ShortestRouteTest.java
+/home/kaihartz/ShortestPathSolver/ShortestPathSolver/src/test/java/com/shortestpathsolver/structures/QueueTest.java
+/home/kaihartz/ShortestPathSolver/ShortestPathSolver/src/test/java/com/shortestpathsolver/structures/CustomArrayListTest.java
+/home/kaihartz/ShortestPathSolver/ShortestPathSolver/src/test/java/com/shortestpathsolver/algorithms/DijkstraTest.java
+/home/kaihartz/ShortestPathSolver/ShortestPathSolver/src/test/java/com/shortestpathsolver/algorithms/BfsTest.java
+/home/kaihartz/ShortestPathSolver/ShortestPathSolver/src/test/java/com/shortestpathsolver/algorithms/AStarTest.java
+/home/kaihartz/ShortestPathSolver/ShortestPathSolver/src/test/java/com/shortestpathsolver/structures/HeapTest.java
+/home/kaihartz/ShortestPathSolver/ShortestPathSolver/src/test/java/com/shortestpathsolver/performance/PerformanceTest.java

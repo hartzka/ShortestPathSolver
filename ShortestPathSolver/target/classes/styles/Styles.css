@@ -1,0 +1,36 @@
+.button {
+    -fx-font-weight: bold;
+    -fx-padding: 30px;
+    -fx-text-fill: white;
+   -fx-margin-top: 20px;
+}
+
+.orbutton {
+   -fx-background-color: orange;
+}
+
+.yebutton {
+   -fx-background-color: yellow;
+}
+
+.redbutton {
+   -fx-background-color: red;
+}
+
+.grbutton {
+   -fx-background-color: green;
+}
+
+.blbutton {
+   -fx-background-color: blue;
+}
+
+.text {
+   -fx-fill: blue;
+   -fx-font-size: 20;
+}
+
+.notfound {
+   -fx-fill: red;
+   -fx-font-size: 20;
+}

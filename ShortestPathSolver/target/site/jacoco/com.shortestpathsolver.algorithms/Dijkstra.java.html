@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Dijkstra.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ShortestPathSolver</a> &gt; <a href="index.source.html" class="el_package">com.shortestpathsolver.algorithms</a> &gt; <span class="el_source">Dijkstra.java</span></div><h1>Dijkstra.java</h1><pre class="source lang-java linenums">package com.shortestpathsolver.algorithms;
+
+import com.shortestpathsolver.domain.Node;
+import com.shortestpathsolver.domain.ShortestRoute;
+import com.shortestpathsolver.structures.CustomArrayList;
+import com.shortestpathsolver.structures.Heap;
+import com.shortestpathsolver.structures.Pair;
+
+/**
+ * Dijkstra's algorithm
+ *
+ * @author kaihartz
+ */
+public class Dijkstra extends Algorithm {
+
+    private Heap heap;
+    private boolean[] visited;
+    private int[] dist;
+    private CustomArrayList&lt;Node&gt; closedSet;
+    private ShortestRoute sr;
+    private int m;
+    private int inf;
+
+    public Dijkstra(ShortestRoute sr) {
+<span class="fc" id="L25">        super(sr);</span>
+<span class="fc" id="L26">        this.sr = sr;</span>
+<span class="fc" id="L27">        this.closedSet = new CustomArrayList&lt;&gt;();</span>
+<span class="fc" id="L28">        this.heap = new Heap();</span>
+<span class="fc" id="L29">        this.m = 20000;</span>
+<span class="fc" id="L30">        this.inf = 9999999;</span>
+<span class="fc" id="L31">    }</span>
+
+    /**
+     * The main logic, which searches the shortest route with Dijkstra
+     *
+     * @param initialNode Beginning of the search
+     * @return List presenting the route
+     */
+    @Override
+    public CustomArrayList&lt;Node&gt; calculatePath(Node initialNode) {
+<span class="fc" id="L41">        closedSet.clear(); //initializations</span>
+<span class="fc" id="L42">        dist = new int[m];</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (int i = 0; i &lt; m; i++) {</span>
+<span class="fc" id="L44">            dist[i] = inf;</span>
+        }
+<span class="fc" id="L46">        dist[initialNode.toInt()] = 0;</span>
+<span class="fc" id="L47">        super.getPath().clear();</span>
+<span class="fc" id="L48">        visited = new boolean[m];</span>
+<span class="fc" id="L49">        heap.clear();</span>
+<span class="fc" id="L50">        heap.add(initialNode);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        while (heap.size() &gt; 0) {</span>
+<span class="fc" id="L52">            Node node = heap.poll(); //Node with smallest distance</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (visited[node.toInt()]) {</span>
+<span class="fc" id="L54">                continue;</span>
+            }
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            if (sr.isFinalNode(node)) {</span>
+<span class="fc" id="L57">                System.out.println(&quot;Distance: &quot; + node.getDist()); //The search is over and we've found the final Node!</span>
+<span class="fc" id="L58">                return getPath(node);</span>
+            }
+<span class="fc" id="L60">            visited[node.toInt()] = true;</span>
+<span class="fc" id="L61">            closedSet.add(node);</span>
+<span class="fc" id="L62">            Pair&lt;Node, Integer&gt;[] neighbours = getNeighbours(node); // Get all neighbours except blocks</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            for (int i = 0; i &lt; neighbours.length; i++) {</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">                if (neighbours[i] != null) {</span>
+<span class="fc" id="L65">                    Pair&lt;Node, Integer&gt; neighbourPair = neighbours[i];</span>
+<span class="fc" id="L66">                    Node neighbour = neighbourPair.getKey();</span>
+<span class="fc" id="L67">                    int currentDist = dist[neighbour.toInt()];</span>
+<span class="fc" id="L68">                    int newDist = dist[node.toInt()] + neighbourPair.getValue();</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">                    if (newDist &lt; currentDist) {</span>
+<span class="fc" id="L70">                        dist[neighbour.toInt()] = newDist; // Update dists</span>
+<span class="fc" id="L71">                        neighbour.setParent(node);</span>
+<span class="fc" id="L72">                        neighbour.setDist(newDist);</span>
+<span class="fc" id="L73">                        heap.add(neighbour); // Add to heap</span>
+                    }
+                }
+
+            }
+<span class="fc" id="L78">        }</span>
+<span class="fc" id="L79">        return new CustomArrayList&lt;&gt;();</span>
+    }
+
+    @Override
+    public CustomArrayList&lt;Node&gt; getClosedSet() {
+<span class="fc" id="L84">        return closedSet;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

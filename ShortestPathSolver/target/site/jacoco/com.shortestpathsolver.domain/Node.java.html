@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Node.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ShortestPathSolver</a> &gt; <a href="index.source.html" class="el_package">com.shortestpathsolver.domain</a> &gt; <span class="el_source">Node.java</span></div><h1>Node.java</h1><pre class="source lang-java linenums">package com.shortestpathsolver.domain;
+
+import javafx.scene.paint.Color;
+
+/**
+ * Node class
+ *
+ * @author kaihartz
+ */
+public class Node {
+
+    private int hValue; //heuristic in A*
+    private int gValue; //movement cost in A*
+    private int dist;  // h+g=f in A* and distance in dijkstra
+    private int row;
+    private int column;
+    private boolean isBlock;
+    private Node parent;
+    private Color visualizationColor;
+
+<span class="fc" id="L21">    public Node(int col, int row) {</span>
+<span class="fc" id="L22">        this.row = row;</span>
+<span class="fc" id="L23">        this.column = col;</span>
+<span class="fc" id="L24">        this.visualizationColor = Color.WHITE;</span>
+<span class="fc" id="L25">    }</span>
+
+    public int getH() {
+<span class="fc" id="L28">        return hValue;</span>
+    }
+
+    public void setH(int h) {
+<span class="fc" id="L32">        this.hValue = h;</span>
+<span class="fc" id="L33">    }</span>
+
+    public int getG() {
+<span class="fc" id="L36">        return gValue;</span>
+    }
+
+    public int getDist() {
+<span class="fc" id="L40">        return dist;</span>
+    }
+
+    public void setDist(int newDist) {
+<span class="fc" id="L44">        this.dist = newDist;</span>
+<span class="fc" id="L45">    }</span>
+
+    /**
+     *
+     * Updates node's information in A*
+     *
+     * @param currentNode Current node in A
+     *
+     * @param gCost Movement cost
+     */
+    public void setAStarInformation(Node currentNode, int gCost) {
+<span class="fc" id="L56">        this.gValue = currentNode.getG() + gCost;</span>
+<span class="fc" id="L57">        this.parent = currentNode;</span>
+<span class="fc" id="L58">        this.dist = gValue + hValue;</span>
+<span class="fc" id="L59">    }</span>
+
+    public Node getParent() {
+<span class="fc" id="L62">        return parent;</span>
+    }
+
+    /**
+     *
+     * @return if node is block
+     */
+    public boolean isBlock() {
+<span class="fc" id="L70">        return isBlock;</span>
+    }
+
+    public void setBlock(boolean isBlock) {
+<span class="fc" id="L74">        this.isBlock = isBlock;</span>
+<span class="fc" id="L75">    }</span>
+
+    public int getRow() {
+<span class="fc" id="L78">        return row;</span>
+    }
+
+    public void setRow(int row) {
+<span class="fc" id="L82">        this.row = row;</span>
+<span class="fc" id="L83">    }</span>
+
+    public int getColumn() {
+<span class="fc" id="L86">        return column;</span>
+    }
+
+    public void setColumn(int col) {
+<span class="fc" id="L90">        this.column = col;</span>
+<span class="fc" id="L91">    }</span>
+
+    public void setVisualizationColor(Color c) {
+<span class="fc" id="L94">        this.visualizationColor = c;</span>
+<span class="fc" id="L95">    }</span>
+
+    public Color getVisualizationColor() {
+<span class="fc" id="L98">        return this.visualizationColor;</span>
+    }
+
+    @Override
+    public boolean equals(Object n) {
+<span class="fc" id="L103">        Node node2 = (Node) n;</span>
+<span class="fc bfc" id="L104" title="All 4 branches covered.">        return this.getRow() == node2.getRow() &amp;&amp; this.getColumn() == node2.getColumn();</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (parent != null) {</span>
+<span class="fc" id="L110">            return &quot;row: &quot; + row + &quot; col: &quot; + column + &quot; g: &quot; + gValue + &quot; dist: &quot; + dist + &quot; parent: row: &quot; + parent.getRow() + &quot; col: &quot; + parent.getColumn();</span>
+        } else {
+<span class="fc" id="L112">            return &quot;row: &quot; + row + &quot; col: &quot; + column + &quot; g: &quot; + gValue + &quot; dist: &quot; + dist;</span>
+        }
+    }
+
+    /**
+     *
+     * @return int representation of node
+     */
+    public int toInt() {
+<span class="fc" id="L121">        return row * 150 + column;</span>
+    }
+
+    public void setParent(Node parent) {
+<span class="fc" id="L125">        this.parent = parent;</span>
+<span class="fc" id="L126">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

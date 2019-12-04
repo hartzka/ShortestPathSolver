@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShortestRoute.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ShortestPathSolver</a> &gt; <a href="index.source.html" class="el_package">com.shortestpathsolver.domain</a> &gt; <span class="el_source">ShortestRoute.java</span></div><h1>ShortestRoute.java</h1><pre class="source lang-java linenums">package com.shortestpathsolver.domain;
+
+import com.shortestpathsolver.algorithms.AStar;
+import com.shortestpathsolver.algorithms.BFS;
+import com.shortestpathsolver.algorithms.Dijkstra;
+import com.shortestpathsolver.structures.CustomArrayList;
+import com.shortestpathsolver.ui.DrawPad;
+import com.shortestpathsolver.ui.Ui;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.util.Duration;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+
+/**
+ * Main logic of the application
+ *
+ * @author kaihartz
+ */
+public class ShortestRoute extends Application {
+
+    private AStar aStar;
+    private Dijkstra dijkstra;
+    private BFS bfs;
+    private boolean writed;
+    private int startX;
+    private int startY;
+    private int goalX;
+    private int goalY;
+    private boolean inserting;
+    private Ui ui;
+    private DrawPad canvas;
+    private Node initialNode;
+    private Node finalNode;
+    private boolean[][] blocks;
+    private Node[][] nodes;
+    private int rows;
+    private int cols;
+    private Timeline timeline;
+    private int timelineIterator;
+    private Node prevNode;
+    private KeyFrame frame;
+    private boolean pathDrawing;
+    private boolean initialNodeMoving;
+    private boolean finalNodeMoving;
+    private int rowGap;
+    private int height;
+    private int width;
+    private Color bgColor;
+    private Random rand;
+    private boolean pathVisualize;
+    private SimpleBooleanProperty buttonsDisabled;
+    private SimpleBooleanProperty aStarInUse;
+    private SimpleBooleanProperty jpsInUse;
+    private SimpleBooleanProperty dijkstraInUse;
+    private SimpleBooleanProperty bfsInUse;
+
+<span class="fc" id="L65">    public ShortestRoute() {</span>
+<span class="fc" id="L66">        this.buttonsDisabled = new SimpleBooleanProperty(false);</span>
+<span class="fc" id="L67">        this.aStarInUse = new SimpleBooleanProperty(true);</span>
+<span class="fc" id="L68">        this.bfsInUse = new SimpleBooleanProperty(false);</span>
+<span class="fc" id="L69">        this.dijkstraInUse = new SimpleBooleanProperty(false);</span>
+<span class="fc" id="L70">        this.jpsInUse = new SimpleBooleanProperty(false);</span>
+<span class="fc" id="L71">        this.inserting = true;</span>
+<span class="fc" id="L72">        this.startX = 0;</span>
+<span class="fc" id="L73">        this.startY = 0;</span>
+<span class="fc" id="L74">        this.goalX = 30;</span>
+<span class="fc" id="L75">        this.goalY = 30;</span>
+<span class="fc" id="L76">        this.writed = false;</span>
+<span class="fc" id="L77">        this.rows = 40;</span>
+<span class="fc" id="L78">        this.cols = 50;</span>
+<span class="fc" id="L79">        this.height = 801;</span>
+<span class="fc" id="L80">        this.width = 1001;</span>
+<span class="fc" id="L81">        this.initialNodeMoving = false;</span>
+<span class="fc" id="L82">        this.finalNodeMoving = false;</span>
+<span class="fc" id="L83">        this.blocks = new boolean[101][126];</span>
+<span class="fc" id="L84">        this.nodes = new Node[101][126];</span>
+<span class="fc" id="L85">        this.initialNode = new Node(startX, startY);</span>
+<span class="fc" id="L86">        this.finalNode = new Node(goalX, goalY);</span>
+<span class="fc" id="L87">        this.aStar = new AStar(this);</span>
+<span class="fc" id="L88">        this.dijkstra = new Dijkstra(this);</span>
+<span class="fc" id="L89">        this.bfs = new BFS(this);</span>
+<span class="fc" id="L90">        this.pathDrawing = false;</span>
+<span class="fc" id="L91">        this.timeline = new Timeline();</span>
+<span class="fc" id="L92">        this.timelineIterator = 0;</span>
+<span class="fc" id="L93">        this.bgColor = Color.BURLYWOOD;</span>
+<span class="fc" id="L94">        this.rowGap = height / rows;</span>
+<span class="fc" id="L95">        this.rand = new Random();</span>
+<span class="fc" id="L96">        this.pathVisualize = false;</span>
+<span class="fc" id="L97">        this.canvas = new DrawPad(this, null, 1, 1, 1, 1);</span>
+<span class="fc" id="L98">        setNodes();</span>
+<span class="fc" id="L99">        this.frame = new KeyFrame(Duration.seconds(0.001), new EventHandler&lt;ActionEvent&gt;() {</span>
+            @Override
+            public void handle(ActionEvent event) {
+<span class="nc" id="L102">                handleAnimation();</span>
+<span class="nc" id="L103">            }</span>
+        });
+<span class="fc" id="L105">        timeline.getKeyFrames().add(frame);</span>
+<span class="fc" id="L106">        timelineIterator = 0;</span>
+<span class="fc" id="L107">        timeline.setCycleCount(Timeline.INDEFINITE);</span>
+<span class="fc" id="L108">    }</span>
+
+    @Override
+    public void start(Stage primaryStage) {
+<span class="nc" id="L112">        this.ui = new Ui(this, width, height, rows, cols, bgColor);</span>
+<span class="nc" id="L113">        ui.start(primaryStage);</span>
+<span class="nc" id="L114">        this.canvas = ui.getCanvas();</span>
+<span class="nc" id="L115">    }</span>
+
+    /**
+     * Searches the shortest route with A* and sends it to visualization method.
+     *
+     * @return true, if a route exists, otherwise false
+     */
+    public boolean calculateAStarPath() {
+<span class="fc" id="L123">        CustomArrayList&lt;Node&gt; path = aStar.calculatePath(initialNode);</span>
+<span class="fc" id="L124">        CustomArrayList&lt;Node&gt; closedSet = aStar.getClosedSet();</span>
+<span class="fc" id="L125">        visualizePath(closedSet, path);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (path.isEmpty()) {</span>
+<span class="fc" id="L127">            return false;</span>
+        }
+<span class="fc" id="L129">        return true;</span>
+    }
+
+    /**
+     * Searches the shortest route with Dijkstra and sends it to visualization
+     * method.
+     *
+     * @return true, if a route exists, otherwise false
+     */
+    public boolean calculateDijkstraPath() {
+<span class="fc" id="L139">        CustomArrayList&lt;Node&gt; path = dijkstra.calculatePath(initialNode);</span>
+<span class="fc" id="L140">        CustomArrayList&lt;Node&gt; closedSet = dijkstra.getClosedSet();</span>
+<span class="fc" id="L141">        visualizePath(closedSet, path);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (path.isEmpty()) {</span>
+<span class="fc" id="L143">            return false;</span>
+        }
+<span class="fc" id="L145">        return true;</span>
+    }
+
+    /**
+     * Searches the shortest route with BFS and sends it to visualization
+     * method.
+     *
+     * @return true, if a route exists, otherwise false
+     */
+    public boolean calculateBFSPath() {
+<span class="fc" id="L155">        CustomArrayList&lt;Node&gt; path = bfs.calculatePath(initialNode);</span>
+<span class="fc" id="L156">        CustomArrayList&lt;Node&gt; closedSet = bfs.getClosedSet();</span>
+<span class="fc" id="L157">        visualizePath(closedSet, path);</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        if (path.isEmpty()) {</span>
+<span class="fc" id="L159">            return false;</span>
+        }
+<span class="fc" id="L161">        return true;</span>
+    }
+
+    /**
+     * Logic for Clear-button
+     */
+    public void handleClearButtonActions() {
+<span class="fc" id="L168">        inserting = false;</span>
+<span class="fc" id="L169">        writed = false;</span>
+<span class="fc" id="L170">    }</span>
+
+    /**
+     * Logic for Clear all -button
+     */
+    public void handleClearAllButtonActions() {
+<span class="fc" id="L176">        inserting = true;</span>
+<span class="fc" id="L177">        writed = false;</span>
+<span class="fc" id="L178">        initializeBlocks();</span>
+<span class="fc" id="L179">        aStar.reset();</span>
+<span class="fc" id="L180">    }</span>
+
+    /**
+     * Logic for A*-button
+     */
+    public void handleAStarButtonActions() {
+<span class="fc" id="L186">        aStar.setJPS(false);</span>
+<span class="fc" id="L187">        aStarInUse.set(true);</span>
+<span class="fc" id="L188">        bfsInUse.set(false);</span>
+<span class="fc" id="L189">        dijkstraInUse.set(false);</span>
+<span class="fc" id="L190">        jpsInUse.set(false);</span>
+<span class="fc" id="L191">    }</span>
+
+    /**
+     * Logic for Jps-button
+     */
+    public void handleJpsButtonActions() {
+<span class="fc" id="L197">        aStar.setJPS(true);</span>
+<span class="fc" id="L198">        aStarInUse.set(false);</span>
+<span class="fc" id="L199">        bfsInUse.set(false);</span>
+<span class="fc" id="L200">        dijkstraInUse.set(false);</span>
+<span class="fc" id="L201">        jpsInUse.set(true);</span>
+<span class="fc" id="L202">    }</span>
+
+    /**
+     * Logic for BFS-button
+     */
+    public void handleBfsButtonActions() {
+<span class="fc" id="L208">        aStarInUse.set(false);</span>
+<span class="fc" id="L209">        bfsInUse.set(true);</span>
+<span class="fc" id="L210">        dijkstraInUse.set(false);</span>
+<span class="fc" id="L211">        jpsInUse.set(false);</span>
+<span class="fc" id="L212">    }</span>
+
+    /**
+     * Logic for Dijkstra-button
+     */
+    public void handleDijkstraButtonActions() {
+<span class="fc" id="L218">        aStarInUse.set(false);</span>
+<span class="fc" id="L219">        bfsInUse.set(false);</span>
+<span class="fc" id="L220">        dijkstraInUse.set(true);</span>
+<span class="fc" id="L221">        jpsInUse.set(false);</span>
+<span class="fc" id="L222">    }</span>
+
+    /**
+     * Logic for Insert-button
+     */
+    public void handleInsertButtonActions() {
+<span class="fc" id="L228">        inserting = true;</span>
+<span class="fc" id="L229">    }</span>
+
+    /**
+     * Logic for Calculate path -button
+     *
+     * @return true, if path is found, false otherwise
+     */
+    public boolean handleCalculatePathButtonActions() {
+<span class="fc" id="L237">        boolean found = false;</span>
+<span class="fc" id="L238">        pathVisualize = true;</span>
+<span class="pc bpc" id="L239" title="1 of 4 branches missed.">        if (aStarInUse.get() == true || jpsInUse.get() == true) {</span>
+<span class="fc" id="L240">            found = calculateAStarPath();</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">        } else if (dijkstraInUse.get() == true) {</span>
+<span class="fc" id="L242">            found = calculateDijkstraPath();</span>
+<span class="pc bpc" id="L243" title="1 of 2 branches missed.">        } else if (bfsInUse.get() == true) {</span>
+<span class="fc" id="L244">            found = calculateBFSPath();</span>
+        }
+<span class="fc" id="L246">        return found;</span>
+    }
+
+    public void setWrited(boolean b) {
+<span class="fc" id="L250">        this.writed = b;</span>
+<span class="fc" id="L251">    }</span>
+
+    public boolean getWrited() {
+<span class="fc" id="L254">        return this.writed;</span>
+    }
+
+    public AStar getAStar() {
+<span class="fc" id="L258">        return this.aStar;</span>
+    }
+
+    /**
+     * Resets A*.
+     */
+    public void resetAStar() {
+<span class="fc" id="L265">        aStar.reset();</span>
+<span class="fc" id="L266">    }</span>
+
+    public boolean getInserting() {
+<span class="fc" id="L269">        return this.inserting;</span>
+    }
+
+    public Node getInitialNode() {
+<span class="fc" id="L273">        return initialNode;</span>
+    }
+
+    public void setInitialNode(Node initialNode) {
+<span class="fc" id="L277">        this.initialNode = initialNode;</span>
+<span class="fc" id="L278">        this.startX = initialNode.getColumn();</span>
+<span class="fc" id="L279">        this.startY = initialNode.getRow();</span>
+<span class="fc" id="L280">    }</span>
+
+    public Node getFinalNode() {
+<span class="fc" id="L283">        return finalNode;</span>
+    }
+
+    public void setFinalNode(Node finalNode) {
+<span class="fc" id="L287">        this.finalNode = finalNode;</span>
+<span class="fc" id="L288">        this.goalX = finalNode.getColumn();</span>
+<span class="fc" id="L289">        this.goalY = finalNode.getRow();</span>
+<span class="fc" id="L290">    }</span>
+
+    /**
+     * Tells if node is final node.
+     *
+     * @param node
+     * @return true, if node is final node, otherwise false.
+     */
+    public boolean isFinalNode(Node node) {
+<span class="fc" id="L299">        return node.equals(finalNode);</span>
+    }
+
+    /**
+     * Tells if a node is initial- or final node.
+     *
+     * @param x Node's x-coordinate
+     * @param y Node's y-coordinate
+     * @return true, if node is neither initial node nor final node.
+     */
+    public boolean isNotInitialOrFinalNode(int x, int y) {
+<span class="fc bfc" id="L310" title="All 4 branches covered.">        if (x == startX &amp;&amp; y == startY) {</span>
+<span class="fc" id="L311">            return false;</span>
+        }
+<span class="fc bfc" id="L313" title="All 4 branches covered.">        if (x == goalX &amp;&amp; y == goalY) {</span>
+<span class="fc" id="L314">            return false;</span>
+        }
+<span class="fc" id="L316">        return true;</span>
+    }
+
+    /**
+     * Updates visualization colors.
+     */
+    private void visualizePath(CustomArrayList&lt;Node&gt; closedSet, CustomArrayList&lt;Node&gt; path) {
+<span class="fc bfc" id="L323" title="All 2 branches covered.">        for (int i = 0; i &lt; closedSet.size(); i++) {</span>
+<span class="fc" id="L324">            Node n = closedSet.get(i);</span>
+<span class="fc" id="L325">            n.setVisualizationColor(Color.WHITE);</span>
+        }
+<span class="fc bfc" id="L327" title="All 2 branches covered.">        for (int i = 0; i &lt; path.size(); i++) {</span>
+<span class="fc" id="L328">            Node n = path.get(i);</span>
+<span class="fc" id="L329">            n.setVisualizationColor(Color.BLUEVIOLET);</span>
+        }
+<span class="fc" id="L331">        timeline.play();</span>
+<span class="fc" id="L332">    }</span>
+
+    /**
+     * Initializes the node array.
+     */
+    public void setNodes() {
+<span class="fc bfc" id="L338" title="All 2 branches covered.">        for (int i = 0; i &lt; nodes.length; i++) {</span>
+<span class="fc bfc" id="L339" title="All 2 branches covered.">            for (int j = 0; j &lt; nodes[0].length; j++) {</span>
+<span class="fc" id="L340">                Node node = new Node(j, i);</span>
+<span class="fc bfc" id="L341" title="All 2 branches covered.">                if (blocks[i][j]) {</span>
+<span class="fc" id="L342">                    node.setBlock(true);</span>
+                }
+<span class="pc bpc" id="L344" title="3 of 4 branches missed.">                if (aStarInUse.get() == true || jpsInUse.get() == true) {</span>
+<span class="fc" id="L345">                    aStar.calculateHeuristic(node, this.finalNode);</span>
+                }
+<span class="fc" id="L347">                this.nodes[i][j] = node;</span>
+            }
+        }
+<span class="fc" id="L350">    }</span>
+
+    public Node[][] getNodes() {
+<span class="fc" id="L353">        return this.nodes;</span>
+    }
+
+    /**
+     * Sets a block in given coordinates.
+     *
+     * @param row Block's row
+     * @param col Block's column
+     */
+    public void setBlock(int row, int col) {
+<span class="pc bpc" id="L363" title="5 of 10 branches missed.">        if (row &gt;= 0 &amp;&amp; col &gt;= 0 &amp;&amp; row &lt; nodes.length &amp;&amp; col &lt; nodes[0].length &amp;&amp; isNotInitialOrFinalNode(col, row)) {</span>
+<span class="fc" id="L364">            this.nodes[row][col].setBlock(true);</span>
+<span class="fc" id="L365">            this.blocks[row][col] = true;</span>
+        }
+<span class="fc" id="L367">    }</span>
+
+    public void setSearchArea(Node[][] searchArea) {
+<span class="fc" id="L370">        this.nodes = searchArea;</span>
+<span class="fc" id="L371">    }</span>
+
+    public boolean[][] getBlocks() {
+<span class="fc" id="L374">        return this.blocks;</span>
+    }
+
+    /**
+     * Removes a block from given coordinates.
+     *
+     * @param y y-coordinate
+     * @param x x-coordinate
+     */
+    public void removeBlock(int y, int x) {
+<span class="fc" id="L384">        this.nodes[y][x].setBlock(false);</span>
+<span class="fc" id="L385">        this.blocks[y][x] = false;</span>
+<span class="fc" id="L386">    }</span>
+
+    /**
+     * Initializes blocks.
+     */
+    public void initializeBlocks() {
+<span class="fc" id="L392">        this.blocks = new boolean[nodes.length][nodes[0].length];</span>
+<span class="fc" id="L393">    }</span>
+
+    public int getCols() {
+<span class="fc" id="L396">        return cols;</span>
+    }
+
+    public int getRows() {
+<span class="fc" id="L400">        return rows;</span>
+    }
+
+    public void setNodesMovementsOff() {
+<span class="fc" id="L404">        initialNodeMoving = false;</span>
+<span class="fc" id="L405">        finalNodeMoving = false;</span>
+<span class="fc" id="L406">    }</span>
+
+    public int getStartX() {
+<span class="fc" id="L409">        return startX;</span>
+    }
+
+    public int getStartY() {
+<span class="fc" id="L413">        return startY;</span>
+    }
+
+    public int getGoalX() {
+<span class="fc" id="L417">        return goalX;</span>
+    }
+
+    public int getGoalY() {
+<span class="fc" id="L421">        return goalY;</span>
+    }
+
+    /**
+     * Tells if a node in given coordinates is available i.e. not initial- or
+     * final node and not block.
+     *
+     * @param y y-coordinate
+     * @param x x-coordinate
+     *
+     * @return true, if node is available, false otherwise
+     */
+    public boolean isAvailable(int y, int x) {
+<span class="pc bpc" id="L434" title="2 of 4 branches missed.">        return isNotInitialOrFinalNode(x, y) &amp;&amp; !blocks[y][x];</span>
+    }
+
+    public boolean isInitialNode(Node node) {
+<span class="fc" id="L438">        return node.equals(initialNode);</span>
+    }
+
+    /**
+     * Takes care of different mouse actions such as initial- and final node
+     * movement and filling blocks.
+     *
+     * @param y y-coordinate
+     * @param x x-coordinate
+     */
+    public void handleMouseAction(double x, double y) {
+<span class="pc bpc" id="L449" title="1 of 2 branches missed.">        if (!pathVisualize) {</span>
+<span class="fc" id="L450">            int ux = (int) (x / rowGap);</span>
+<span class="fc" id="L451">            int uy = (int) (y / rowGap);</span>
+<span class="fc bfc" id="L452" title="All 2 branches covered.">            if (initialNodeMoving) {</span>
+<span class="pc bpc" id="L453" title="3 of 6 branches missed.">                if (isAvailable(uy, ux) &amp;&amp; uy &lt; rows &amp;&amp; ux &lt; cols) { // Now initial Node is moving</span>
+<span class="fc" id="L454">                    canvas.fillRect(startY, startX, bgColor);</span>
+<span class="fc" id="L455">                    startX = ux;</span>
+<span class="fc" id="L456">                    startY = uy;</span>
+<span class="fc" id="L457">                    canvas.setInitialNode(uy, ux);</span>
+                }
+<span class="fc bfc" id="L459" title="All 2 branches covered.">            } else if (finalNodeMoving) {</span>
+<span class="pc bpc" id="L460" title="3 of 6 branches missed.">                if (isAvailable(uy, ux) &amp;&amp; uy &lt; rows &amp;&amp; ux &lt; cols) { // Now final Node is moving</span>
+<span class="fc" id="L461">                    canvas.fillRect(goalY, goalX, bgColor);</span>
+<span class="fc" id="L462">                    goalX = ux;</span>
+<span class="fc" id="L463">                    goalY = uy;</span>
+<span class="fc" id="L464">                    canvas.setFinalNode(uy, ux);</span>
+                }
+<span class="pc bpc" id="L466" title="1 of 4 branches missed.">            } else if (initialNode.getColumn() == ux &amp;&amp; initialNode.getRow() == uy) {</span>
+<span class="fc" id="L467">                initialNodeMoving = true; // Initial Node starts to move</span>
+<span class="pc bpc" id="L468" title="1 of 4 branches missed.">            } else if (finalNode.getColumn() == ux &amp;&amp; finalNode.getRow() == uy) {</span>
+<span class="fc" id="L469">                finalNodeMoving = true; // Final Node starts to move</span>
+<span class="fc bfc" id="L470" title="All 2 branches covered.">            } else if (!inserting) { //Removing</span>
+<span class="pc bpc" id="L471" title="1 of 2 branches missed.">                if (isNotInitialOrFinalNode(ux, uy)) {</span>
+<span class="fc" id="L472">                    canvas.removeBlock(y, x, bgColor);</span>
+                }
+            } else {
+<span class="pc bpc" id="L475" title="1 of 2 branches missed.">                if (isNotInitialOrFinalNode(ux, uy)) {</span>
+                    try {
+<span class="fc" id="L477">                        canvas.fillBlock(y, x); //Inserting blocks</span>
+<span class="nc" id="L478">                    } catch (Exception ex) {</span>
+<span class="nc" id="L479">                        Logger.getLogger(Ui.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L480">                    }</span>
+                }
+            }
+        }
+<span class="fc" id="L484">    }</span>
+
+    public boolean getInitialNodeMoving() {
+<span class="fc" id="L487">        return initialNodeMoving;</span>
+    }
+
+    public boolean getFinalNodeMoving() {
+<span class="fc" id="L491">        return finalNodeMoving;</span>
+    }
+
+    /**
+     * Takes care of animations and path visualization timed by timeline.
+     *
+     */
+    public void handleAnimation() {
+<span class="pc bpc" id="L499" title="2 of 12 branches missed.">        if (!pathDrawing &amp;&amp; (((aStarInUse.get() == true || jpsInUse.get() == true) &amp;&amp; timelineIterator &gt;= aStar.getClosedSet().size()) || (dijkstraInUse.get() == true &amp;&amp; timelineIterator &gt;= dijkstra.getClosedSet().size())</span>
+<span class="pc bpc" id="L500" title="1 of 4 branches missed.">                || (bfsInUse.get() == true &amp;&amp; timelineIterator &gt;= bfs.getClosedSet().size()))) {</span>
+<span class="fc" id="L501">            pathDrawing = true;</span>
+<span class="fc" id="L502">            prevNode = null;</span>
+<span class="fc" id="L503">            timelineIterator = 0;</span>
+<span class="fc bfc" id="L504" title="All 2 branches covered.">        } else if (pathDrawing) {</span>
+<span class="fc" id="L505">            handlePathDrawingActions();</span>
+        } else {
+<span class="fc" id="L507">            Node n = null;</span>
+<span class="pc bpc" id="L508" title="1 of 2 branches missed.">            if (dijkstraInUse.get() == true) {</span>
+<span class="nc" id="L509">                n = dijkstra.getClosedSet().get(timelineIterator);</span>
+<span class="pc bpc" id="L510" title="3 of 4 branches missed.">            } else if (aStarInUse.get() == true || jpsInUse.get() == true) {</span>
+<span class="fc" id="L511">                n = aStar.getClosedSet().get(timelineIterator);</span>
+<span class="nc bnc" id="L512" title="All 2 branches missed.">            } else if (bfsInUse.get() == true) {</span>
+<span class="nc" id="L513">                n = bfs.getClosedSet().get(timelineIterator);</span>
+            }
+<span class="pc bpc" id="L515" title="2 of 4 branches missed.">            if (isNotInitialOrFinalNode(n.getColumn(), n.getRow()) &amp;&amp; !n.isBlock()) {</span>
+<span class="fc" id="L516">                canvas.fillRect(n.getRow(), n.getColumn(), n.getVisualizationColor());</span>
+            }
+        }
+<span class="fc" id="L519">        timelineIterator++;</span>
+<span class="fc" id="L520">    }</span>
+
+    private void handlePathDrawingActions() {
+<span class="pc bpc" id="L523" title="3 of 10 branches missed.">        if ((dijkstraInUse.get() == true &amp;&amp; timelineIterator &gt;= dijkstra.getPath().size()) || ((aStarInUse.get() == true || jpsInUse.get() == true) &amp;&amp; timelineIterator &gt;= aStar.getPath().size())</span>
+<span class="pc bpc" id="L524" title="2 of 4 branches missed.">                || (bfsInUse.get() == true &amp;&amp; timelineIterator &gt;= bfs.getPath().size())) {</span>
+<span class="fc" id="L525">            pathDrawing = false;</span>
+<span class="fc" id="L526">            prevNode = null;</span>
+<span class="pc bpc" id="L527" title="1 of 4 branches missed.">            if (aStarInUse.get() == true || jpsInUse.get() == true) {</span>
+<span class="fc" id="L528">                aStar.reset();</span>
+            }
+<span class="fc" id="L530">            timelineIterator = 0;</span>
+<span class="fc" id="L531">            timeline.stop();</span>
+<span class="fc" id="L532">            pathVisualize = false;</span>
+<span class="fc" id="L533">            buttonsDisabled.set(false);</span>
+        } else {
+<span class="nc" id="L535">            fillPathLine();</span>
+        }
+<span class="fc" id="L537">    }</span>
+
+    public void fillPathLine() {
+<span class="fc" id="L540">        Node n = null;</span>
+<span class="fc bfc" id="L541" title="All 2 branches covered.">        if (dijkstraInUse.get() == true) {</span>
+<span class="fc" id="L542">            n = dijkstra.getPath().get(timelineIterator);</span>
+<span class="pc bpc" id="L543" title="1 of 4 branches missed.">        } else if (aStarInUse.get() == true || jpsInUse.get() == true) {</span>
+<span class="fc" id="L544">            n = aStar.getPath().get(timelineIterator);</span>
+<span class="pc bpc" id="L545" title="1 of 2 branches missed.">        } else if (bfsInUse.get() == true) {</span>
+<span class="fc" id="L546">            n = bfs.getPath().get(timelineIterator);</span>
+        }
+<span class="pc bpc" id="L548" title="1 of 2 branches missed.">        if (prevNode == null) {</span>
+<span class="pc bpc" id="L549" title="1 of 2 branches missed.">            if (n != null) {</span>
+<span class="nc" id="L550">                prevNode = n;</span>
+<span class="nc" id="L551">                canvas.fillPathLine(initialNode.getRow(), initialNode.getColumn(), prevNode.getRow(), prevNode.getColumn());</span>
+            }
+        } else {
+<span class="nc" id="L554">            canvas.fillPathLine(prevNode.getRow(), prevNode.getColumn(), n.getRow(), n.getColumn());</span>
+<span class="nc" id="L555">            prevNode = n;</span>
+        }
+<span class="fc" id="L557">    }</span>
+
+    public boolean getPathDrawing() {
+<span class="fc" id="L560">        return pathDrawing;</span>
+    }
+
+    public void setInserting(boolean b) {
+<span class="fc" id="L564">        inserting = b;</span>
+<span class="fc" id="L565">    }</span>
+
+    /**
+     * Updates rows and columns.
+     *
+     * @param rows Number of rows
+     */
+    public void updateRowsAndCols(int rows) {
+<span class="fc" id="L573">        this.rows = rows;</span>
+<span class="fc" id="L574">        this.rowGap = height / rows;</span>
+<span class="fc" id="L575">        this.cols = width / rowGap;</span>
+<span class="fc" id="L576">    }</span>
+
+    /**
+     * Updates initial node.
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
+    public void setInitialNode(int x, int y) {
+<span class="fc" id="L585">        blocks[y][x] = false;</span>
+<span class="fc" id="L586">        initialNode = new Node(x, y);</span>
+<span class="fc" id="L587">        startX = x;</span>
+<span class="fc" id="L588">        startY = y;</span>
+<span class="fc" id="L589">    }</span>
+
+    /**
+     * Updates final node.
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
+    public void setFinalNode(int x, int y) {
+<span class="fc" id="L598">        blocks[y][x] = false;</span>
+<span class="fc" id="L599">        finalNode = new Node(x, y);</span>
+<span class="fc" id="L600">        goalX = x;</span>
+<span class="fc" id="L601">        goalY = y;</span>
+<span class="fc" id="L602">    }</span>
+
+    /**
+     * Constructs the map content. This is needed in file saving.
+     *
+     * @return content
+     */
+    public String getContent() {
+<span class="fc" id="L610">        StringBuilder s = new StringBuilder();</span>
+<span class="fc bfc" id="L611" title="All 2 branches covered.">        for (int i = 0; i &lt; rows; i++) {</span>
+<span class="fc bfc" id="L612" title="All 2 branches covered.">            for (int j = 0; j &lt; cols; j++) {</span>
+<span class="fc bfc" id="L613" title="All 2 branches covered.">                if (blocks[i][j]) {</span>
+<span class="fc" id="L614">                    s.append(&quot;@&quot;);</span>
+                } else {
+<span class="fc" id="L616">                    s.append(&quot;.&quot;);</span>
+                }
+            }
+<span class="fc" id="L619">            s.append(&quot;\n&quot;);</span>
+        }
+<span class="fc" id="L621">        return s.toString();</span>
+    }
+
+    /**
+     * Randomizes blocks.
+     *
+     * @return Array presenting randomized blocks.
+     */
+    public boolean[][] randomizeBlocks() {
+<span class="fc" id="L630">        inserting = true;</span>
+<span class="fc" id="L631">        writed = false;</span>
+<span class="fc" id="L632">        initializeBlocks();</span>
+<span class="fc" id="L633">        aStar.reset();</span>
+<span class="fc" id="L634">        int k = rand.nextInt(15) + 3;</span>
+<span class="fc bfc" id="L635" title="All 2 branches covered.">        for (int i = 0; i &lt; rows; i++) {</span>
+<span class="fc bfc" id="L636" title="All 2 branches covered.">            for (int j = 0; j &lt; cols; j++) {</span>
+<span class="fc" id="L637">                int r = rand.nextInt(k);</span>
+<span class="pc bpc" id="L638" title="1 of 4 branches missed.">                if (r == 2 &amp;&amp; isNotInitialOrFinalNode(j, i)) {</span>
+<span class="fc" id="L639">                    blocks[i][j] = true;</span>
+                } else {
+<span class="fc" id="L641">                    blocks[i][j] = false;</span>
+                }
+            }
+        }
+<span class="fc" id="L645">        return blocks;</span>
+    }
+
+    public void setBackGround(Color value) {
+<span class="fc" id="L649">        this.bgColor = value;</span>
+<span class="fc" id="L650">    }</span>
+
+    public boolean getPathVisualize() {
+<span class="fc" id="L653">        return pathVisualize;</span>
+    }
+
+    public Node getPrevNode() {
+<span class="fc" id="L657">        return prevNode;</span>
+    }
+
+    public SimpleBooleanProperty getButtonsDisable() {
+<span class="fc" id="L661">        return buttonsDisabled;</span>
+    }
+
+    public SimpleBooleanProperty getAStarInUse() {
+<span class="fc" id="L665">        return aStarInUse;</span>
+    }
+
+    public SimpleBooleanProperty getBfsInUse() {
+<span class="fc" id="L669">        return bfsInUse;</span>
+    }
+
+    public SimpleBooleanProperty getDijkstraInUse() {
+<span class="fc" id="L673">        return dijkstraInUse;</span>
+    }
+
+    public SimpleBooleanProperty getJpsInUse() {
+<span class="fc" id="L677">        return jpsInUse;</span>
+    }
+
+    public void setButtonsDisable(boolean b) {
+<span class="fc" id="L681">        buttonsDisabled.set(b);</span>
+<span class="fc" id="L682">    }</span>
+
+    public Color getBgColor() {
+<span class="fc" id="L685">        return this.bgColor;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

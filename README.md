@@ -95,7 +95,10 @@ mvn javadoc:javadoc
 
 JavaDocia voi tarkastella avaamalla selaimella tiedosto _target/site/apidocs/index.html_
 
+<<<<<<< HEAD
 
 ### Jacoco
 
 [Jacoco test report](http://htmlpreview.github.com/?https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/target/site/jacoco/index.html)
+=======
+>>>>>>> parent of fdb3423... link to jacoco

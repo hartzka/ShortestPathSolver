@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+/ShortestPathSolver/target/
+>>>>>>> parent of fdb3423... link to jacoco
 /ShortestPathSolver/nbactions.xml
 /ShortestPathSolver/.classpath
 /ShortestPathSolver/.project
@@ -11,3 +15,4 @@
 =======
 /ShortestPathSolver/target/*
 >>>>>>> parent of e51c3c6... Update .gitignore
+/a.txt

@@ -1,99 +1,95 @@
 # ShortestPathSolver
 
-Sovellus, joka etsii lyhimmän polun ruudukossa alkupisteestä lopetuspisteeseen eri algoritmien avulla.
-Tarkoitus on vertailla ja visualisoida eri hakualgoritmien toimintaa.
+An app, which finds the shortest path in a grid from starting point to end point with various algorithms. 
+The purpose is to compare and visualize different search algorithms.
 
-Tämä on Helsingin Yliopiston tietorakenteiden ja algoritmien loppukesän 2019 4op harjoitustyö.
-
-
-## Viikkoraportit
-
-[Viikko1](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti1.md)
-
-[Viikko2](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti2.md)
-
-[Viikko3](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti3.md)
-
-[Viikko4](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti4.md)
-
-[Viikko5](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti5.md)
-
-[Viikko6](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti6.md)
-
-[Viikko7](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti7.md)
+This is a Intermediate Studies Software Project: Data Structures Project at University of Helsinki (4cr, summer 2019).
 
 
-## Dokumentaatio
+## Reports
 
-[Vaatimusmäärittely](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/vaatimusmaarittely.md)
+[Week1](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti1.md)
 
-[Toteutusdokumentti](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/toteutusdokumentti.md)
+[Week2](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti2.md)
 
-[Testausdokumentti](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/testausdokumentti.md)
+[Week3](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti3.md)
 
-[Käyttöohje](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/kayttoohje.md)
+[Week4](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti4.md)
+
+[Week5](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti5.md)
+
+[Week6](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti6.md)
+
+[Week7](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/viikkoraportti7.md)
 
 
-## Loppupalautus
+## Documentation
+
+[Requirements](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/vaatimusmaarittely.md)
+
+[Implementation](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/toteutusdokumentti.md)
+
+[Testing](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/testausdokumentti.md)
+
+[Manual](https://github.com/hartzka/ShortestPathSolver/blob/master/dokumentaatio/kayttoohje.md)
+
+
+## Final project
+
 [Loppupalautus](https://github.com/hartzka/ShortestPathSolver/releases/tag/1.3)
 
 
-## Komentorivitoiminnot
+## Command line instructions
 
-Seuraavat komennot ajetaan sovelluksen juurikansiosta, eli samasta kansiosta, jossa pom.xml sijaitsee.
+The next commands are executed from the root directory.
 
-### Testaus
-
-Testit suoritetaan komennolla
+### Testing
 
 ```
 mvn test
 ```
 
-Testikattavuusraportti luodaan komennolla
+Testing report
 
 ```
 mvn jacoco:report
 ```
 
-Kattavuusraporttia voi tarkastella avaamalla selaimella tiedosto _target/site/jacoco/index.html_
+Open the file _target/site/jacoco/index.html_ with your browser.
 
-### Suoritettavan jarin generointi
-
-Komento
+### Generate the .jar
 
 ```
 mvn package
 ```
 
-generoi hakemistoon _target_ suoritettavan jar-tiedoston _ShortestRouteSolver-1.0-SNAPSHOT.jar_
+generates a .jar-file in _target_ folder: _ShortestRouteSolver-1.0-SNAPSHOT.jar_
 
-jar-tiedoston voi ajaa komennolla
+run the .jar file with:
+
 ```
 java -jar ShortestRouteSolver-1.0-SNAPSHOT.jar
 ``` 
 
 ### Checkstyle
 
-Tiedostoon [checkstyle.xml](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/checkstyle.xml) määrittelemät tarkistukset suoritetaan komennolla
+[checkstyle.xml](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/checkstyle.xml)
 
 ```
- mvn jxr:jxr checkstyle:checkstyle
+mvn jxr:jxr checkstyle:checkstyle
 ```
 
-Mahdolliset virheilmoitukset selviävät avaamalla selaimella tiedosto _target/site/checkstyle.html_
+Reports: _target/site/checkstyle.html_
 
 ### JavaDoc
 
-[JavaDoc löytyy täältä](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/apidocs/index.html)
-
-JavaDoc generoidaan komennolla
+[JavaDoc](https://github.com/hartzka/ShortestPathSolver/blob/master/ShortestPathSolver/apidocs/index.html)
 
 ```
 mvn javadoc:javadoc
 ```
 
-JavaDocia voi tarkastella avaamalla selaimella tiedosto _target/site/apidocs/index.html_
+Open the file _target/site/apidocs/index.html_ with your browser.
 
 ### Jacoco
 

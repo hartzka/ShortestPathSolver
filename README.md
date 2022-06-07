@@ -41,7 +41,7 @@ This is a Intermediate Studies Software Project: Data Structures Project at Univ
 
 ## Command line instructions
 
-The next commands are executed from the root directory.
+The following commands are executed from the root directory.
 
 ### Testing
 
@@ -49,7 +49,7 @@ The next commands are executed from the root directory.
 mvn test
 ```
 
-Testing report
+Test report
 
 ```
 mvn jacoco:report
